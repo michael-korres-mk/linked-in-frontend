@@ -1,0 +1,9 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "endOfLine": "auto",
+  "no-unused-vars": "off",
+  "arrowParens": "avoid",
+  "trailingComma": "all",
+  "singleAttributePerLine": true
+}

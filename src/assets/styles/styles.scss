@@ -1,0 +1,600 @@
+// Write your overrides
+html {
+  font-family: Manrope, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.v-container {
+  padding: 15px !important;
+  background-color: #fff;
+  background-color: transparent!important;
+}
+
+.v-container--fluid {
+  background-color: transparent!important;
+
+  // z-index: 999;
+  // margin-block-start: -100px;
+  max-inline-size: 1500px !important;
+}
+
+.width-120 {
+  min-inline-size: 120px;
+}
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉👉 Cards & Legend 👈👈👈👈👈👈👈👈👈👈👈   #
+//  ℹ️  Wrapper for card, legend, etc                                   #
+// <────────────────────────────────────────────────────────────────────#
+
+legend.filters-legend-title {
+  position: relative;
+  background-color: #fff;
+  color: rgb(var(--v-theme-primary));
+  font-size: 1.2em !important;
+  font-weight: 600;
+  margin-block: 0 -25px;
+  margin-inline-start: 0;
+  padding-block: 0;
+  padding-inline: 0;
+}
+
+legend.legend-title {
+  position: relative;
+  background-color: rgb(var(--v-theme-bg-wrapper));
+  color: rgb(var(--v-theme-primary));
+  font-size: 1.2em !important;
+  font-weight: 600;
+  margin-block-start: -30px;
+  margin-inline-start: 15px;
+  padding-block: 4px;
+  padding-inline: 4px;
+}
+
+//  ℹ️ Card wrapper with No-Legend
+.card-wrapper-nl {
+  background-color: #fff;
+  margin-block: 0;
+  margin-inline: 0;
+  padding-block-end: 0;
+}
+
+//  ℹ️ Card Wrapper for Filters Section
+.card-wrapper-filters {
+  padding: 10px;
+  border-radius: var(--v-radius);
+  background-color: rgb(var(--v-theme-grey-100));
+  margin-block: 30px;
+  margin-inline: 0;
+  padding-block-end: 0;
+}
+
+//  ℹ️ Card Wrapper general
+.card-wrapper {
+  padding: 10px;
+  border: 3px solid rgb(var(--v-theme-grey-100));
+  border-radius: var(--v-radius);
+  background-color: rgb(var(--v-theme-bg-wrapper));
+  margin-block-end: 30px;
+  margin-inline: 0;
+  padding-block-end: 0;
+}
+
+//  ℹ️ Card Body that contains everything
+.card-body {
+  flex: auto;
+  min-block-size: 1px;
+  padding-block: 1.5rem;
+  padding-inline: 1rem;
+}
+
+// .v-expansion-panel {
+//   .card-body {
+//     padding-inline: 0;
+//   }
+// }
+
+
+// Fix for nested elements spacing
+
+.v-container--fluid .v-container--fluid{
+  padding: 0!important;
+  background-color: transparent!important;
+}
+
+.v-container--fluid .v-container--fluid .card-body{
+  background-color: transparent!important;
+  padding-block: 0.5rem;
+}
+
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉 Expansion Panels 👈👈👈👈👈👈👈👈👈👈👈   #
+//  ℹ️  Color, border, etc                                              #
+// <────────────────────────────────────────────────────────────────────#
+
+$v-application-wrap: '.v-application.v-layout .v-application__wrap';
+$border-radius-top: 15px 15px 0 0 !important;
+$border-radius-bottom: 0 0 15px 15px !important;
+$border-radius: 15px!important;
+$darkblue-color: rgb(var(--v-theme-primary)) !important;
+
+.v-expansion-panel {
+  position: relative;
+  flex: 1 0 100%;
+  border: 1px solid #000;
+  border-radius: 0 !important;
+  max-inline-size: 100%;
+  transition: margin-block-start, border-radius, border,
+    max-inline-size 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &-title {
+    background-color: $darkblue-color;
+    color: white !important;
+
+    &--active {
+      background-color: rgb(var(--v-theme-orange))!important;
+    }
+  }
+}
+
+
+.v-expansion-panels {
+  & > .v-expansion-panel:only-child {
+    border-radius: $border-radius;
+  }
+
+  &:not(.expansion-panels-width-border) {
+    .v-expansion-panel:not(:last-child) {
+      border-block-end: none !important;
+    }
+    
+    .v-expansion-panel:first-child:not(:last-child),
+    .v-expansion-panels--variant-accordion > :first-child {
+      border-radius: $border-radius-top;
+    }
+
+    .v-expansion-panel:last-child:not(:first-child),
+    .v-expansion-panels--variant-accordion > :last-child {
+      border-radius: $border-radius-bottom;
+    }
+  }
+
+  #{$v-application-wrap} & {
+    &:not(.expansion-panels-width-border) {
+      .v-expansion-panel:first-child:not(:last-child),
+      .v-expansion-panels--variant-accordion > :first-child {
+        border-radius: $border-radius-top;
+      }
+
+      .v-expansion-panel:last-child:not(:first-child),
+      .v-expansion-panels--variant-accordion > :last-child {
+        border-radius: $border-radius-bottom;
+      }
+    }
+  }
+}
+
+.layout-page-content {
+  padding-block: 1rem;
+}
+
+body
+.v-layout
+.v-application__wrap
+.v-expansion-panels:not(.expansion-panels-width-border)
+.v-expansion-panel:not(:first-child, :last-child),
+body
+.v-layout
+.v-application__wrap
+.v-expansion-panels:not(.expansion-panels-width-border)
+.v-expansion-panel:not(:first-child) {
+  border-radius: 0 !important;
+}
+
+body
+.v-layout
+.v-application__wrap
+.v-expansion-panels:not(.expansion-panels-width-border)
+.v-expansion-panel:not(:last-child) {
+  margin-block-end: 0 !important;
+}
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉👉 DataTable 👈👈👈👈👈👈👈👈👈👈👈👈👈    #
+//  ℹ️  Color, border, background, etc                                  #
+// <────────────────────────────────────────────────────────────────────#
+
+.v-table__wrapper {
+  overflow: auto;
+  border: 1px solid rgb(var(--v-theme-primary));
+  border-radius: var(--v-inner-radius)!important;
+  margin-block-end: 18px;
+}
+
+.v-table > .v-table__wrapper > table > tbody > tr > th,
+.v-table > .v-table__wrapper > table > thead > tr > th,
+.v-table > .v-table__wrapper > table > tfoot > tr > th {
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: white !important;
+  font-weight: 700;
+  text-align: start;
+  text-transform: none !important;
+  user-select: none;
+}
+
+.v-table .v-table__wrapper > table > tbody > tr:nth-of-type(odd) > td,
+.v-table .v-table__wrapper > table > tbody > tr:nth-of-type(odd) > th {
+  background-color: #edf3f6 !important;
+}
+
+.v-table {
+  --v-table-row-height: 56px;
+  --v-table-header-height: 48px !important;
+
+  color: var(--black-color) !important;
+}
+
+.v-data-table__thead
+.v-checkbox-btn
+.v-selection-control__input
+.v-icon.iconify--custom {
+  border: 1px solid white;
+  border-radius: 4px;
+  block-size: 1.125rem !important;
+  font-size: 1.125rem !important;
+  inline-size: 1.125rem !important;
+}
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉👉👉 Dialogs 👈👈👈👈👈👈👈👈👈👈👈👈👈    #
+//  ℹ️  Color, border, background, etc                                  #
+// <────────────────────────────────────────────────────────────────────#
+
+//  ℹ️ Dialog Header bg and text color,
+.dialog-header {
+  background-color: rgb(var(--v-theme-primary));
+  color: #fff;
+}
+
+//  ℹ️ Dialog Header bg and text color for Delete Modal,
+.dialog-header-delete {
+  background-color: rgb(var(--v-theme-danger));
+  color: #fff;
+}
+
+.dialog-title {
+  font-size: 22px;
+}
+
+// Dialog Header height
+.v-card {
+  // .v-card-title {
+  //   line-height: 1.65rem !important;
+  // }
+  .v-row {
+    overflow-x: auto;
+  }
+}
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉👉👉 Fields 👈👈👈👈👈👈👈👈👈👈👈👈👈     #
+//  ℹ️  Fields properties                                               #
+// <────────────────────────────────────────────────────────────────────#
+
+// ℹ️ Label Text for Fields
+.field-label-text,
+.text-subtitle-1 {
+  color: rgb(var(--v-theme-primary));
+  font-size: 16px !important;
+  font-weight: 600;
+}
+
+// ℹ️ Required field properties
+.required-field {
+  .text-subtitle-1 {
+    color: var(--black-color);
+  }
+
+  // ℹ️ Error message upon validation fail
+  .text-subtitle-1::after {
+    display: inline-block;
+    color: red;
+    content: '*';
+    margin-inline-start: 4px;
+  }
+}
+
+// ℹ️ Disabled field properties
+.v-input--disabled .v-input__details,
+.v-input--disabled .v-input__prepend,
+.v-input--disabled .v-input__append,
+.v-input--disabled {
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+// .v-input--readonly.v-text-field:not(.v-select) {
+//   border-radius: 26px;
+//   background-color: #f1f1f1;
+// }
+
+// ℹ️ Fix the fields start area to be bigger so it can have bigger radius...pretty tricky!
+// ℹ️ Else it has a maximum radius that doesn't show correct on pill variant
+// .v-field--variant-outlined .v-field__outline__start {
+//   flex: 0 0 27px !important;
+//   border-block-end-width: var(--v-field-border-width);
+//   border-block-start-width: var(--v-field-border-width);
+//   border-inline-start-width: var(--v-field-border-width);
+// }
+
+.v-field {
+  background: white;
+}
+
+.v-field--disabled {
+  background: rgb(var(--v-theme-grey-50));
+
+  //  opacity: 1;
+}
+
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉👉 Checkbox 👈👈👈👈👈👈👈👈👈👈👈👈👈     #
+//  ℹ️  Checkbox appearance                                             #
+// <────────────────────────────────────────────────────────────────────#
+
+// input[type='checkbox'] {
+//   // border: 1px solid #000 !important;
+//   border-radius: 50% !important;
+//   appearance: none;
+//   block-size: 35px;
+//   inline-size: 20px;
+//   inset-inline-start: 8px;
+
+//   // clip-path: circle(26% at 50% 50%);
+// }
+
+// .v-selection-control__input input {
+//   border-radius: 2px;
+//   inset-block-start: 3px;
+//   inset-inline-start: 10px;
+//   opacity: 1;
+// }
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉👉👉👉 Tabs 👈👈👈👈👈👈👈👈👈👈👈👈👈     #
+//  ℹ️  Properties for Tabs                                             #
+// <────────────────────────────────────────────────────────────────────#
+
+.v-tabs.v-tabs-pill .v-slide-group-item--active.v-tab--selected {
+  background: rgb(var(--v-theme-danger));
+  box-shadow: none;
+  color: white;
+  min-inline-size: 150px;
+}
+
+.v-tabs.v-tabs-pill.v-slide-group-item:hover {
+  background: rgb(var(--v-theme-danger));
+  box-shadow: none;
+  color: white;
+  min-inline-size: 150px;
+}
+
+.v-tabs.v-tabs-pill .v-tab.v-btn {
+  border-radius: 0 !important;
+  background-color: rgb(var(--v-theme-danger)) !important;
+  min-inline-size: 150px;
+  transition: none;
+}
+
+.v-tabs.v-tabs-pill .v-tab.v-btn:hover {
+  border-radius: 0 !important;
+  background-color: rgb(var(--v-theme-danger));
+  color: white;
+  transition: none;
+}
+
+.v-tab.v-tab {
+  border: 1px solid rgb(var(--v-theme-danger));
+  min-inline-size: 190px;
+}
+
+.v-tabs.v-tabs-pill.v-slide-group,
+.v-tabs.v-tabs-pill .v-slide-group__container {
+  box-sizing: content-box;
+  padding: 10px;
+  margin-inline-start: -4px;
+  min-block-size: 70px;
+}
+
+
+// <────────────────────────────────────────────────────────────────────#
+// 👉👉👉👉👉👉👉👉👉👉👉👉👉   Fonts  👈👈👈👈👈👈👈👈👈👈👈👈👈     #
+//  ℹ️  Fonts                                                           #
+// <────────────────────────────────────────────────────────────────────#
+
+
+.font-18{
+  font-size: 18px!important;
+}
+
+.font-20{
+  font-size: 20px!important;
+}
+
+.font-22{
+  font-size: 22px!important;
+}
+
+.font-23{
+  font-size: 23px!important;
+}
+
+.font-24{
+  font-size: 24px!important;
+}
+
+.font-26{
+  font-size: 26px!important;
+}
+
+.font-28{
+  font-size: 28px!important;
+}
+
+.font-30{
+  font-size: 30px!important;
+}
+
+.font-32{
+  font-size: 32px!important;
+}
+
+.font-50{
+  font-size: 50px!important;
+}
+
+.font-60{
+  font-size: 60px!important;
+}
+
+
+
+.v-pagination.justify-end {
+  .v-pagination__list {
+    justify-content: flex-end;
+  }
+}
+
+.table-filters {
+  .v-field__prepend-inner {
+    color: rgb(var(--v-theme-danger));
+  }
+}
+
+.nav-link.sub-item a {
+  color: var(--black-color);
+}
+
+// FIX datatable expand beyond limits when checkbox appear
+.v-card-text {
+  font-size: 0.8375rem !important;
+}
+
+.v-textarea {
+  min-block-size: 120px;
+}
+
+.tiptap-disabled{
+  padding: 10px;
+  border: 1px solid #C8C7CB;
+  border-radius: 10px;
+  background-color: #FBFBFB;
+}
+
+.layout-nav-type-vertical .layout-vertical-nav .nav-header {
+  padding-block: 1.2rem;
+  padding-inline: 0;
+}
+
+.layout-vertical-nav{
+  block-size: 98%;
+}
+
+.layout-nav-type-vertical .layout-vertical-nav .nav-section-title, 
+.layout-nav-type-vertical .layout-vertical-nav .nav-link > :first-child, 
+.layout-nav-type-vertical .layout-vertical-nav .nav-group > :first-child {
+  margin-inline: 0
+}
+
+body .layout-wrapper.layout-nav-type-vertical.layout-navbar-sticky .layout-page-content {
+  margin-block-start: 0;
+}
+
+.nav-group-children{
+  background-color: #A9CCDE!important;
+  color: #204E79!important;
+}
+
+.color-orange{
+  color: rgb(var(--v-theme-orange))!important;
+}
+
+.orange{
+  background-color: rgb(var(--v-theme-orange))!important;
+  color: rgb(var(--v-theme-orange))!important;
+}
+
+.layout-vertical-nav .app-title-wrapper {
+  border-radius: 4px;
+  margin: 15px;
+  background-color: white;
+
+  // margin-inline-end: auto;
+  padding-block: 10px;
+  padding-inline: 0;
+}
+
+.outer-card{
+  border-radius: 0.785rem!important;
+  padding-block-end: 10px!important;
+}
+
+.inner-card{
+  padding: 0;
+  border: 2px solid white;
+  border-radius: 0.585rem!important;
+  margin: 5px;
+}
+
+.bg-white{
+  background-color: white!important;
+}
+
+.v-card-title,
+.card-title{
+  color: white;
+  font-size: 1.5rem!important;
+  line-height: 1.75rem!important;
+  text-align: center;
+  text-wrap: wrap!important;
+  word-break: keep-all!important;
+  word-wrap: break-word!important;
+}
+
+.card-title-border{
+  padding:10px;
+  border-block-end: 2px solid rgb(var(--v-theme-orange));
+  margin-block-start: 10px;
+}
+
+.action-btn-border{
+  border: 1px solid #999;
+}
+
+// center slide-group items
+.v-slide-group__content {
+  position: relative;
+  display: flex;
+  flex: 1 0 auto;
+  justify-content: center;
+  transition: 0.2s all cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.v-field__input {
+  display: block!important;
+
+}
+
+// .v-list{
+//   border: 1px solid red;
+//   background-color: #A4C7DA!important;
+// }
+
+// .v-list-item:hover {
+//   background-color: #D14801!important;
+// }
