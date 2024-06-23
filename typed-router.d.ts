@@ -28,6 +28,7 @@ declare module 'vue-router/auto-routes' {
     'myregistry': RouteRecordInfo<'myregistry', '/myregistry', Record<never, never>, Record<never, never>>,
     'roles': RouteRecordInfo<'roles', '/roles', Record<never, never>, Record<never, never>>,
     'settings': RouteRecordInfo<'settings', '/settings', Record<never, never>, Record<never, never>>,
+    'sign-up': RouteRecordInfo<'sign-up', '/sign-up', Record<never, never>, Record<never, never>>,
     'submissions-category': RouteRecordInfo<'submissions-category', '/submissions/:category', { category: ParamValue<true> }, { category: ParamValue<false> }>,
     'submissions-category-id': RouteRecordInfo<'submissions-category-id', '/submissions/:category/:id', { category: ParamValue<true>, id: ParamValue<true> }, { category: ParamValue<false>, id: ParamValue<false> }>,
     'updates': RouteRecordInfo<'updates', '/updates', Record<never, never>, Record<never, never>>,

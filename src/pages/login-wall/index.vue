@@ -1,83 +1,59 @@
 <script setup>
-import logo from '@images/logo_white.png'
-import { themeConfig } from '@themeConfig'
+import logo from '@images/logo_white.png';
+import { themeConfig } from '@themeConfig';
+import useJwt from "@/plugins/jwt/useJwt.js";
 
 definePage({ meta: { layout: 'blank' } })
 
-const logoImage = logo
 </script>
 
 <template>
-  <VRow
-    no-gutters
-    class="auth-wrapper bg-surface"
+  <VCard
+    flat
+    :max-width="500"
+    class="mt-12 mt-sm-0 pa-4"
   >
-    <VCol
-      md="8"
-      class="d-none d-md-flex"
-    >
-      <div class="position-relative bg-background rounded-lg w-100 me-0">
-        <div class="d-flex align-center justify-center  w-100 h-100 bg-primary">
-          <VImg
-            max-width="505"
-            :src="logoImage"
-            class="auth-illustration mt-16 mb-2"
-          />
-        </div>
-      </div>
-    </VCol>
-    <VCol
-      cols="12"
-      md="4"
-      class="auth-card-v2 d-flex align-center justify-center"
-    >
-      <VCard
-        flat
-        :max-width="500"
-        class="mt-12 mt-sm-0 pa-4"
-      >
-        <VCardText>
-          <h4 class="text-h1 mb-1 text-bottom">
-            <img
-              src="@/assets/images/logo_blue.png"
-              width="35"
-              alt="LinkedIn"
-            />
-            <span class="ms-2 text-primary">{{ themeConfig.app.title }}</span>
-          </h4>
-          <p class="text-center text-primary font-18 mt-5">
-            Καλώς Ήρθατε στο Linked In
-          </p>
-        </VCardText>
-        <VCardText>
-          <VRow>
-            <VCol cols="12">
-              <VBtn
-                :disabled="!!hasToken"
-                block
-                @click="webLogin"
-              >
-                <span class="font-weight-light">Σύνδεση Χρήστη</span>
-              </VBtn>
-              <VSpacer/>
-              <VBtn
-                :disabled="!!hasToken"
-                color="secondary"
-                block
-                @click="webSignup"
-              >
-                <span class="font-weight-light">Εγγραφή Χρήστη</span>
-              </VBtn>
-            </VCol>
-          </VRow>
-        </VCardText>
-      </VCard>
-    </VCol>
-  </VRow>
+    <VCardText>
+      <h4 class="text-h1 mb-1 text-bottom">
+        <img
+          src="@/assets/images/logo_blue.png"
+          width="35"
+          alt="LinkedIn"
+        />
+        <span class="ms-2 text-primary">{{ themeConfig.app.title }}</span>
+      </h4>
+      <p class="text-center text-primary font-18 mt-5">
+        Καλώς Ήρθατε στο Linked In
+      </p>
+    </VCardText>
+    <VCardText>
+      <VRow>
+        <VCol cols="12">
+          <VBtn
+            :disabled="!!hasToken"
+            block
+            @click="webLogin"
+          >
+            <span class="font-weight-light">Σύνδεση Χρήστη</span>
+          </VBtn>
+          <VSpacer/>
+          <VBtn
+            :disabled="!!hasToken"
+            color="secondary"
+            block
+            @click="webSignup"
+          >
+            <span class="font-weight-light">Εγγραφή Χρήστη</span>
+          </VBtn>
+        </VCol>
+      </VRow>
+    </VCardText>
+  </VCard>
 </template>
 
 <script>
 import useJwt from "@/plugins/jwt/useJwt.js";
+import {themeConfig} from "@themeConfig";
 
 export default {
   computed: {
