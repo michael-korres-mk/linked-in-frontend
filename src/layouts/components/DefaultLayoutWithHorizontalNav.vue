@@ -9,7 +9,6 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
 import NavBarI18n from '@core/components/I18n.vue'
 import { HorizontalNavLayout } from '@layouts'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import Breadcrumbs from '@/layouts/components/Breadcrumbs.vue'
 
 // SECTION: Loading Indicator
 const isFallbackStateActive = ref(false)
@@ -31,16 +30,13 @@ watch([
   <HorizontalNavLayout :nav-items="navItems">
     <!-- 👉 navbar -->
     <template #navbar>
-      <RouterLink
-        to="/"
-        class="app-logo d-flex align-center gap-x-3"
-      >
+      <div class="app-logo d-flex  gap-x-3">
         <VNodeRenderer :nodes="themeConfig.app.logo" />
 
         <h1 class="app-title font-weight-bold leading-normal text-xl text-capitalize">
           {{ themeConfig.app.title }}
         </h1>
-      </RouterLink>
+      </div>
       <VSpacer />
 
       <NavBarI18n
@@ -58,7 +54,7 @@ watch([
     <RouterView v-slot="{ Component }">
 
 
-      <Breadcrumbs />
+<!--      <Breadcrumbs />-->
 
       <Suspense
         :timeout="0"

@@ -10,11 +10,11 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
     title: 'LinkedIn',
     logo: h('div', {
-      innerHTML: `<img src="${logo}" width="100%" alt="logo"/>`,
+      innerHTML: `<img src="${logo}" width="15%" alt="logo"/>`,
       style: 'line-height:0; color: rgb(var(--v-global-theme-primary))',
     }),
     contentWidth: ContentWidth.Boxed,
-    contentLayoutNav: AppContentLayoutNav.Vertical,
+    contentLayoutNav: AppContentLayoutNav.Horizontal,
     overlayNavFromBreakpoint: breakpointsVuetify.md + 16,
     i18n: {
       enable: false,

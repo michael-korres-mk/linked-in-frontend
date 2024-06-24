@@ -21,6 +21,30 @@ if (isLoggedIn) {
       icon: { icon: 'tabler-users-group' },
       // authority: 'users',
     },
+      {
+          title: 'Δίκτυο',
+          to: 'network',
+          icon: { icon: 'tabler-users-group' },
+          // authority: 'users',
+      },
+      {
+          title: 'Αγγελίες',
+          to: 'posts',
+          icon: { icon: 'tabler-users-group' },
+          // authority: 'users',
+      },
+      {
+          title: 'Συζητήσεις',
+          to: 'chats',
+          icon: { icon: 'tabler-users-group' },
+          // authority: 'users',
+      },
+      {
+          title: 'Ειδοποιήσεις',
+          to: 'notifications',
+          icon: { icon: 'tabler-users-group' },
+          // authority: 'users',
+      },
     // {
     //   title: 'Ρόλοι',
     //   to: 'roles',
