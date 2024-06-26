@@ -1,121 +1,92 @@
 <script setup>
-import avatar1 from '@images/avatars/avatar-1.png'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 </script>
 
 <template>
-  <VRow
-    align="center"
-    class="spacer"
-    no-gutters
+  <VBadge
+    dot
+    bordered
+    location="bottom right"
+    offset-x="3"
+    offset-y="3"
+    color="success"
   >
-    <VCol
-      sm="6"
-      md="3"
+    <VAvatar
+      class="cursor-pointer"
+      color="primary"
+      variant="tonal"
     >
-      <VBadge
-        dot
-        location="bottom right"
-        offset-x="3"
-        offset-y="3"
-        bordered
-        color="success"
+      <VIcon
+        size="large"
+        icon="tabler-user"
+      />
+
+      <!-- SECTION Menu -->
+      <VMenu
+        activator="parent"
+        width="350"
+        location="bottom end"
+        offset="14px"
       >
-        <VAvatar
-          class="cursor-pointer"
-          color="primary"
-          variant="tonal"
-        >
-          <VImg :src="avatar1" />
-
-          <!-- SECTION Menu -->
-          <VMenu
-            activator="parent"
-            width="230"
-            location="bottom end"
-            offset="14px"
-          >
-            <VList>
-              <!-- 👉 Profile -->
-              <VListItem
-                to="/users/profile?view=1"
-                color="white"
-              >
-                <template #prepend>
+        <VList>
+          <VListItem>
+            <template #prepend>
+              <VListItemAction start>
+                <VBadge
+                  dot
+                  location="bottom right"
+                  offset-x="3"
+                  offset-y="3"
+                  color="success"
+                  bordered
+                >
                   <VIcon
-                    class="me-2"
-                    icon="tabler-user"
-                    size="22"
+                    size="large"
+                    icon="fa-user-circle-o"
                   />
-                </template>
-
-                <VListItemTitle>
-                  Προφίλ
+                </VBadge>
+                <VListItemTitle class="ms-4">
+                  {{ user.username }}
                 </VListItemTitle>
-              </VListItem>
+              </VListItemAction>
+            </template>
+          </VListItem>
+          <PerfectScrollbar :options="{ wheelPropagation: false }">
+            <VListItem
+              to="/users/profile?view=1"
+              link
+            >
+              <template #prepend>
+                <VIcon
+                  class="me-2"
+                  icon="tabler-user"
+                  size="22"
+                />
+              </template>
 
-              <!-- Divider -->
-              <VDivider class="my-2" />
+              <VListItemTitle>Λογαριασμός</VListItemTitle>
+            </VListItem>
 
-              <!-- 👉 Logout -->
-              <VListItem
-                to="/login-wall"
-                color="white"
-                @click="logoutUser"
-              >
-                <template #prepend>
-                  <VIcon
-                    class="me-2"
-                    icon="tabler-logout"
-                    size="22"
-                  />
-                </template>
 
-                <VListItemTitle>
-                  Αποσύνδεση
-                </VListItemTitle>
-              </VListItem>
-            </VList>
-          </VMenu>
-          <!-- !SECTION -->
-        </VAvatar>
-      </VBadge>
-    </VCol>
-    <VCol
-      v-show="showName"
-      class="hidden-xs-only text-left"
-      sm="6"
-      md="9"
-    >
-      <strong class="text-body-2">{{ user.firstName }} {{ user.lastName }}</strong>
-      <span class="text-caption"> <!-- ROLE --> </span>
-    </VCol>
-  </VRow>
+            <!-- Divider -->
+            <VDivider class="my-2" />
+
+            <!-- 👉 Logout -->
+            <VListItem @click="logoutUser">
+              <template #prepend>
+                <VIcon
+                  class="me-2"
+                  icon="tabler-logout"
+                  size="22"
+                />
+              </template>
+
+              <VListItemTitle>Αποσύνδεση</VListItemTitle>
+            </VListItem>
+          </PerfectScrollbar>
+        </VList>
+      </VMenu>
+      <!-- !SECTION -->
+    </VAvatar>
+  </VBadge>
 </template>
-
-<script>
-export default {
-  props: {
-    showName: {
-      type: Boolean,
-      default: true,
-    },
-  },
-}
-</script>
-
-<style lang="scss" scoped>
-.v-list{
-  border: 1px solid red;
-  background-color: #A4C7DA!important;
-}
-
-.v-list-item {
-  color: var(--v-theme-primary)!important;
-  color:#1F4E79!important;
-}
-
-.v-list-item:hover {
-  background-color: #D14801!important;
-  color: white!important;
-}
-</style>

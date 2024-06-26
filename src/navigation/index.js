@@ -39,12 +39,6 @@ if (isLoggedIn) {
           icon: { icon: 'tabler-users-group' },
           // authority: 'users',
       },
-      {
-          title: 'Ειδοποιήσεις',
-          to: 'notifications',
-          icon: { icon: 'tabler-users-group' },
-          // authority: 'users',
-      },
     // {
     //   title: 'Ρόλοι',
     //   to: 'roles',

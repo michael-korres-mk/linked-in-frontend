@@ -1,5 +1,5 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 
 const props = defineProps({
   notifications: {
@@ -25,19 +25,18 @@ const emit = defineEmits([
   'click:notification',
 ])
 
-const isAllMarkRead = computed(() => props.notifications.some(item => item.isSeen === false))
-
-const markAllReadOrUnread = () => {
-  const allNotificationsIds = props.notifications.map(item => item.id)
-  if (!isAllMarkRead.value)
-    emit('unread', allNotificationsIds)
-  else
-    emit('read', allNotificationsIds)
-}
-
 const totalUnseenNotifications = computed(() => {
-  return props.notifications.filter(item => item.isSeen === false).length
+  return props.notifications.filter(item => item.readDate == null).length
 })
+
+const getNotificationColor = kind => {
+  switch (kind) {
+    case 'CONNECTION_REQUEST':
+      return 'info'
+    case 'EXPRESSION_OF_INTEREST':
+      return 'success'
+  }
+}
 </script>
 
 <template>
@@ -60,30 +59,14 @@ const totalUnseenNotifications = computed(() => {
       width="380px"
       :location="props.location"
       offset="14px"
-      :close-on-content-click="false"
+      close-on-content-click
     >
       <VCard class="d-flex flex-column">
         <!-- 👉 Header -->
         <VCardItem class="notification-section">
-          <VCardTitle class="text-lg">
-            Notifications
-          </VCardTitle>
-
-          <template #append>
-            <IconBtn
-              v-show="props.notifications.length"
-              @click="markAllReadOrUnread"
-            >
-              <VIcon :icon="!isAllMarkRead ? 'tabler-mail' : 'tabler-mail-opened' " />
-
-              <VTooltip
-                activator="parent"
-                location="start"
-              >
-                {{ !isAllMarkRead ? 'Mark all as unread' : 'Mark all as read' }}
-              </VTooltip>
-            </IconBtn>
-          </template>
+          <h1 class="text-lg">
+            {{$t('Notifications')}}
+          </h1>
         </VCardItem>
 
         <VDivider />
@@ -112,10 +95,9 @@ const totalUnseenNotifications = computed(() => {
                   <VListItemAction start>
                     <VAvatar
                       size="40"
-                      :color="notification.color && notification.icon ? notification.color : undefined"
+                      :color="getNotificationColor(notification.kind)"
                       :image="notification.img || undefined"
                       :icon="notification.icon || undefined"
-                      :variant="notification.img ? undefined : 'tonal' "
                     >
                       <span v-if="notification.text">{{ avatarText(notification.text) }}</span>
                     </VAvatar>
@@ -131,18 +113,11 @@ const totalUnseenNotifications = computed(() => {
                 <!-- Slot: Append -->
                 <template #append>
                   <div class="d-flex flex-column align-center gap-4">
-                    <VBadge
-                      dot
-                      :color="!notification.isSeen ? 'primary' : '#a8aaae'"
-                      :class="`${notification.isSeen ? 'visible-in-hover' : ''} ms-1`"
-                      @click.stop="$emit(notification.isSeen ? 'unread' : 'read', [notification.id])"
-                    />
-
                     <div style="block-size: 28px; inline-size: 28px;">
                       <IconBtn
                         size="small"
                         class="visible-in-hover"
-                        @click="$emit('remove', notification.id)"
+                        @click.stop="$emit('remove', notification.id)"
                       >
                         <VIcon
                           size="20"
@@ -154,26 +129,16 @@ const totalUnseenNotifications = computed(() => {
                 </template>
               </VListItem>
             </template>
-
-            <VListItem
-              v-show="!props.notifications.length"
-              class="text-center text-medium-emphasis"
-              style="block-size: 56px;"
-            >
-              <VListItemTitle>No Notification Found!</VListItemTitle>
-            </VListItem>
           </VList>
         </PerfectScrollbar>
-
         <VDivider />
-
         <!-- 👉 Footer -->
-        <VCardActions
-          v-show="props.notifications.length"
-          class="notification-footer"
-        >
-          <VBtn block>
-            View All Notifications
+        <VCardActions class="notification-footer">
+          <VBtn
+            block
+            to="/notifications"
+          >
+            Προβολή όλων των ειδοποιήσεων
           </VBtn>
         </VCardActions>
       </VCard>
