@@ -384,5 +384,8 @@
   "SECOND_EDUCATION_LEVEL": "Second Education Level",
   "User Rights": "User Rights",
   "Home Page": "Home Page",
-  "User Management": "User Management"
+  "User Management": "User Management",
+  "CONNECTION_REQUEST": "Connection Request",
+  "EXPRESSION_OF_INTEREST":"Expression of Interest",
+  "Notifications": "Notifications"
 }

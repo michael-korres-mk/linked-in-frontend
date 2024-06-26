@@ -42,7 +42,7 @@ export default {
     return {
       form: {
         email: 'admin@demo.com',
-        password: '1234',
+        password: 'admin',
         remember: false,
       },
       logoImage: logo,
@@ -56,8 +56,8 @@ export default {
       console.log(this.form);
 
       let userData = await this.$store.jwtLoginCredentials(this.form.email, this.form.password);
-      this.$store.userData = userData;
-      sessionStorage.setItem('userData', JSON.stringify(userData));
+      this.$store.userData = userData.data;
+      sessionStorage.setItem('userData', JSON.stringify(userData.data));
       this.$router.push('/home');
     },
     authenticateUser(token) {

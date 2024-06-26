@@ -1,38 +1,84 @@
 <script setup>
+import EntityList from '../../components/entity/EntityList.vue';
+
 definePage({
   meta: {
-    authority: 'submissions',
+    authority: 'announcements',
   },
 })
 </script>
 
 <template>
-  <div class="card-wrapper">
-    <div class="card-body text-center">
-      Υπό Κατασκευή
-    </div>
-  </div>
+  <EntityList
+    ref="list"
+    :config="config"
+    :columns="columns"
+    :formatted-columns="formattedColumns"
+    :extra-actions="extraActions"
+    authority="announcements"
+    hide-insert-btn
+    hide-edit
+    hide-view
+    hide-delete
+  />
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-    }
-  },
   computed: {
-    
-
-  },
-  async mounted() {
-    
+    config() {
+      return {
+        endpoint: 'notifications',
+        route: 'notifications',
+        title: {
+          geniki: 'Ειδοποιήσεις',
+        },
+      }
+    },
+    columns() {
+      return [
+        {
+          key: 'creationDate',
+          title: this.$t('Date'),
+        },
+        {
+          key: 'kind',
+          title: this.$t('Kind'),
+        },
+        {
+          key: 'title',
+          title: this.$t('Title'),
+        },
+      ]
+    },
+    formattedColumns() {
+      return [
+        {
+          key: 'kind',
+          callback: 'translate',
+        },
+        {
+          key: 'creationDate',
+          callback: 'dateOnly',
+        },
+      ]
+    },
+    extraActions() {
+      return [
+        {
+          title: 'Visit',
+          icon: 'fa-link',
+          callback: this.fetchExtraItem,
+          propertyExists: 'url',
+        },
+      ]
+    },    
   },
   methods: {
-    redirect(param) {
-      this.$router.push({
-        name: 'applications-category',
-        params: { category: param },
-      })
+    fetchExtraItem(item) {
+      if (item.url) {
+        this.$router.push(item.url)
+      }
     },
   },
 }

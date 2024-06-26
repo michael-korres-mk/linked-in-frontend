@@ -19,9 +19,9 @@ export const redirects = [
   },
   {
     path: '/pages/account-settings',
-    name: 'account-settings-tab',
+    name: 'account-settings',
     redirect: () => ({
-      name: 'pages-account-settings-tab',
+      name: 'pages-account-settings',
       params: { tab: 'account' },
     }),
   },
