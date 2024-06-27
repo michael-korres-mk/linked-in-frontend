@@ -310,7 +310,6 @@ export default {
       this.$store.$reset()
       this.$store.clearCache()
     },
-    
     logOutUrl(clientId) {
         return import.meta.env.VITE_LOGOUT_URL
     },
