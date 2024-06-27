@@ -1,26 +1,17 @@
 <template>
   <div :class="(isSender ? 'right' : 'left') + '-align-message'">
+
     <div class="message-info">
-      <div>
-        <FontAwesomeIcon icon="fa-solid fa-calendar-days" />
-        {{ midDate(msg.createdTimestamp) }}
-      </div>
-      <div>
-        <span class="icon fas fa-clock" /> {{ shortTime(msg.createdTimestamp) }}
-      </div>
+      <div> <FontAwesomeIcon icon="fa-solid fa-calendar-days" /> {{ midDate(msg.createdTimestamp) }} </div>
+      <div> <span class="icon fas fa-clock" /> {{ shortTime(msg.createdTimestamp) }} </div>
     </div>
-    <div
-      :class="isSender ? 'bg-info' : ''"
-      class="message-content"
-    >
-      {{ msg.message }}
-    </div>
+
+    <div :class="isSender ? 'bg-info' : ''" class="message-content">{{ msg.message }} </div>
+
     <div class="profile-picture">
-      <FontAwesomeIcon
-        icon="fa-solid fa-user"
-        style="position: relative; top: 9px; left: 15px; color: darkcyan"
-      />
+      <FontAwesomeIcon icon="fa-solid fa-user" :style="{ position: 'relative', top: '9px', left: '15px', color: isSender ? '#d04a02' : '#AAAAAA' }"/>
     </div>
+
   </div>
 </template>
 
@@ -40,9 +31,7 @@ export default {
     },
   },
   computed: {
-    isSender() {
-      return !this.msg.sender || this.user.userId == this.msg.sender.id
-    },
+    isSender() {return !this.msg.sender || this.user.id === this.msg.sender.id},
   },
 }
 </script>

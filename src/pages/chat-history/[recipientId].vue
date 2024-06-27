@@ -2,59 +2,34 @@
   <div class="rest-container">
 <!--    <Loader v-if="isLoading" />-->
     <div class="mt-5">
-      <v-btn
-        color="secondary"
-        size="large"
-        @click="routeToGeneralChat()"
-      >
-        <FontAwesomeIcon
-          icon="fa-reply"
-          class="font-24 mr-4"
-        />
-        ΣΥΝΟΜΙΛΙΕΣ
-      </v-btn>
+      <VBtn color="secondary" size="large" @click="routeToGeneralChat()">
+        <FontAwesomeIcon icon="fa-reply" class="font-24 mr-4"/>
+        {{this.$t("Chats")}}
+      </VBtn>
     </div>
 
-    <div class="card-ospa">
-      <legend class="scheduler-border">
-        Συνομιλία με:
-        <span class="font-weight-bold text-info">{{ contact.name }}</span>
-      </legend>
+    <div class="card-linkedin">
+      <legend class="scheduler-border"> Συνομιλία με: <span class="font-weight-bold text-info"> {{ contact.title }} </span> </legend>
 
-      <div class="card-body-ospa">
+      <div class="card-body-linkedin">
         <div class="chat-container">
-          <ChatMsg
-            v-for="msg in msgs"
-            :key="msg.createdTimestamp"
-            :msg="msg"
-          />
+          <ChatMsg v-for="msg in msgs" :key="msg.createdTimestamp" :msg="msg"/>
         </div>
       </div>
-      <!--Send Message Container Start-->
+
       <div class="send-message">
         <div class="send-message-container width-100">
           <!-- <FontAwesomeIcon icon="fa-solid fa-images" />
               <FontAwesomeIcon icon="fa-solid fa-camera" /> -->
-          <input
-            v-model="message"
-            type="text"
-            class="message-input"
-          />
-          <div>
-            <v-btn
-              color="primary"
-              @click="sendMessage"
-            >
-              ΑΠΟΣΤΟΛΗ
-              <FontAwesomeIcon
-                icon="fa-paper-plane"
-                class="ml-2"
-              />
-            </v-btn>
-          </div>
+          <input v-model="message" type="text" class="message-input" />
+
+          <VBtn color="primary" @click="sendMessage">
+            {{ this.$t("Send") }}
+            <FontAwesomeIcon icon="fa-paper-plane" class="ml-2" />
+          </VBtn>
+
         </div>
       </div>
-      <!--Send Message Container End-->
     </div>
   </div>
 </template>
@@ -79,39 +54,42 @@ export default {
   },
   computed: {
     recipientId() {
-      return this.$route.params.id
+      return this.$route.params.recipientId
     },
     token() {
-      return localStorage.getItem('accessToken')
+      return localStorage.getItem('token')
     },
   },
   async mounted() {
     this.connect()
     const data = await this.$store.fetchChatHistory(this.recipientId)
     if (data) {
-      this.msgs = data.content.reverse()
+      console.log(data)
+      this.msgs = data.messages.reverse()
     }
     const userResponse = await this.$store.fetchChatContacts()
     if (userResponse) {
-      const matchedContact = userResponse.find(
-        (contact) => contact.id == this.recipientId
-      )
-      this.contact = matchedContact
-        ? {
-          name: matchedContact.firstName + ' ' + matchedContact.lastName,
-        }
-        : {}
+      // const matchedContact = userResponse.find(
+      //   (contact) => contact.id == this.recipientId
+      // )
+
+      this.contact = data.contact.contact
+        // ? {
+        //   name: matchedContact.firstName + ' ' + matchedContact.lastName,
+        // }
+        // : {}
     }
     this.isLoading = false
   },
   methods: {
     connect() {
       this.stompClient = new Client({
-        brokerURL: import.meta.env.VITE_API_URL.replace('http', 'ws') + this.apiUrl + 'ws',
+        brokerURL: import.meta.env.VITE_API_URL.replace('http', 'ws') + 'ws',
         onConnect: () => {
           this.stompClient.subscribe(
-            '/user/' + this.user.userId + '/queue/messages',
+            '/user/' + this.user.id + '/queue/messages',
             (newMsg) => {
+              console.log(msg)
               const msg = JSON.parse(newMsg.body)
               if (msg.sender.id === this.recipientId) {
                 this.appendMessage(msg)
@@ -147,7 +125,7 @@ export default {
     },
     routeToGeneralChat() {
       this.$router.push({
-        name: 'contact',
+        name: 'chats',
       })
     },
   },

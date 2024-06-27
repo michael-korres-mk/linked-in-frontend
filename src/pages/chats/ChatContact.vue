@@ -1,6 +1,6 @@
 <template>
   <div class="all-contact-persons-messages">
-    <RouterLink v-for="contact in contacts" :key="contact.title" :to="`chat-history/${contact.id}`">
+    <RouterLink v-for="contact in contacts" :key="contact.title" :to="`chat-history/${contact.contact.id}`">
       <div class="contact-persons-message-container display-flex">
 
         <div class="contact-persons-profile-picture float-left">
