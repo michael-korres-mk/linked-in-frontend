@@ -138,18 +138,17 @@ const actions = {
   rights(subsystem) {
     return this.fetchCachedList('roles/rights', { subsystem })
   },
-  subsystems() {
-    return this.fetchCachedList('roles/subsystems')
-  },
-  requestCategories() {
-    return this.fetchCachedList('request-categories')
-  },
-  circularList(schoolYear, educationLevel) {
-    return this.fetchCachedList('circulars', { schoolYear, educationLevel })
-  },
-  submissionSections(type) {
-    return this.fetchCachedList('request-types/sections', { type })
-  },
+
+    fetchChatContacts() {
+        return this.fetchCachedList('users/contacts')
+    },
+    fetchRecentChats() {
+        return this.fetchCachedList('chats/recent')
+    },
+    fetchChatHistory(recipientId) {
+       return this.axiosGet({ url: `chats/history/${recipientId}` })
+    },
+
 }
 
 export const useSessionStore = defineStore('session', {

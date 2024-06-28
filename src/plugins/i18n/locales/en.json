@@ -387,5 +387,9 @@
   "User Management": "User Management",
   "CONNECTION_REQUEST": "Connection Request",
   "EXPRESSION_OF_INTEREST":"Expression of Interest",
-  "Notifications": "Notifications"
+  "Notifications": "Notifications",
+  "Contacts": "Contacts",
+  "Chats": "Chats",
+  "Send": "Send",
+  "See more" : "See more"
 }
