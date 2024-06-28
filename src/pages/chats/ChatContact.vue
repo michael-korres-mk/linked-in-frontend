@@ -1,6 +1,7 @@
 <template>
   <div class="all-contact-persons-messages">
-    <RouterLink v-for="contact in contacts" :key="contact.title" :to="`chat-history/${contact.contact.id}`">
+    <Loader v-if="isLoading" />
+    <RouterLink v-for="contact in contacts" :key="contact.title" :to="`chat-history/${contact.recipient.id}`">
       <div class="contact-persons-message-container display-flex">
 
         <div class="contact-persons-profile-picture float-left">
@@ -11,7 +12,7 @@
 
         <div class="message-information display-flex">
           <div class="float-left message-content">
-            <div class="name">{{ contact.contact.title }}</div>
+            <div class="name">{{ contact.recipient.title }}</div>
             <div class="message-description">{{ contact.description }}</div>
             <div class="message">{{ contact.message }}</div>
           </div>
@@ -29,25 +30,14 @@
 export default {
   data() {
     return {
-      privateContacts: []
+      isLoading: true,
+      contacts: [],
     }
   },
-  computed: {
-    contacts() {
-      return [ ...this.privateContacts]
-    }
-  },
-  async mounted() {
-    const data = await this.$store.fetchChatContacts()
 
-    this.privateContacts = data
-    // if (data) {
-    //   this.privateContacts = data.map((contact) => ({
-    //     ...contact,
-    //     name: contact.title,
-    //     publicAuthority: false
-    //   }))
-    // }
+  async mounted() {
+    this.contacts = await this.$store.fetchChatContacts()
+    this.isLoading = false
   }
 }
 </script>

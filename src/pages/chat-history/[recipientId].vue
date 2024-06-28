@@ -64,20 +64,8 @@ export default {
     this.connect()
     const data = await this.$store.fetchChatHistory(this.recipientId)
     if (data) {
-      console.log(data)
       this.msgs = data.messages.reverse()
-    }
-    const userResponse = await this.$store.fetchChatContacts()
-    if (userResponse) {
-      // const matchedContact = userResponse.find(
-      //   (contact) => contact.id == this.recipientId
-      // )
-
-      this.contact = data.contact.contact
-        // ? {
-        //   name: matchedContact.firstName + ' ' + matchedContact.lastName,
-        // }
-        // : {}
+      this.contact = data.contact.recipient
     }
     this.isLoading = false
   },
@@ -86,10 +74,8 @@ export default {
       this.stompClient = new Client({
         brokerURL: import.meta.env.VITE_API_URL.replace('http', 'ws') + 'ws',
         onConnect: () => {
-          this.stompClient.subscribe(
-            '/user/' + this.user.id + '/queue/messages',
+          this.stompClient.subscribe('/user/' + this.user.id + '/queue/messages',
             (newMsg) => {
-              console.log(msg)
               const msg = JSON.parse(newMsg.body)
               if (msg.sender.id === this.recipientId) {
                 this.appendMessage(msg)
@@ -109,10 +95,11 @@ export default {
       this.msgs.push(newMsg)
     },
     sendMessage() {
+      // TODO: Fix Message saving in db - refactor chat entities
       if (this.stompClient && this.message.length > 0) {
         const newMsg = {
-          recipient: { id: this.recipientId },
-          message: this.message,
+          contact : {recipient : { id: this.recipientId }},
+          lastMessage: this.message,
           token: this.token,
         }
         this.stompClient.publish({
@@ -124,9 +111,7 @@ export default {
       }
     },
     routeToGeneralChat() {
-      this.$router.push({
-        name: 'chats',
-      })
+      this.$router.push({name: 'chats'})
     },
   },
 }

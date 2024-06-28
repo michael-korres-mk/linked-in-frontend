@@ -53,8 +53,6 @@ export default {
       this.$router.push('/login-wall');
     },
     async myLoginUser() {
-      console.log(this.form);
-
       let userData = await this.$store.jwtLoginCredentials(this.form.email, this.form.password);
       this.$store.userData = userData.data;
       sessionStorage.setItem('userData', JSON.stringify(userData.data));

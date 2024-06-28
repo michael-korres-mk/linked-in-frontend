@@ -26,13 +26,11 @@
         <VWindow v-model="tab">
           <VWindowItem :value="0">
             <hr />
-            AAA
             <ChatContact />
           </VWindowItem>
           <VWindowItem :value="1">
             <hr />
-            BBB
-<!--            <ChatRecent />-->
+            <ChatRecent />
           </VWindowItem>
         </VWindow>
       </VCardText>
