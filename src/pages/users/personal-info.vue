@@ -4,21 +4,18 @@ import EntitySingle from '@/components/entity/EntitySingle.vue'
 
 <template>
   <h1 class="text-center text-info mb-0">
-    Πληροφορίες Χρήστη
+    {{ title}}
   </h1>
   <VContainer fluid>
     <VRow>
       <VCol>
         <div class="card-wrapper">
-          <legend class="legend-title text-center">
-            Πληροφορίες Χρήστη
-          </legend>
+          <legend class="legend-title text-center">{{ title }}</legend>
           <div class="card-body">
             <EntitySingle
               :config="config"
               :entity="entity"
               :form-fields="formFields"
-              :return-to-list="false"
               hide-title
             />
           </div>
@@ -39,6 +36,9 @@ export default {
     }
   },
   computed: {
+    title(){
+      return this.$t("Personal Info")
+    },
     config() {
       return {
         endpoint: 'users',
@@ -51,22 +51,6 @@ export default {
 
     formFields() {
       return [
-        {
-          id: 'id',
-          type: 'text',
-          label: this.$t('User Code'),
-          readonly: true,
-          colSize: this.colSize,
-        },
-        {
-          id: 'afm',
-          type: 'text',
-          label: this.$t('User Vat'),
-          rules: ['grvat'],
-          required: true,
-          colSize: this.colSize,
-          readonly: true,
-        },
         {
           id: 'firstName',
           type: 'text',
@@ -87,6 +71,15 @@ export default {
           label: this.$t('Email'),
           required: true,
           rules: ['email'],
+          readOnly: true,
+          colSize: this.colSize,
+        },
+        {
+          id: 'username',
+          type: 'text',
+          label: this.$t('Username'),
+          rules: ['username'],
+          disabled: true,
           colSize: this.colSize,
         },
         {
@@ -97,13 +90,24 @@ export default {
           required: true,
           colSize: this.colSize,
         },
+        // TODO: Add enabled/disabled (public/private)
         {
-          id: 'username',
-          type: 'text',
-          label: this.$t('Username'),
-          rules: ['username'],
-          disabled: true,
-          colSize: this.colSize,
+          id: 'workExperience',
+          type: 'tiptap',
+          label: this.$t('Work Experience'),
+          colSize: 12,
+        },
+        {
+          id: 'education',
+          type: 'tiptap',
+          label: this.$t('Education'),
+          colSize: 12,
+        },
+        {
+          id: 'skills',
+          type: 'tiptap',
+          label: this.$t('Skills'),
+          colSize: 12,
         },
       ]
     },

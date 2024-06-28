@@ -391,5 +391,10 @@
   "Contacts": "Contacts",
   "Chats": "Chats",
   "Send": "Send",
-  "See more" : "See more"
+  "See more" : "See more",
+  "Personal Info" : "Personal Info",
+  "Username" : "Username",
+  "Work Experience": "Work Experience",
+  "Education" : "Education",
+  "Skills" : "Skills"
 }

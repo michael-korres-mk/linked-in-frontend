@@ -393,5 +393,12 @@
   "User Rights": "Δικαιώματα Χρήστη",
   "Home Page": "Αρχική",
   "User Management": "Διαχείριση Χρηστών",
-  "See more" : "Περισσότερα"
+  "See more" : "Περισσότερα",
+  "Personal Info": "Προσωπικές Πληροφορίες",
+  "Username": "Ψευδώνυμο Χρήστη",
+  "Password": "Κωδικός Πρόσβασης",
+  "Confirm Password": "Επιβεβαίωση Κωδικού Πρόσβασης",
+  "Work Experience": "Προϋπηρεσία",
+  "Education" : "Εκπαίδευση",
+  "Skills" : "Δεξιότητες"
 }
