@@ -92,7 +92,7 @@ export default {
     },
   },
   async mounted() {
-    this.entity = await this.$store.axiosGet({ url: 'users/settings' })
+    this.entity = await this.$store.axiosGet({ url: 'users/profile' })
   },
 }
 </script>

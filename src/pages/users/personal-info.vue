@@ -90,6 +90,25 @@ export default {
           required: true,
           colSize: this.colSize,
         },
+        // TODO: Add enabled/disabled (public/private)
+        {
+          id: 'workExperience',
+          type: 'tiptap',
+          label: this.$t('Work Experience'),
+          colSize: 12,
+        },
+        {
+          id: 'education',
+          type: 'tiptap',
+          label: this.$t('Education'),
+          colSize: 12,
+        },
+        {
+          id: 'skills',
+          type: 'tiptap',
+          label: this.$t('Skills'),
+          colSize: 12,
+        },
       ]
     },
     colSize() {
