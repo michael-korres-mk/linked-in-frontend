@@ -53,7 +53,7 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
           </VListItem>
           <PerfectScrollbar :options="{ wheelPropagation: false }">
             <VListItem
-              to="/users/profile?view=1"
+              to="/users/personal-info?view=1"
               link
             >
               <template #prepend>
@@ -64,7 +64,26 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
                 />
               </template>
 
-              <VListItemTitle>Λογαριασμός</VListItemTitle>
+              <VListItemTitle>{{ personalInfoTitle }}</VListItemTitle>
+            </VListItem>
+
+
+            <!-- Divider -->
+            <VDivider class="my-2" />
+
+            <VListItem
+              to="/users/profile-settings?view=1"
+              link
+            >
+              <template #prepend>
+                <VIcon
+                  class="me-2"
+                  icon="tabler-user"
+                  size="22"
+                />
+              </template>
+
+              <VListItemTitle>{{ settingsTitle }}</VListItemTitle>
             </VListItem>
 
 
@@ -90,3 +109,18 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
     </VAvatar>
   </VBadge>
 </template>
+
+<script>
+
+  export default {
+    computed: {
+        personalInfoTitle() {
+          return this.$t("Personal Info")
+        },
+        settingsTitle() {
+          return this.$t("Settings")
+        }
+    }
+  }
+
+</script>

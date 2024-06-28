@@ -325,6 +325,7 @@ export default {
       )
       this.$store.clearCache()
     },
+    // TODO: Study this
     processEntitySave(response, msgTitle, msgText) {
       this.$emit('entitySaved', response)
       this.successToast({
@@ -332,9 +333,11 @@ export default {
         text: msgText,
       })
       this.$nextTick(() => {
+
         if (this.returnToList) {
           this.routeToList()
         }
+
       })
     },
     handleSaveError(error) {

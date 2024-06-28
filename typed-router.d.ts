@@ -20,17 +20,14 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     'root': RouteRecordInfo<'root', '/', Record<never, never>, Record<never, never>>,
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
-    'calendar': RouteRecordInfo<'calendar', '/calendar', Record<never, never>, Record<never, never>>,
     'chat-history-recipient-id': RouteRecordInfo<'chat-history-recipient-id', '/chat-history/:recipientId', { recipientId: ParamValue<true> }, { recipientId: ParamValue<false> }>,
     'chat-history-chat-msg': RouteRecordInfo<'chat-history-chat-msg', '/chat-history/ChatMsg', Record<never, never>, Record<never, never>>,
     'chats': RouteRecordInfo<'chats', '/chats', Record<never, never>, Record<never, never>>,
     'chats-chat-contact': RouteRecordInfo<'chats-chat-contact', '/chats/ChatContact', Record<never, never>, Record<never, never>>,
     'chats-chat-recent': RouteRecordInfo<'chats-chat-recent', '/chats/ChatRecent', Record<never, never>, Record<never, never>>,
     'home': RouteRecordInfo<'home', '/home', Record<never, never>, Record<never, never>>,
-    'links': RouteRecordInfo<'links', '/links', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-wall': RouteRecordInfo<'login-wall', '/login-wall', Record<never, never>, Record<never, never>>,
-    'myregistry': RouteRecordInfo<'myregistry', '/myregistry', Record<never, never>, Record<never, never>>,
     'network': RouteRecordInfo<'network', '/network', Record<never, never>, Record<never, never>>,
     'notifications': RouteRecordInfo<'notifications', '/notifications', Record<never, never>, Record<never, never>>,
     'posts': RouteRecordInfo<'posts', '/posts', Record<never, never>, Record<never, never>>,
@@ -42,6 +39,7 @@ declare module 'vue-router/auto-routes' {
     'updates': RouteRecordInfo<'updates', '/updates', Record<never, never>, Record<never, never>>,
     'users': RouteRecordInfo<'users', '/users', Record<never, never>, Record<never, never>>,
     'users-id': RouteRecordInfo<'users-id', '/users/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
-    'users-profile': RouteRecordInfo<'users-profile', '/users/profile', Record<never, never>, Record<never, never>>,
+    'users-personal-info': RouteRecordInfo<'users-personal-info', '/users/personal-info', Record<never, never>, Record<never, never>>,
+    'users-profile-settings': RouteRecordInfo<'users-profile-settings', '/users/profile-settings', Record<never, never>, Record<never, never>>,
   }
 }
