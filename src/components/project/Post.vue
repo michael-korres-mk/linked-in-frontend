@@ -1,33 +1,30 @@
-<script>
-export default {
-  name: "Post"
-}
-</script>
+<template>
+  <VCard :disabled="loading" :loading="loading" class="mx-auto my-12" max-width="600">
+    <template v-slot:loader="{ isActive }">
+      <VProgressLinear :active="isActive" color="#1f4e79" height="4" indeterminate/>
+    </template>
 
-<template><template>
-  <v-card class="mx-auto" max-width="400">
-    <v-img
-      color="surface-variant"
-      height="200"
-      src="https://cdn.vuetifyjs.com/docs/images/cards/purple-flowers.jpg"
-      cover
-    >
-      <v-toolbar color="transparent">
-        <template v-slot:prepend>
-          <v-btn icon="$menu"></v-btn>
-        </template>
+    <VImg height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png" cover />
 
-        <v-toolbar-title class="text-h6" text="Messages"></v-toolbar-title>
+    <v-card-item>
+      <v-card-title class="text-left text-info">Cafe Badilico</v-card-title>
 
-        <template v-slot:append>
-          <v-btn icon="mdi-dots-vertical"></v-btn>
-        </template>
-      </v-toolbar>
-    </v-img>
+      <v-card-subtitle class="text-left">
+        <span class="me-1">Local Favorite</span>
+
+        <v-icon
+          color="error"
+          icon="mdi-fire-circle"
+          size="small"
+        ></v-icon>
+      </v-card-subtitle>
+    </v-card-item>
 
     <v-card-text>
-      <div class="font-weight-bold ms-1 mb-2">Today</div>
 
+      <div class="my-4 text-subtitle-1">
+        $ • Italian, Cafe
+      </div>
       <v-timeline align="start" density="compact">
         <v-timeline-item
           v-for="message in messages"
@@ -45,11 +42,57 @@ export default {
         </v-timeline-item>
       </v-timeline>
     </v-card-text>
-  </v-card>
+
+    <v-card-actions>
+      <v-btn
+        color="deep-purple-lighten-2"
+        text="Reserve"
+        block
+        border
+        @click="reserve"
+      ></v-btn>
+
+    </v-card-actions>
+  </VCard>
 </template>
+<script>
+export default {
+  props: {
+    title: {
+      type: String,
+      default: 'foo'
+    },
+  },
 
-</template>
+  data: () => ({
+    loading: false,
+    messages: [
+      {
+        from: 'You',
+        message: `Sure, I'll see you later.`,
+        time: '10:42am',
+        color: 'deep-purple-lighten-1',
+      },
+      {
+        from: 'John Doe',
+        message: 'Yeah, sure. Does 1:00pm work?',
+        time: '10:37am',
+        color: 'green',
+      },
+      {
+        from: 'You',
+        message: 'Did you still want to grab lunch today?',
+        time: '9:47am',
+        color: 'deep-purple-lighten-1',
+      },
+    ],
+  }),
+  methods:{
+    reserve () {
+      this.loading = true
 
-<style scoped lang="scss">
-
-</style>
+      setTimeout(() => (this.loading = false), 2000)
+    },
+  }
+}
+</script>

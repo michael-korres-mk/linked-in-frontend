@@ -12,7 +12,11 @@ definePage({
   </h1>
   <div class="card-wrapper">
     <div class="card-body text-center">
-      Καλώς Ήρθατε στο Linked In
+
+      <Post :title="title"/>
+      <Post :title="title"/>
+      <Post :title="title"/>
+
     </div>
   </div>
 </template>
@@ -21,6 +25,7 @@ definePage({
 export default {
   data() {
     return {
+      title: "Disruptive Tech News"
     }
   },
   computed: {

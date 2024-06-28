@@ -36,7 +36,6 @@ declare module 'vue-router/auto-routes' {
     'sign-up': RouteRecordInfo<'sign-up', '/sign-up', Record<never, never>, Record<never, never>>,
     'submissions-category': RouteRecordInfo<'submissions-category', '/submissions/:category', { category: ParamValue<true> }, { category: ParamValue<false> }>,
     'submissions-category-id': RouteRecordInfo<'submissions-category-id', '/submissions/:category/:id', { category: ParamValue<true>, id: ParamValue<true> }, { category: ParamValue<false>, id: ParamValue<false> }>,
-    'updates': RouteRecordInfo<'updates', '/updates', Record<never, never>, Record<never, never>>,
     'users': RouteRecordInfo<'users', '/users', Record<never, never>, Record<never, never>>,
     'users-id': RouteRecordInfo<'users-id', '/users/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'users-personal-info': RouteRecordInfo<'users-personal-info', '/users/personal-info', Record<never, never>, Record<never, never>>,
