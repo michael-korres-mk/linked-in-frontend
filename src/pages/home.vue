@@ -1,4 +1,6 @@
 <script setup>
+import PostList from "@/components/PostList.vue";
+
 definePage({
   meta: {
     authority: 'applications',
@@ -13,9 +15,11 @@ definePage({
   <div class="card-wrapper">
     <div class="card-body text-center">
 
-      <Post :title="title"/>
-      <Post :title="title"/>
-      <Post :title="title"/>
+      <PostList
+        :config="config"
+        :filters="filters"
+        :results-per-page="2"
+      />
 
     </div>
   </div>
@@ -29,8 +33,39 @@ export default {
     }
   },
   computed: {
-    
-
+    config() {
+      return {
+        endpoint: 'users',
+        route: 'users',
+        title: {
+          single: 'Post',
+          plural: 'Posts',
+          geniki: 'Post(gen)',
+        },
+      }
+    },
+    filters() {
+      return [
+        {
+          id: 'id',
+          type: 'number',
+          label: this.$t('User Code'),
+          colSize: 4,
+        },
+        {
+          id: 'firstName',
+          type: 'text',
+          label: this.$t('User FirstName'),
+          colSize: 4,
+        },
+        {
+          id: 'lastName',
+          type: 'text',
+          label: this.$t('User LastName'),
+          colSize: 4,
+        }
+      ]
+    }
   },
   async mounted() {
     
