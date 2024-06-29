@@ -53,30 +53,13 @@ export default {
           colSize: 4,
         },
         {
-          id: 'firstName',
+          id: 'searchTerm',
           type: 'text',
-          label: this.$t('User FirstName'),
+          label: this.$t('Search'),
           colSize: 4,
         },
-        {
-          id: 'lastName',
-          type: 'text',
-          label: this.$t('User LastName'),
-          colSize: 4,
-        }
       ]
     }
-  },
-  async mounted() {
-    
-  },
-  methods: {
-    redirect(param) {
-      this.$router.push({
-        name: 'applications-category',
-        params: { category: param },
-      })
-    },
-  },
+  }
 }
 </script>

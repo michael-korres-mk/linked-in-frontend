@@ -148,6 +148,7 @@
                         color="primary"
                         rounded="md"
                         class="elevation-0 justify-end"
+                        @update:modelValue="pageChange"
                         @input="pageChange"
                       />
                     </VCol>

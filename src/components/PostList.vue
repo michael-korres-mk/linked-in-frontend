@@ -155,6 +155,7 @@
                         color="primary"
                         rounded="md"
                         class="elevation-0 justify-end"
+                        @update:modelValue="pageChange"
                         @input="pageChange"
                       />
                     </VCol>
@@ -445,9 +446,6 @@ export default {
           : this.$t('Edit') + ' ' + this.$t(this.config.title.geniki)
     },
     filtersTitle() {
-
-      console.log(this.$t(this.config.title.geniki))
-
       return this.filtersLegendTitle || this.$t('Search') + ' ' + this.$t(this.config.title.geniki)
     },
   },
@@ -520,6 +518,7 @@ export default {
     },
     pageChange(newPage) {
       this.currentPage = newPage
+      this.refetchData()
     },
     sortByChange(sortArr) {
       this.sortBy = sortArr.length ? sortArr[0] : { key: this.sortBy.key, order: this.sortBy.order == 'asc' ? 'desc' : 'asc' }
@@ -533,7 +532,7 @@ export default {
         size: null,
       })
     },
-    getEntities(params) {
+    async getEntities(params) {
       return this.entityStore
         .getEntities(params)
         .then(response => {
