@@ -29,7 +29,7 @@ if (isLoggedIn) {
       },
       {
           title: 'Αγγελίες',
-          to: 'posts',
+          to: 'job-postings',
           icon: { icon: 'tabler-users-group' },
           // authority: 'users',
       },

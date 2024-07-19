@@ -1,11 +1,11 @@
 <script setup>
 import PostList from "@/components/PostList.vue";
 
-definePage({
-  meta: {
-    authority: 'applications',
-  },
-})
+// definePage({
+//   meta: {
+//     authority: 'applications',
+//   },
+// })
 </script>
 
 <template>
@@ -17,10 +17,10 @@ definePage({
 
       <PostList
         :config="config"
-        :filters="filters"
         :results-per-page="2"
       />
 
+<!--        :filters="filters"-->
     </div>
   </div>
 </template>
@@ -35,8 +35,8 @@ export default {
   computed: {
     config() {
       return {
-        endpoint: 'users',
-        route: 'users',
+        endpoint: 'posts',
+        route: 'posts',
         title: {
           single: 'Post',
           plural: 'Posts',

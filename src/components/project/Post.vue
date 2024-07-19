@@ -7,42 +7,47 @@
     <VCardItem>
         <VCardTitle class="text-left text-info bg-amber-lighten-1 justify-end">
           <v-icon icon="tabler-user" color="info" size="large" />
-          <div>{{ post.title }}</div>
+          <div>{{ post.creator.title }}</div>
         </VCardTitle>
-        <VCardSubtitle class="text-left"><span class="me-1">Local Favorite</span></VCardSubtitle>
-        <div class="text-subtitle-1 text-left"> $ • Italian, Cafe </div>
+        <div class="text-subtitle-1 text-left text">{{ post.title }}</div>
     </VCardItem>
 
-    <div>
-      Small plates, salads & sandwiches - an intimate setting with 12 indoor
-      seats plus patio seating.
-    </div>
+    <div>{{ post.description }}</div>
 
     <VImg height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png" cover />
 
     <VCardText>
+      <v-expansion-panels v-if="post.comments.length > 0" flat>
+        <v-expansion-panel title="Comments">
+          <v-expansion-panel-text>
+            <v-timeline align="start" density="compact">
+              <v-timeline-item
+                v-for="comment in post.comments"
+                :key="comment.time"
+                :dot-color="comment.color"
+                size="x-small"
+              >
+                <v-avatar icon="$vuetify" image="https://cdn.vuetifyjs.com/images/cards/cooking.png" size="48"></v-avatar>
+                <div class="mb-4">
+                  <div class="font-weight-normal">
+                    <strong>{{ comment.creator.title }}</strong> @{{ comment.creationDate }}
+                  </div>
 
-      <v-timeline align="start" density="compact">
-        <v-timeline-item
-          v-for="comment in post.comments"
-          :key="comment.time"
-          :dot-color="comment.color"
-          size="x-small"
-        >
-          <div class="mb-4">
-            <div class="font-weight-normal">
-              <strong>{{ comment.creator }}</strong> @{{ comment.creationDate }}
-            </div>
-
-            <div>{{ comment.text }}</div>
-          </div>
-        </v-timeline-item>
-      </v-timeline>
+                  <div>{{ comment.description }}</div>
+                </div>
+              </v-timeline-item>
+            </v-timeline>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      <div v-else class="mx-auto my-12 post"> No comments available </div>
     </VCardText>
 
     <VCardActions>
       <VBtn color="deep-purple-lighten-2" border @click="reserve"> Comment </VBtn>
       <VBtn color="deep-purple-lighten-2" border @click="like"> Like </VBtn>
+
+      <slot name="actions"/>
 
     </VCardActions>
   </VCard>

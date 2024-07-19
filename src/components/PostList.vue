@@ -115,21 +115,83 @@
               >
                 <template v-slot:default="{ items }">
                   <template v-for="(item, i) in items" :key="i">
-                    <Post :post="item.value"></Post>
+                    <Post :post="item.value">
+                      <template #actions>
+                        <div class="w-130px">
+                          <div class="d-flex justify-end">
+                            <!-- View btn -->
+                            <RouterLink
+                              v-if="viewShouldRender(item.value)"
+                              :to="getViewLink(item.value.id)"
+                              @click="handleViewClick(item.value)"
+                            >
+                              <ActionBtn
+                                :icon="detailsViewIcon"
+                                :label="detailsViewTitle"
+                              />
+                            </RouterLink>
+                            <!-- Edit Btn -->
+                            <RouterLink
+                              v-if="editShouldRender(item.value)"
+                              :to="getEditLink(item.value.id)"
+                              @click="handleEntityClick(item.value)"
+                            >
+                              <ActionBtn
+                                :icon="config.edit?.icon || 'fa-edit'"
+                                :label="config.edit?.label || 'Edit'"
+                                :color="config.edit?.color || 'warning'"
+                              />
+                            </RouterLink>
+                            <!-- Duplicate Btn -->
+                            <RouterLink
+                              v-if="allowDuplicate && editShouldRender(item.value)"
+                              :to="getCopyLink(item.value.id)"
+                              @click="handleEntityClick(item.value, true)"
+                            >
+                              <ActionBtn
+                                icon="fa-copy"
+                                label="Duplicate"
+                                color="purple"
+                              />
+                            </RouterLink>
+                            <ActionBtn
+                              v-if="!hideEnabled && editShouldRender(item.value)"
+                              :icon="item.value.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"
+                              variant="text"
+                              :label="item.value.enabled ? 'Disable' : 'Enable'"
+                              :disabled="disableActions"
+                              @click="toggleEnableDisable(item.value)"
+                            />
 
-                    <RouterLink
-                      v-if="!hideEdit"
-                      :to="getEditLink(item.value.id)"
-                      class="font-weight-bold d-block"
-                      @click="handleEntityClick(item.value)"
-                    >
-                      {{ item.value.title }}
-                    </RouterLink>
-                    <span v-else>
-                    {{ item.value.title }}
-                  </span>
+                            <!-- 👉 ExtraAction Btn -->
+                            <template v-for="extraAction in extraActions">
+                              <ActionBtn
+                                v-if="extraActionShouldRender(extraAction, item.value)"
+                                :key="extraAction.icon"
+                                color="orange"
+                                data-test="extra-action"
+                                :icon="(extraAction.dynamicIcon && item.value[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"
+                                :label="extraAction.title"
+                                :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item.value, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item.value, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"
+                                @click="handleExtraActionClick(item.value, extraAction)"
+                              />
+                            </template>
+                            <!-- 👉 Delete Btn -->
+                            <ActionBtn
+                              v-if="deleteShouldRender(item.value)"
+                              icon="trash-can"
+                              label="Delete"
+                              color="error"
+                              class="text-black"
+                              @click="updateDeleteModalId(item.value.id)"
+                            />
+                          </div>
+                        </div>
+                      </template>
+                    </Post>
 
-                    <br>
+                  <br>
+
                   </template>
 
                   <VRow v-if="!hidePagination" class="pt-4 pb-3">
@@ -160,8 +222,10 @@
                       />
                     </VCol>
                   </VRow>
+                  </template>
 
-                </template>
+
+
               </VDataIterator>
             </VCol>
           </VRow>
@@ -373,7 +437,7 @@ export default {
       entities: [],
       removedItems: [],
       tableReady: false,
-      loading: 'primary',
+      loading: true,
       disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,

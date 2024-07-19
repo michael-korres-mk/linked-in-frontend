@@ -468,7 +468,7 @@ export default {
       entities: [],
       removedItems: [],
       tableReady: false,
-      loading: 'primary',
+      loading: true,
       disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,
