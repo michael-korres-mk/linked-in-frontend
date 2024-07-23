@@ -148,6 +148,7 @@
                         color="primary"
                         rounded="md"
                         class="elevation-0 justify-end"
+                        @update:modelValue="pageChange"
                         @input="pageChange"
                       />
                     </VCol>
@@ -467,7 +468,7 @@ export default {
       entities: [],
       removedItems: [],
       tableReady: false,
-      loading: 'primary',
+      loading: true,
       disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,

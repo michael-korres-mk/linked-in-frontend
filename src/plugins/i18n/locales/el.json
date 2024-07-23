@@ -400,5 +400,9 @@
   "Confirm Password": "Επιβεβαίωση Κωδικού Πρόσβασης",
   "Work Experience": "Προϋπηρεσία",
   "Education" : "Εκπαίδευση",
-  "Skills" : "Δεξιότητες"
+  "Skills" : "Δεξιότητες",
+  "Post": "Άρθρο",
+  "Posts": "Άρθρα",
+  "Post(gen)": "Άρθρου",
+  "Post Details":"Στοιχεία Άρθρου"
 }

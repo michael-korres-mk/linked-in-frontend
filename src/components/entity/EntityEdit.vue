@@ -390,7 +390,7 @@ export default {
       }
     },
     routeToList() {
-      let routeName = this.config.route
+      let routeName = this.config.returnRoute ? this.config.returnRoute : this.config.route
       let routeParams = this.config.routeParam ? this.config.routeParam : null
       let routeQuery = null
 

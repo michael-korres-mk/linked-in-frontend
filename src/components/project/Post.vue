@@ -1,55 +1,104 @@
+<template>
+  <VCard :disabled="loading" :loading="loading" class="mx-auto my-12 post" max-width="1000">
+    <template v-slot:loader="{ isActive }">
+      <VProgressLinear :active="isActive" color="#1f4e79" height="4" indeterminate/>
+    </template>
+
+    <VCardItem>
+        <VCardTitle class="text-left text-info bg-amber-lighten-1 justify-end">
+          <v-icon icon="tabler-user" color="info" size="large" />
+          <div>{{ post.creator.title }}</div>
+        </VCardTitle>
+        <div class="text-subtitle-1 text-left text">{{ post.title }}</div>
+    </VCardItem>
+
+    <div>{{ post.description }}</div>
+
+    <VImg height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png" cover />
+
+    <VCardText>
+      <v-expansion-panels v-if="post.comments.length > 0" flat>
+        <v-expansion-panel title="Comments">
+          <v-expansion-panel-text>
+            <v-timeline align="start" density="compact">
+              <v-timeline-item
+                v-for="comment in post.comments"
+                :key="comment.time"
+                :dot-color="comment.color"
+                size="x-small"
+              >
+                <v-avatar icon="$vuetify" image="https://cdn.vuetifyjs.com/images/cards/cooking.png" size="48"></v-avatar>
+                <div class="mb-4">
+                  <div class="font-weight-normal">
+                    <strong>{{ comment.creator.title }}</strong> @{{ comment.creationDate }}
+                  </div>
+
+                  <div>{{ comment.description }}</div>
+                </div>
+              </v-timeline-item>
+            </v-timeline>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      <div v-else class="mx-auto my-12 post"> No comments available </div>
+    </VCardText>
+
+    <VCardActions>
+      <VBtn color="deep-purple-lighten-2" border @click="reserve"> Comment </VBtn>
+      <VBtn color="deep-purple-lighten-2" border @click="like"> Like </VBtn>
+
+      <slot name="actions"/>
+
+    </VCardActions>
+  </VCard>
+</template>
 <script>
 export default {
-  name: "Post"
+  props: {
+    title: {
+      type: String,
+      default: 'foo'
+    },
+    post:{
+      type: Object,
+      default: {}
+    }
+  },
+
+  data: () => ({
+    loading: false,
+    comments: [
+      {
+        from: 'You',
+        text: `Sure, I'll see you later.`,
+        time: '10:42am',
+        color: 'deep-purple-lighten-1',
+      },
+      {
+        from: 'John Doe',
+        text: 'Yeah, sure. Does 1:00pm work?',
+        time: '10:37am',
+        color: 'green',
+      },
+      {
+        from: 'You',
+        text: 'Did you still want to grab lunch today?',
+        time: '9:47am',
+        color: 'deep-purple-lighten-1',
+      },
+    ],
+  }),
+  methods:{
+    freezeCard(){
+      this.loading = true
+      setTimeout(() => (this.loading = false), 2000)
+    },
+    like () {
+      this.freezeCard()
+    },
+    reserve () {
+      this.freezeCard()
+    },
+  }
 }
 </script>
-
-<template><template>
-  <v-card class="mx-auto" max-width="400">
-    <v-img
-      color="surface-variant"
-      height="200"
-      src="https://cdn.vuetifyjs.com/docs/images/cards/purple-flowers.jpg"
-      cover
-    >
-      <v-toolbar color="transparent">
-        <template v-slot:prepend>
-          <v-btn icon="$menu"></v-btn>
-        </template>
-
-        <v-toolbar-title class="text-h6" text="Messages"></v-toolbar-title>
-
-        <template v-slot:append>
-          <v-btn icon="mdi-dots-vertical"></v-btn>
-        </template>
-      </v-toolbar>
-    </v-img>
-
-    <v-card-text>
-      <div class="font-weight-bold ms-1 mb-2">Today</div>
-
-      <v-timeline align="start" density="compact">
-        <v-timeline-item
-          v-for="message in messages"
-          :key="message.time"
-          :dot-color="message.color"
-          size="x-small"
-        >
-          <div class="mb-4">
-            <div class="font-weight-normal">
-              <strong>{{ message.from }}</strong> @{{ message.time }}
-            </div>
-
-            <div>{{ message.message }}</div>
-          </div>
-        </v-timeline-item>
-      </v-timeline>
-    </v-card-text>
-  </v-card>
-</template>
-
-</template>
-
-<style scoped lang="scss">
-
-</style>

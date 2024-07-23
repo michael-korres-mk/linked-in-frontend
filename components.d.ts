@@ -69,6 +69,7 @@ declare module 'vue' {
     PaymentProvidersDialog: typeof import('./src/components/dialogs/PaymentProvidersDialog.vue')['default']
     PlainTable: typeof import('./src/components/entity/PlainTable.vue')['default']
     Post: typeof import('./src/components/project/Post.vue')['default']
+    PostList: typeof import('./src/components/PostList.vue')['default']
     PricingPlanDialog: typeof import('./src/components/dialogs/PricingPlanDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

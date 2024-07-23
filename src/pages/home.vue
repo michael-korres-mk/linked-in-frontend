@@ -1,9 +1,11 @@
 <script setup>
-definePage({
-  meta: {
-    authority: 'applications',
-  },
-})
+import PostList from "@/components/PostList.vue";
+
+// definePage({
+//   meta: {
+//     authority: 'applications',
+//   },
+// })
 </script>
 
 <template>
@@ -12,7 +14,13 @@ definePage({
   </h1>
   <div class="card-wrapper">
     <div class="card-body text-center">
-      Καλώς Ήρθατε στο Linked In
+
+      <PostList
+        :config="config"
+        :results-per-page="2"
+      />
+
+<!--        :filters="filters"-->
     </div>
   </div>
 </template>
@@ -21,22 +29,37 @@ definePage({
 export default {
   data() {
     return {
+      title: "Disruptive Tech News"
     }
   },
   computed: {
-    
-
-  },
-  async mounted() {
-    
-  },
-  methods: {
-    redirect(param) {
-      this.$router.push({
-        name: 'applications-category',
-        params: { category: param },
-      })
+    config() {
+      return {
+        endpoint: 'posts',
+        route: 'posts',
+        title: {
+          single: 'Post',
+          plural: 'Posts',
+          geniki: 'Post(gen)',
+        },
+      }
     },
-  },
+    filters() {
+      return [
+        {
+          id: 'id',
+          type: 'number',
+          label: this.$t('User Code'),
+          colSize: 4,
+        },
+        {
+          id: 'searchTerm',
+          type: 'text',
+          label: this.$t('Search'),
+          colSize: 4,
+        },
+      ]
+    }
+  }
 }
 </script>

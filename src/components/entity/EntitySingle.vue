@@ -241,7 +241,9 @@ export default {
   },
   computed: {
     canEdit() {
-      return !this.authority.length || this.$store.userRights.includes(`${this.authority}_edit`)
+      return true
+      // TODO: Check the rights
+      //  return !this.authority.length || this.$store.userRights.includes(`${this.authority}_edit`)
     },
   },
   mounted() {
