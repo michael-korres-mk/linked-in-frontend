@@ -5,57 +5,31 @@
   >
     <div v-if="!hideFilterLegend">
       <legend class="legend-title">
-        {{ filtersLegendTitle }}
+        <h2>{{ filtersLegendTitle }}</h2>
       </legend>
     </div>
     <div class="card-body mb-0 pb-0">
       <VRow>
         <VCol
-          v-for="field in filters"
+          v-for="field in fields"
           v-show="!field.hidden"
           :key="field.id"
           :md="field.colSize ? field.colSize : 4"
           cols="12"
           class="mb-0"
         >
-          <div class="field-label-text mb-1">
-            {{ field.label }}
-          </div>
-          <VSelect
-            v-if="field.type === 'select'"
-            v-model="filterVals[field.id]"
-            :items="field.options"
-            :data-id="field.id"
-            placeholder="-- Επιλέξτε --"
-            item-value="id"
-            item-color="white"
-            variant="outlined"
-            class="mb-2"
-            clearable
-            @update:modelValue="filterUpdated(field.id)"
-          />
-          <VTextField
-            v-else
-            v-model="filterVals[field.id]"
-            :name="field.id"
-            :type="field.type"
-            :prepend-inner-icon="field.type !== 'date' ? 'mdi-magnify' : ''"
-            :data-id="field.id"
-            placeholder="Αναζητήστε"
-            variant="outlined"
-            class="mb-2"
-            density="compact"
-            @update:modelValue="filterUpdated(field.id)"
+          <FormField
+            :form-field="field"
+            :entity="filterVals"
+            is-filter
+            @fieldUpdated="filterUpdated"
           />
         </VCol>
       </VRow>
-      <VRow
-        v-if="!autoUpdateFilters"
-        :class="autoUpdateFilters? 'mb-0 pb-0':'pb-2 mb-2'"
-      >
+      <VRow v-if="!autoUpdateFilters">
         <VCol
           cols="12"
-          class="text-center"
+          class="text-center d-flex gap-3 justify-center flex-wrap"
         >
           <VBtn
             class="me-2"
@@ -71,7 +45,6 @@
             Καθαρισμός
           </VBtn>
           <VBtn
-            color="primary"
             variant="flat"
             rounded="md"
             @click="submitForm"
@@ -80,7 +53,7 @@
               icon="search"
               class="font-size-20 me-5"
             />
-            Αναζήτηση
+            <span color="on-surface">Αναζήτηση</span>
           </VBtn>
         </VCol>
       </VRow>
@@ -90,9 +63,12 @@
 
 <script>
 import { vueDebounce } from 'vue-debounce'
+import FormField from './FormField.vue'
 
 export default {
-  name: 'TableFilters',
+  components: {
+    FormField,
+  },
   directives: {
     debounce: vueDebounce({ lock: true }),
   },
@@ -121,6 +97,12 @@ export default {
     }
   },
   computed: {
+    fields() {
+      return this.filters.map(filter => ({
+        ...filter,
+        variant: 'outlined',
+      }))
+    },
     allFilters() {
       return [
         ...this.filters,
@@ -140,23 +122,19 @@ export default {
   methods: {
     initVals() {
       this.filters.forEach(filter => {
-        this.filterVals[filter.id] = filter.initVal
+        this.filterVals[filter.id] = filter.storeVal ?? filter.initVal
       })
       this.$emit('initFilters', this.filterVals)
     },
     submitForm() {
       this.$emit('applyFilters', this.filterVals)
     },
-    updatefilter(newVal, e) {
-      const fieldId = e.target.name
-      if (newVal.length > 2) {
-        this.filterVals[fieldId] = newVal
-        this.filterUpdated(fieldId)
+    filterUpdated(fieldObj) {
+      this.filterVals[fieldObj.id] = fieldObj.value
+      this.$emit('filterUpdated', fieldObj.id, fieldObj.value)
+      if (this.autoUpdateFilters) {
+        this.submitForm()
       }
-    },
-    filterUpdated(fieldId) {
-      this.$emit('filterUpdated', fieldId, this.filterVals[fieldId])
-      this.autoUpdateFilters? this.submitForm() : null
     },
     resetForm() {
       this.initVals()
@@ -167,16 +145,3 @@ export default {
 }
 </script>
 
-<style>
-.field-container {
-  margin-block: 0;
-  margin-inline: auto;
-  max-inline-size: 350px;
-}
-
-.custom-input .v-input__control {
-  border-radius: 20px;
-
-  /* Adjust the border radius as needed */
-}
-</style>
