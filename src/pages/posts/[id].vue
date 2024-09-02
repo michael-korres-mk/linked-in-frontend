@@ -12,6 +12,7 @@ import EntitySingle from '../../components/entity/EntitySingle.vue'
     :key="componentKey"
     :config="config"
     :sections="sections"
+    :secondary-tables="secondaryTables"
     :entity="entity"
     authority="posts"
     @entityUpdated="entityHasBeenUpdated"
@@ -28,11 +29,9 @@ export default {
   data() {
     return {
       entity: {
-        authorities: [],
-        roles: [],
+        photos: [],
+        ordering: 1,
       },
-      organizationOptions: [],
-      roleOptions: [],
       editMode: !this.singleEdit,
       componentKey: 0,
     }
@@ -81,21 +80,48 @@ export default {
           colSize: 12,
         },
         {
-          id: 'file',
-          type: 'file',
-          filetype: 'png',
-          label: this.$t('Photo'),
-          rules: ['filesize'],
-          filesize: 30,
-          required: true,
-          colSize: 9
-        },
-        {
           id: 'enabled',
           type: 'checkbox',
           label: this.$t('Status'),
           optionLabel: this.$t('enabled'),
           colSize: 3,
+        },
+      ]
+    },
+    secondaryTables() {
+      return [
+        {
+          fields: [
+            // {
+            //   id: 'title',
+            //   type: 'text',
+            //   label: this.$t('Designation'),
+            //   required: true,
+            // },
+            {
+              id: 'file',
+              type: 'file',
+              filetype: 'png',
+              label: this.$t('Photo'),
+              rules: ['filesize'],
+              filesize: 30,
+              required: true,
+              colSize: 9
+            },
+            {
+              id: 'ordering',
+              type: 'number',
+              label: this.$t('Ordering'),
+              rules: ['minvalue'],
+              minvalue: 1,
+              required: true,
+            },
+          ],
+          formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
+          hiddenColumns: ['ordering'],
+          defaultItem: { ordering: 1 },
+          title: this.$t('Uploaded Files'),
+          property: 'photos',
         },
       ]
     },

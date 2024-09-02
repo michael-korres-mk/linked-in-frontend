@@ -18,9 +18,9 @@
       <VTextField
         v-else-if="
           formField.type === 'text' ||
-            formField.type === 'email' ||
-            formField.type === 'number' ||
-            formField.type === 'password'
+          formField.type === 'email' ||
+          formField.type === 'number' ||
+          formField.type === 'password'
         "
         v-model="fieldValue"
         :type="formField.type"
@@ -131,6 +131,31 @@
         persistent-hint
         clearable
       />
+
+      <VDateInput
+        v-else-if="formField.type === 'date'"
+        v-model="fieldValue"
+        :hint="formField.hint"
+        :readonly="formField.readonly"
+        :disabled="formField.disabled"
+        :variant="variant"
+        :density="density"
+        color="primary"
+        placeholder="ηη/μμ/εεεε"
+        size="10"
+        persistent-hint
+        :rules="validationRules"
+        :min="formField.minDate ? isoDateOnlyTrimmed(formField.minDate) : ''"
+        :max="formField.maxDate ? isoDateOnlyTrimmed(formField.maxDate) : ''"
+        :id.attr="formField.id"
+        :name="formField.id"
+        v-bind="{
+            'aria-labelledby': formField.id,
+            'aria-describedby': formField.id,
+            'label': formField.id,
+          }"
+      />
+
       <VTextField
         v-else-if="
           formField.type === 'date' ||
@@ -151,7 +176,7 @@
         persistent-hint
       />
       <VTextarea
-        v-if="formField.type === 'textarea'"
+        v-else-if="formField.type === 'textarea'"
         v-model="fieldValue"
         :rules="validationRules"
         :hint="formField.hint"
@@ -162,7 +187,21 @@
         :class="formField.class"
         persistent-hint
       />
-      <div v-if="formField.type === 'tiptap'">
+      <VTextField
+        v-else-if="formField.type === 'password'"
+        v-model="fieldValue"
+        :type="isPasswordVisible ? 'text' : 'password'"
+        :rules="validationRules"
+        :readonly="formField.readonly"
+        :disabled="formField.disabled"
+        :placeholder="formField.placeholder"
+        :hint="formField.hint"
+        :variant="variant"
+        :density="density"
+        :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+        @click:appendInner="isPasswordVisible = !isPasswordVisible"
+      />
+      <div v-else-if="formField.type === 'tiptap'">
         <div
           v-if="formField.disabled"
           class="tiptap-disabled"
@@ -176,6 +215,7 @@
       <VSwitch
         v-else-if="formField.type === 'checkbox'"
         v-model="fieldValue"
+        :rules="validationRules"
         :label="formField.optionLabel"
         :readonly="formField.readonly"
         :disabled="formField.disabled"
@@ -185,6 +225,7 @@
       <VCheckbox
         v-else-if="formField.type === 'checkboxplain'"
         v-model="fieldValue"
+        :rules="validationRules"
         :label="formField.optionLabel"
         :readonly="formField.readonly"
         :disabled="formField.disabled"
@@ -245,10 +286,12 @@
         :items="formField.options || autocompleteItems"
         :item-title="formField.itemTitle || 'title'"
         :item-value="formField.itemValue || 'id'"
-        :custom-filter="formField.filter"
+        :custom-filter="formField.filter || autocompleteFilter"
         :rules="validationRules"
         :density="density"
         :variant="variant"
+        :readonly="formField.readonly"
+        :disabled="formField.disabled"
         :auto-select-first="formField.autoSelect || false"
         hide-no-data
         hide-details
@@ -339,12 +382,17 @@ export default {
       type: String,
       default: '',
     },
+    isFilter: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['fieldUpdated', 'detailsBtnClicked'],
   data() {
     return {
       modalShow: false,
       uploading: false,
+      isPasswordVisible: false,
       autocompleteLoading: false,
       autocompleteItems: [],
     }
@@ -353,14 +401,23 @@ export default {
     fieldValue: {
       get() {
         if (this.entity) {
-          return this.formField.parent
+          let value = this.formField.parent
             ? this.entity[this.formField.parent][this.formField.id]
             : this.entity[this.formField.id]
+
+          if (this.formField.type === 'date' && value) {
+            value = new Date(value)
+          }
+
+          return value
         }
 
         return null
       },
       set(val) {
+        if (this.formField.type === 'date') {
+          val = this.isoDateOnlyTrimmed(val)
+        }
         this.emitField(this.formField.parent, val)
       },
     },
@@ -372,17 +429,17 @@ export default {
       if (this.formField.rules) {
         this.formField.rules.forEach(rule => {
           switch (rule) {
-          case 'filesize':
-          case 'minvalue':
-          case 'maxvalue':
-          case 'condition':
-            rules.push(
-              this.rules[rule](this.fieldValue, this.formField[rule]),
-            )
-            break
-          default:
-            rules.push(this.rules[rule])
-            break
+            case 'filesize':
+            case 'minvalue':
+            case 'maxvalue':
+            case 'condition':
+              rules.push(
+                this.rules[rule](this.fieldValue, this.formField[rule]),
+              )
+              break
+            default:
+              rules.push(this.rules[rule])
+              break
           }
         })
       }
@@ -436,6 +493,7 @@ export default {
     emitField(parent, value) {
       this.$emit('fieldUpdated', {
         id: this.formField.id,
+        type: this.formField.type,
         parent: parent,
         value: value,
       })
@@ -446,17 +504,18 @@ export default {
     async handleFileChange() {
       let file = null
       if (this.fieldValue) {
+        file = this.fieldValue.length ? this.fieldValue[0] : this.fieldValue
         this.uploading = true
-        file = await this.$store.uploadFile(
-          this.fieldValue,
-          this.fieldValue.name,
-        )
+        file = await this.$store.uploadFile(file, file.name)
         this.uploading = false
       }
       this.emitField('uploads', file)
     },
     async autocomplete(val) {
-      if (this.autocompleteConfig.endpoint && val.length > this.autocompleteConfig.length) {
+      if (
+        this.autocompleteConfig.endpoint &&
+        val.length > this.autocompleteConfig.length
+      ) {
         this.autocompleteLoading = 'primary'
 
         this.autocompleteItems = await this.$store.getSearchItems(
@@ -467,6 +526,18 @@ export default {
         )
         this.autocompleteLoading = false
       }
+    },
+    autocompleteFilter(value, query, item) {
+      return item.title
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+        .toLocaleLowerCase()
+        .indexOf(
+          query
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLocaleLowerCase(),
+        )
     },
   },
 }

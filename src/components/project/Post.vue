@@ -14,7 +14,7 @@
 
     <div>{{ post.description }}</div>
 
-    <VImg height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png" cover />
+    <div id="imageSlot"/>
 
     <VCardText>
       <v-expansion-panels v-if="post.comments.length > 0" flat>
@@ -53,6 +53,7 @@
   </VCard>
 </template>
 <script>
+
 export default {
   props: {
     title: {
@@ -88,7 +89,46 @@ export default {
       },
     ],
   }),
+  mounted() {
+    this.imgShow(this.post)
+  },
   methods:{
+    async convertToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file);
+
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+
+        reader.onerror = (error) => {
+          reject(error);
+        };
+      });
+    },
+    async imgShow(post) {
+       if (post.photos.length > 0) {
+         const photoObj = await this.$store.fetchFile(post.photos[0].photo.id)
+         const b64 = await this.convertToBase64(photoObj.data).then(base64 => {
+           return base64
+         }).catch(error => {
+           console.error('Error:', error);
+         });
+
+         const imageSlot = document.getElementById('imageSlot');
+         const image = document.createElement("img");
+         image.id = "id";
+         image.width = 700
+         image.height = 500
+         image.src = b64
+         image.addEventListener("change", this.imgShow)
+         imageSlot.appendChild(image);
+
+       }
+
+    },
     freezeCard(){
       this.loading = true
       setTimeout(() => (this.loading = false), 2000)

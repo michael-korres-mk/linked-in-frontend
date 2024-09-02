@@ -20,11 +20,14 @@
       :hide-cancel-button="hideCancelButton"
       :single-edit="singleEdit"
       :return-to-list="returnToList"
+      :authority="authority"
       :can-edit="canEdit"
       :extra-actions="extraActions"
       @entityFetched="entityFetched"
       @entitySaved="entitySaved"
+      @entitySavedError="entitySavedError"
       @editModeSet="editModeSet"
+      @entitySubmitted="entitySubmitted"
     >
       <slot name="header" />
       <EntityEditSection
@@ -114,44 +117,7 @@
               </div>
             </div>
           </div>
-        </div>        
-        <VCard
-          v-else-if="extraSections.length"
-          class="pt-4"
-        >
-          <VTabs
-            v-model="tabIndex"
-            fixed-tabs
-            class="mb-2"
-          >
-            <VTab
-              v-for="(section, index) in extraSections"
-              v-show="!section.hidden"
-              :key="section.title"
-              :value="index"
-            >
-              {{ section.title }}
-            </VTab>
-          </VTabs>
-          <VCardText v-if="loaded">
-            <VWindow v-model="tabIndex">
-              <VWindowItem
-                v-for="(section, index) in extraSections"
-                :key="section.title"
-                :value="index"
-                eager
-              >
-                <EntityEditSection
-                  :entity="entity"
-                  :disabled="!editMode"
-                  :form-fields="section.fields"
-                  @fieldUpdated="updateEntityProp"
-                  @detailsBtnClicked="detailsBtnClicked"
-                />
-              </VWindowItem>
-            </VWindow>
-          </VCardText>
-        </VCard>
+        </div>
       </div>
       <slot />
     </EntityEdit>
@@ -228,17 +194,16 @@ export default {
       type: Boolean,
       default: true,
     },
+    accordion: {
+      type: Boolean,
+      default: false,
+    },
     authority: {
       type: String,
       default: '',
     },
   },
-  emits: ['entityFetched', 'entitySaved', 'editModeSet', 'detailsBtnClicked'],
-  data() {
-    return {
-      tabIndex: 0,
-    }
-  },
+  emits: ['entityFetched', 'entitySaved', 'editModeSet', 'detailsBtnClicked', 'entitySubmitted', 'entitySavedError'],
   computed: {
     canEdit() {
       return true
@@ -247,11 +212,17 @@ export default {
     },
   },
   mounted() {
-    this.editModeSet(this.editMode && this.canEdit)
+    this.editModeSet(this.editMode)
   },
   methods: {
     detailsBtnClicked(fieldId) {
       this.$emit('detailsBtnClicked', fieldId)
+    },
+    entitySubmitted() {
+      this.$emit('entitySubmitted')
+    },
+    entitySavedError(error) {
+      this.$emit('entitySavedError', error)
     },
   },
 }
