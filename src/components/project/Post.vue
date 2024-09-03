@@ -12,9 +12,27 @@
         <div class="text-subtitle-1 text-left text">{{ post.title }}</div>
     </VCardItem>
 
-    <div>{{ post.description }}</div>
+    <div v-if="post.photos.length > 0">
+      <div>{{ post.description }}</div>
+      <v-carousel
+        :hide-delimiters="post.photos.length === 1"
+        :show-arrows="post.photos.length > 1"
+        show-arrows="hover"
+      >
 
-    <div id="imageSlot"/>
+        <v-carousel-item
+          v-for="photo in post.photos"
+          :key="photo"
+          :src="imgShow(photo)"
+          cover
+        >
+          <div :id="photo.id"/>
+        </v-carousel-item>
+      </v-carousel>
+    </div>
+    <div v-else class="no-photo-post">
+      {{ post.description }}
+    </div>
 
     <VCardText>
       <v-expansion-panels v-if="post.comments.length > 0" flat>
@@ -108,16 +126,16 @@ export default {
         };
       });
     },
-    async imgShow(post) {
-       if (post.photos.length > 0) {
-         const photoObj = await this.$store.fetchFile(post.photos[0].file.id)
+    async imgShow(photo) {
+
+         const photoObj = await this.$store.fetchFile(photo.file.id)
          const b64 = await this.convertToBase64(photoObj.data).then(base64 => {
            return base64
          }).catch(error => {
            console.error('Error:', error);
          });
 
-         const imageSlot = document.getElementById('imageSlot');
+         const imageSlot = document.getElementById(photo.id);
          const image = document.createElement("img");
          image.id = "id";
          image.width = 700
@@ -126,7 +144,7 @@ export default {
          image.addEventListener("change", this.imgShow)
          imageSlot.appendChild(image);
 
-       }
+
 
     },
     freezeCard(){
@@ -142,3 +160,11 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.no-photo-post{
+  font-size: larger;
+}
+
+</style>
