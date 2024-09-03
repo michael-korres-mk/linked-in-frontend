@@ -18,6 +18,7 @@ import PostList from "@/components/PostList.vue";
       <PostList
         :config="config"
         :results-per-page="2"
+        hide-view
       />
 
 <!--        :filters="filters"-->

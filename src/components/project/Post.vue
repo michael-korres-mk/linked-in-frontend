@@ -14,7 +14,10 @@
 
     <div v-if="post.photos.length > 0">
       <div>{{ post.description }}</div>
+      <v-divider />
       <v-carousel
+        color="#1f4e79"
+        hide-delimiter-background
         :hide-delimiters="post.photos.length === 1"
         :show-arrows="post.photos.length > 1"
         show-arrows="hover"
@@ -33,46 +36,75 @@
     <div v-else class="no-photo-post">
       {{ post.description }}
     </div>
+    <v-divider /><br>
 
-    <VCardText>
-      <v-expansion-panels v-if="post.comments.length > 0" flat>
-        <v-expansion-panel title="Comments">
-          <v-expansion-panel-text>
-            <v-timeline align="start" density="compact">
-              <v-timeline-item
-                v-for="comment in post.comments"
-                :key="comment.time"
-                :dot-color="comment.color"
-                size="x-small"
-              >
-                <v-avatar icon="$vuetify" image="https://cdn.vuetifyjs.com/images/cards/cooking.png" size="48"></v-avatar>
-                <div class="mb-4">
-                  <div class="font-weight-normal">
-                    <strong>{{ comment.creator.title }}</strong> @{{ comment.creationDate }}
-                  </div>
+<!--    <VCardText>-->
+<!--      <v-expansion-panels v-if="comments.length > 0" >-->
+<!--        <v-expansion-panel title="Comments">-->
+<!--          <v-expansion-panel-text>-->
+<!--            <v-timeline align="start" density="compact">-->
+<!--              <v-timeline-item-->
+<!--                v-for="comment in comments"-->
+<!--                :key="comment.time"-->
+<!--                :dot-color="comment.color"-->
+<!--                size="x-small"-->
+<!--              >-->
+<!--                <v-avatar icon="$vuetify" image="https://cdn.vuetifyjs.com/images/cards/cooking.png" size="48"></v-avatar>-->
+<!--                <div class="mb-4">-->
+<!--&lt;!&ndash;                  <div class="font-weight-normal">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <strong>{{ comment.creator.title }}</strong> @{{ comment.creationDate }}&ndash;&gt;-->
+<!--&lt;!&ndash;                  </div>&ndash;&gt;-->
 
-                  <div>{{ comment.description }}</div>
-                </div>
-              </v-timeline-item>
-            </v-timeline>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <div v-else class="mx-auto my-12 post"> No comments available </div>
-    </VCardText>
+<!--&lt;!&ndash;                  <div>{{ comment.description }}</div>&ndash;&gt;-->
+<!--                  <div>{{ comment.from }}</div>-->
+<!--                </div>-->
+<!--              </v-timeline-item>-->
+<!--            </v-timeline>-->
+<!--          </v-expansion-panel-text>-->
+<!--        </v-expansion-panel>-->
+<!--      </v-expansion-panels>-->
+<!--      <div v-else class="mx-auto my-12 post"> No comments available </div>-->
+<!--    </VCardText>-->
+
+    <div>
+      <font-awesome-icon icon="fa-thumbs-up" /> 231 {{ post.likes }}
+    </div>
+
+    <div>
+       {{ post.comments.length }} {{ this.$t('comments') }}
+    </div>
+
+    <br>
+    <v-divider />
+    <br>
 
     <VCardActions>
-      <VBtn color="deep-purple-lighten-2" border @click="reserve"> Comment </VBtn>
-      <VBtn color="deep-purple-lighten-2" border @click="like"> Like </VBtn>
 
-      <slot name="actions"/>
+      <BigActionBtn
+        icon="fa-thumbs-up"
+        :label="$t('Like!')"
+        color="primary"
+        @click="like"
+      />
+      <BigActionBtn
+        icon="fa-comment"
+        :label="$t('Comment')"
+        color="warning"
+        @click="comment"
+      />
+
+      <span :style="{display: 'inline-flex', justifyContent: 'flex-end', width: '100%'}">
+        <slot :style="{display: 'flex', justifyContent: 'flex-end'}" name="actions"/>
+      </span>
 
     </VCardActions>
   </VCard>
 </template>
 <script>
+import BigActionBtn from "@/components/BigActionBtn.vue";
 
 export default {
+  components: {BigActionBtn},
   props: {
     title: {
       type: String,
@@ -107,9 +139,6 @@ export default {
       },
     ],
   }),
-  mounted() {
-    this.imgShow(this.post)
-  },
   methods:{
     async convertToBase64(file) {
       return new Promise((resolve, reject) => {
@@ -141,10 +170,7 @@ export default {
          image.width = 700
          image.height = 500
          image.src = b64
-         image.addEventListener("change", this.imgShow)
          imageSlot.appendChild(image);
-
-
 
     },
     freezeCard(){
@@ -154,7 +180,7 @@ export default {
     like () {
       this.freezeCard()
     },
-    reserve () {
+    comment () {
       this.freezeCard()
     },
   }
