@@ -44,6 +44,7 @@
           :key="section.title"
           class="card-wrapper mb-10"
         >
+          <!-- Element <legend> needs to be wrapped by a <fieldset> element -->
           <legend class="legend-title">
             {{ section.title }}
           </legend>
@@ -81,8 +82,6 @@
                   :hide-delete-button="table.hideDeleteButton"
                   :hide-add-button="table.hideAddButton"
                   :allow-edit="editMode"
-                  :data-transformation="docsDataTransformation"
-                  :edit-transformation="docsEditTransformation"
                   @fieldUpdated="updateEntityProp"
                 />
               </VExpansionPanelText>
@@ -110,8 +109,6 @@
                   :hide-delete-button="table.hideDeleteButton"
                   :hide-add-button="table.hideAddButton"
                   :allow-edit="editMode"
-                  :data-transformation="docsDataTransformation"
-                  :edit-transformation="docsEditTransformation"
                   @fieldUpdated="updateEntityProp"
                 />
               </div>

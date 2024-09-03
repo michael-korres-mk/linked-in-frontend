@@ -509,7 +509,7 @@ export default {
         file = await this.$store.uploadFile(file, file.name)
         this.uploading = false
       }
-      this.emitField('uploads', file)
+      this.emitField(null, file)
     },
     async autocomplete(val) {
       if (

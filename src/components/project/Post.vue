@@ -110,7 +110,7 @@ export default {
     },
     async imgShow(post) {
        if (post.photos.length > 0) {
-         const photoObj = await this.$store.fetchFile(post.photos[0].photo.id)
+         const photoObj = await this.$store.fetchFile(post.photos[0].file.id)
          const b64 = await this.convertToBase64(photoObj.data).then(base64 => {
            return base64
          }).catch(error => {
