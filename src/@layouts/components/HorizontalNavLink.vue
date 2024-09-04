@@ -5,6 +5,7 @@ import {
   getDynamicI18nProps,
   isNavLinkActive,
 } from '@layouts/utils'
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const props = defineProps({
   item: {
@@ -32,11 +33,14 @@ const props = defineProps({
       v-bind="getComputedNavLinkToProp(item)"
       :class="{ 'router-link-active router-link-exact-active': isNavLinkActive(item, $router) }"
     >
-      <Component
-        :is="layoutConfig.app.iconRenderer || 'div'"
-        class="nav-item-icon"
-        v-bind="item.icon || layoutConfig.verticalNav.defaultNavItemIconProps"
-      />
+<!--      <Component-->
+<!--        :is="layoutConfig.app.iconRenderer || 'div'"-->
+<!--        class="nav-item-icon"-->
+<!--        v-bind="item.icon || layoutConfig.verticalNav.defaultNavItemIconProps"-->
+<!--      />-->
+
+      <FontAwesomeIcon :icon="item.icon" :style="{marginRight: '6px'}" />
+
       <Component
         :is="layoutConfig.app.i18n.enable ? 'i18n-t' : 'span'"
         class="nav-item-title"
