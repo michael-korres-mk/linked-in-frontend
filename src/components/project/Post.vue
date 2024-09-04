@@ -1,4 +1,5 @@
 <template>
+
   <VCard :disabled="loading" :loading="loading" class="mx-auto my-12 post" max-width="1000">
     <template v-slot:loader="{ isActive }">
       <VProgressLinear :active="isActive" color="#1f4e79" height="4" indeterminate/>
@@ -12,59 +13,9 @@
         <div class="text-subtitle-1 text-left text">{{ post.title }}</div>
     </VCardItem>
 
-    <div v-if="post.photos.length > 0">
-      <div>{{ post.description }}</div>
-      <v-divider />
-      <v-carousel
-        color="#1f4e79"
-        hide-delimiter-background
-        :hide-delimiters="post.photos.length === 1"
-        :show-arrows="post.photos.length > 1"
-        show-arrows="hover"
-      >
+    <PostPhotos :post="post" />
 
-        <v-carousel-item
-          v-for="photo in post.photos"
-          :key="photo"
-          :src="imgShow(photo)"
-          cover
-        >
-          <div :id="photo.id"/>
-        </v-carousel-item>
-      </v-carousel>
-    </div>
-    <div v-else class="no-photo-post">
-      {{ post.description }}
-    </div>
     <v-divider /><br>
-
-<!--    <VCardText>-->
-<!--      <v-expansion-panels v-if="comments.length > 0" >-->
-<!--        <v-expansion-panel title="Comments">-->
-<!--          <v-expansion-panel-text>-->
-<!--            <v-timeline align="start" density="compact">-->
-<!--              <v-timeline-item-->
-<!--                v-for="comment in comments"-->
-<!--                :key="comment.time"-->
-<!--                :dot-color="comment.color"-->
-<!--                size="x-small"-->
-<!--              >-->
-<!--                <v-avatar icon="$vuetify" image="https://cdn.vuetifyjs.com/images/cards/cooking.png" size="48"></v-avatar>-->
-<!--                <div class="mb-4">-->
-<!--&lt;!&ndash;                  <div class="font-weight-normal">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <strong>{{ comment.creator.title }}</strong> @{{ comment.creationDate }}&ndash;&gt;-->
-<!--&lt;!&ndash;                  </div>&ndash;&gt;-->
-
-<!--&lt;!&ndash;                  <div>{{ comment.description }}</div>&ndash;&gt;-->
-<!--                  <div>{{ comment.from }}</div>-->
-<!--                </div>-->
-<!--              </v-timeline-item>-->
-<!--            </v-timeline>-->
-<!--          </v-expansion-panel-text>-->
-<!--        </v-expansion-panel>-->
-<!--      </v-expansion-panels>-->
-<!--      <div v-else class="mx-auto my-12 post"> No comments available </div>-->
-<!--    </VCardText>-->
 
     <div>
       <font-awesome-icon icon="fa-thumbs-up" /> {{ getPostLikes()  }}
@@ -77,6 +28,67 @@
     <br>
     <v-divider />
     <br>
+
+    <VDialog
+      v-model="commentsDialog"
+      :width="maxWidth"
+      scrollable
+    >
+      <VCard>
+        <VCardTitle class="dialog-header">
+          <span class="dialog-title">{{ $t('Comments') }}</span>
+        </VCardTitle>
+
+        <VDivider />
+
+        <VCardText>
+          <CommentsTimeline :comments="post.comments" />
+        </VCardText>
+
+        <VDivider />
+
+        <VCardActions :style="{backgroundColor:'#EEEEEE'}">
+          <VContainer fluid>
+            <VRow>
+              <VCol>
+                <div class="text-subtitle-1">Add a comment</div>
+
+                <v-text-field
+                  :loading="loading"
+                  :disabled="sending"
+                  v-model="commentText"
+                  density="compact"
+                  variant="solo"
+                  hide-details
+                  single-line
+                >
+
+                  <template #append-inner>
+                    <VBtn
+                      v-if="!sending"
+                      variant="plain"
+                      :ripple="false"
+                      :readonly="this.commentText === ''"
+                      @mouseover="isHovered = true"
+                      @mouseleave="isHovered = false"
+                      @click="sendComment"
+                    >
+                      <FontAwesomeIcon :icon="(!isHovered || commentText === '')?'far fa-paper-plane' : 'fas fa-paper-plane'"/>
+                    </VBtn>
+                    <v-progress-circular
+                      v-else
+                      indeterminate
+                      :size="22"
+                      :width="4"
+                    />
+                  </template>
+                </v-text-field>
+              </VCol>
+            </VRow>
+          </VContainer>
+        </VCardActions>
+      </VCard>
+    </VDialog>
 
     <VCardActions>
 
@@ -104,9 +116,12 @@
 import BigActionBtn from "@/components/BigActionBtn.vue";
 import useGenericEntityStore from "@/stores/entity";
 import {defineStore} from "pinia";
+import CommentsTimeline from "@/components/project/CommentsTimeline.vue";
+import PostPhotos from "@/components/project/PostPhotos.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
-  components: {BigActionBtn},
+  components: {FontAwesomeIcon, PostPhotos, CommentsTimeline, BigActionBtn},
   props: {
     title: {
       type: String,
@@ -115,11 +130,20 @@ export default {
     post:{
       type: Object,
       default: {}
-    }
+    },
+    maxWidth: {
+      type: String,
+      default: '1200px',
+    },
   },
 
   data: () => ({
     loading: false,
+    commentsDialog: false,
+    commentText:'',
+    isHovered:false,
+    sending:false,
+    valid: false,
     entityStore: defineStore(
       'posts',
       useGenericEntityStore('posts'),
@@ -128,26 +152,10 @@ export default {
       'posts/like',
       useGenericEntityStore('posts/like'),
     )(),
-    comments: [
-      {
-        from: 'You',
-        text: `Sure, I'll see you later.`,
-        time: '10:42am',
-        color: 'deep-purple-lighten-1',
-      },
-      {
-        from: 'John Doe',
-        text: 'Yeah, sure. Does 1:00pm work?',
-        time: '10:37am',
-        color: 'green',
-      },
-      {
-        from: 'You',
-        text: 'Did you still want to grab lunch today?',
-        time: '9:47am',
-        color: 'deep-purple-lighten-1',
-      },
-    ],
+    commentStore: defineStore(
+      'posts/comment',
+      useGenericEntityStore('posts/comment'),
+    )(),
   }),
   computed:{
     liked() {
@@ -155,43 +163,16 @@ export default {
     },
   },
   methods:{
-    async convertToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
-
-        reader.onload = () => {
-          resolve(reader.result);
-        };
-
-        reader.onerror = (error) => {
-          reject(error);
-        };
-      });
+    freezeComment(){
+      this.sending = true
+      // setTimeout(() => (this.loading = false), 2000)
     },
-    async imgShow(photo) {
-
-         const photoObj = await this.$store.fetchFile(photo.file.id)
-         const b64 = await this.convertToBase64(photoObj.data).then(base64 => {
-           return base64
-         }).catch(error => {
-           console.error('Error:', error);
-         });
-
-         const imageSlot = document.getElementById(photo.id);
-         const image = document.createElement("img");
-         image.id = "id";
-         image.width = 700
-         image.height = 500
-         image.src = b64
-         imageSlot.appendChild(image);
-
+    unfreezeComment(){
+      this.sending = false
     },
     freezeCard(){
       this.loading = true
       // setTimeout(() => (this.loading = false), 2000)
-
     },
     unfreezeCard(){
       this.loading = false
@@ -206,17 +187,23 @@ export default {
       this.$emit('update-post', updatedPost);
       this.unfreezeCard()
     },
-    comment () {
-      this.freezeCard()
+    async sendComment(){
+      this.freezeComment()
+      await this.commentStore.saveEntity({postId:this.post.id,description:this.commentText},false)
+      let updatedPost = await this.entityStore.getEntity(this.post.id)
+      this.$emit('update-post', updatedPost);
+      this.commentText = ''
+      this.unfreezeComment()
     },
+    comment () {
+      this.open()
+    },
+    open(){
+      this.commentsDialog = true
+    },
+    close(){
+      this.commentsDialog = false
+    }
   }
 }
 </script>
-
-<style>
-
-.no-photo-post{
-  font-size: larger;
-}
-
-</style>
