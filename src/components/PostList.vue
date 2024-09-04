@@ -115,7 +115,7 @@
               >
                 <template v-slot:default="{ items }">
                   <template v-for="(item, i) in items" :key="i">
-                    <Post :post="item.value">
+                    <Post :post="item.value" @update-post="handleUpdatePost">
                       <template #actions>
                         <div class="w-130px">
                           <div class="d-flex justify-end">
@@ -821,6 +821,10 @@ export default {
         return prev ? prev[curr] : null
       }, obj)
     },
+    handleUpdatePost(updatedPost){
+      const i = this.entities.findIndex(post => post.id === updatedPost.id)
+      this.entities[i] = updatedPost
+    }
   },
 }
 </script>

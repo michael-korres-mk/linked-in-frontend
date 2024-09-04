@@ -67,7 +67,7 @@
 <!--    </VCardText>-->
 
     <div>
-      <font-awesome-icon icon="fa-thumbs-up" /> 231 {{ post.likes }}
+      <font-awesome-icon icon="fa-thumbs-up" /> {{ getPostLikes()  }}
     </div>
 
     <div>
@@ -82,8 +82,8 @@
 
       <BigActionBtn
         icon="fa-thumbs-up"
-        :label="$t('Like!')"
-        color="primary"
+        :label="(liked)? $t('Liked!') : $t('Like!')"
+        :color="(liked)? 'success' : 'primary'"
         @click="like"
       />
       <BigActionBtn
@@ -102,6 +102,8 @@
 </template>
 <script>
 import BigActionBtn from "@/components/BigActionBtn.vue";
+import useGenericEntityStore from "@/stores/entity";
+import {defineStore} from "pinia";
 
 export default {
   components: {BigActionBtn},
@@ -118,6 +120,14 @@ export default {
 
   data: () => ({
     loading: false,
+    entityStore: defineStore(
+      'posts',
+      useGenericEntityStore('posts'),
+    )(),
+    likeStore: defineStore(
+      'posts/like',
+      useGenericEntityStore('posts/like'),
+    )(),
     comments: [
       {
         from: 'You',
@@ -139,6 +149,11 @@ export default {
       },
     ],
   }),
+  computed:{
+    liked() {
+      return this.post.likes.some(like => like.creator.id === this.$store.userData.id && like.creationDate != null);
+    },
+  },
   methods:{
     async convertToBase64(file) {
       return new Promise((resolve, reject) => {
@@ -175,10 +190,21 @@ export default {
     },
     freezeCard(){
       this.loading = true
-      setTimeout(() => (this.loading = false), 2000)
+      // setTimeout(() => (this.loading = false), 2000)
+
     },
-    like () {
+    unfreezeCard(){
+      this.loading = false
+    },
+    getPostLikes(){
+      return this.post.likes.filter(l => l.creationDate != null).length
+    },
+    async like () {
       this.freezeCard()
+      await this.likeStore.toggleEnabled({...this.post,enabled:this.liked})
+      let updatedPost = await this.entityStore.getEntity(this.post.id)
+      this.$emit('update-post', updatedPost);
+      this.unfreezeCard()
     },
     comment () {
       this.freezeCard()

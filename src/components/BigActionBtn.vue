@@ -4,7 +4,7 @@
     v-if="iconOnly"
     color="white"
     size="large"
-    class="mb-2 rounded"
+    class="mb-2 rounded my-button"
   >
     <FontAwesomeIcon
       :icon="icon"
@@ -16,7 +16,7 @@
   <VBtn
     v-else
     color="primary"
-    class="mb-2 rounded"
+    class="mb-2 rounded my-button"
     size="large"
   >
     <FontAwesomeIcon
@@ -56,5 +56,9 @@ export default {
 <style scoped>
 .rounded {
   border-radius: 8px !important;
+}
+
+.my-button {
+  width: 150px; /* Set a fixed width */
 }
 </style>
