@@ -1,4 +1,5 @@
 <template>
+
   <VCard :disabled="loading" :loading="loading" class="mx-auto my-12 post" max-width="1000">
     <template v-slot:loader="{ isActive }">
       <VProgressLinear :active="isActive" color="#1f4e79" height="4" indeterminate/>
@@ -12,48 +13,115 @@
         <div class="text-subtitle-1 text-left text">{{ post.title }}</div>
     </VCardItem>
 
-    <div>{{ post.description }}</div>
+    <PostPhotos :post="post" />
 
-    <VImg height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png" cover />
+    <v-divider /><br>
 
-    <VCardText>
-      <v-expansion-panels v-if="post.comments.length > 0" flat>
-        <v-expansion-panel title="Comments">
-          <v-expansion-panel-text>
-            <v-timeline align="start" density="compact">
-              <v-timeline-item
-                v-for="comment in post.comments"
-                :key="comment.time"
-                :dot-color="comment.color"
-                size="x-small"
-              >
-                <v-avatar icon="$vuetify" image="https://cdn.vuetifyjs.com/images/cards/cooking.png" size="48"></v-avatar>
-                <div class="mb-4">
-                  <div class="font-weight-normal">
-                    <strong>{{ comment.creator.title }}</strong> @{{ comment.creationDate }}
-                  </div>
+    <div>
+      <font-awesome-icon icon="fa-thumbs-up" /> {{ getPostLikes()  }}
+    </div>
 
-                  <div>{{ comment.description }}</div>
-                </div>
-              </v-timeline-item>
-            </v-timeline>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <div v-else class="mx-auto my-12 post"> No comments available </div>
-    </VCardText>
+    <div>
+       {{ post.comments.length }} {{ this.$t('comments') }}
+    </div>
+
+    <br>
+    <v-divider />
+    <br>
+
+    <VDialog
+      v-model="commentsDialog"
+      :width="maxWidth"
+      scrollable
+    >
+      <VCard>
+        <VCardTitle class="dialog-header">
+          <span class="dialog-title">{{ $t('Comments') }}</span>
+        </VCardTitle>
+
+        <VDivider />
+
+        <VCardText>
+          <CommentsTimeline :comments="post.comments" />
+        </VCardText>
+
+        <VDivider />
+
+        <VCardActions :style="{backgroundColor:'#EEEEEE'}">
+          <VContainer fluid>
+            <VRow>
+              <VCol>
+                <div class="text-subtitle-1">Add a comment</div>
+
+                <v-text-field
+                  :loading="loading"
+                  :disabled="sending"
+                  v-model="commentText"
+                  density="compact"
+                  variant="solo"
+                  hide-details
+                  single-line
+                >
+
+                  <template #append-inner>
+                    <VBtn
+                      v-if="!sending"
+                      variant="plain"
+                      :ripple="false"
+                      :readonly="this.commentText === ''"
+                      @mouseover="isHovered = true"
+                      @mouseleave="isHovered = false"
+                      @click="sendComment"
+                    >
+                      <FontAwesomeIcon :icon="(!isHovered || commentText === '')?'far fa-paper-plane' : 'fas fa-paper-plane'"/>
+                    </VBtn>
+                    <v-progress-circular
+                      v-else
+                      indeterminate
+                      :size="22"
+                      :width="4"
+                    />
+                  </template>
+                </v-text-field>
+              </VCol>
+            </VRow>
+          </VContainer>
+        </VCardActions>
+      </VCard>
+    </VDialog>
 
     <VCardActions>
-      <VBtn color="deep-purple-lighten-2" border @click="reserve"> Comment </VBtn>
-      <VBtn color="deep-purple-lighten-2" border @click="like"> Like </VBtn>
 
-      <slot name="actions"/>
+      <BigActionBtn
+        icon="fa-thumbs-up"
+        :label="(liked)? $t('Liked!') : $t('Like!')"
+        :color="(liked)? 'success' : 'primary'"
+        @click="like"
+      />
+      <BigActionBtn
+        icon="fa-comment"
+        :label="$t('Comment')"
+        color="warning"
+        @click="comment"
+      />
+
+      <span :style="{display: 'inline-flex', justifyContent: 'flex-end', width: '100%'}">
+        <slot :style="{display: 'flex', justifyContent: 'flex-end'}" name="actions"/>
+      </span>
 
     </VCardActions>
   </VCard>
 </template>
 <script>
+import BigActionBtn from "@/components/BigActionBtn.vue";
+import useGenericEntityStore from "@/stores/entity";
+import {defineStore} from "pinia";
+import CommentsTimeline from "@/components/project/CommentsTimeline.vue";
+import PostPhotos from "@/components/project/PostPhotos.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
 export default {
+  components: {FontAwesomeIcon, PostPhotos, CommentsTimeline, BigActionBtn},
   props: {
     title: {
       type: String,
@@ -62,43 +130,80 @@ export default {
     post:{
       type: Object,
       default: {}
-    }
+    },
+    maxWidth: {
+      type: String,
+      default: '1200px',
+    },
   },
 
   data: () => ({
     loading: false,
-    comments: [
-      {
-        from: 'You',
-        text: `Sure, I'll see you later.`,
-        time: '10:42am',
-        color: 'deep-purple-lighten-1',
-      },
-      {
-        from: 'John Doe',
-        text: 'Yeah, sure. Does 1:00pm work?',
-        time: '10:37am',
-        color: 'green',
-      },
-      {
-        from: 'You',
-        text: 'Did you still want to grab lunch today?',
-        time: '9:47am',
-        color: 'deep-purple-lighten-1',
-      },
-    ],
+    commentsDialog: false,
+    commentText:'',
+    isHovered:false,
+    sending:false,
+    valid: false,
+    entityStore: defineStore(
+      'posts',
+      useGenericEntityStore('posts'),
+    )(),
+    likeStore: defineStore(
+      'posts/like',
+      useGenericEntityStore('posts/like'),
+    )(),
+    commentStore: defineStore(
+      'posts/comment',
+      useGenericEntityStore('posts/comment'),
+    )(),
   }),
+  computed:{
+    liked() {
+      return this.post.likes.some(like => like.creator.id === this.$store.userData.id && like.creationDate != null);
+    },
+  },
   methods:{
+    freezeComment(){
+      this.sending = true
+      // setTimeout(() => (this.loading = false), 2000)
+    },
+    unfreezeComment(){
+      this.sending = false
+    },
     freezeCard(){
       this.loading = true
-      setTimeout(() => (this.loading = false), 2000)
+      // setTimeout(() => (this.loading = false), 2000)
     },
-    like () {
+    unfreezeCard(){
+      this.loading = false
+    },
+    getPostLikes(){
+      return this.post.likes.filter(l => l.creationDate != null).length
+    },
+    async like () {
       this.freezeCard()
+      await this.likeStore.toggleEnabled({...this.post,enabled:this.liked})
+      let updatedPost = await this.entityStore.getEntity(this.post.id)
+      this.$emit('update-post', updatedPost);
+      this.unfreezeCard()
     },
-    reserve () {
-      this.freezeCard()
+    async sendComment(){
+      this.freezeComment()
+      await this.commentStore.saveEntity({postId:this.post.id,description:this.commentText},false)
+      let updatedPost = await this.entityStore.getEntity(this.post.id)
+      this.$emit('update-post', updatedPost);
+      this.commentText = ''
+      this.unfreezeComment()
     },
+    comment () {
+      this.open()
+    },
+    open(){
+      this.commentsDialog = true
+    },
+    close(){
+      this.commentsDialog = false
+    }
   }
 }
 </script>
