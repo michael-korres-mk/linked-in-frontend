@@ -1,3 +1,42 @@
+<template>
+  <v-card
+    class="mx-auto"
+    max-width="400"
+    rounded="50"
+  >
+
+    <div class="image-container">
+      <div class="image-overlay"></div> <!-- Background effect -->
+
+      <!-- Avatar and text sit on top of the container -->
+      <div class="content-overlay">
+        <v-avatar :style="{ marginTop: '80px' }" color="grey" rounded="25" size="160">
+          <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+        </v-avatar>
+
+        <v-card-title class="text-info">{{ card.title }}</v-card-title>
+        <v-card-subtitle class="text-primary">{{ card.jobTitle }}</v-card-subtitle>
+        <v-card-subtitle class="text-primary">{{ card.company }}</v-card-subtitle>
+      </div>
+    </div>
+
+    <v-divider color="primary" />
+
+    <v-card-actions class="d-flex mb-0 mt-auto align-center">
+      <v-container fluid>
+        <br>
+        <v-row>
+          <v-col>
+
+            <slot name="actions" />
+
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
+  </v-card>
+</template>
+
 <script>
 export default {
   name: "UserCard",
@@ -41,44 +80,37 @@ export default {
 }
 </script>
 
-<template>
-  <v-card>
-    <v-img
-      :src="card.src"
-      class="align-end"
-      gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-      height="200px"
-      cover
-    >
-      <v-card-title class="text-white" v-text="card.title"></v-card-title>
-    </v-img>
-
-    <v-card-actions class="d-flex mb-0 mt-auto align-center">
-      <v-container fluid>
-        <br>
-        <v-row>
-          <v-col>
-            <BigActionBtn
-              v-if="!requesting"
-              :icon="(requested)? 'fa-xmark' : 'fa-user-plus'"
-              :label="(requested)? $t('Withdraw') : $t('Connect')"
-              :color="(requested)? 'danger' : 'primary'"
-              @click="sendRequest"
-            />
-<!--            <v-progress-circular-->
-<!--              v-else-->
-<!--              indeterminate-->
-<!--              :size="22"-->
-<!--              :width="4"-->
-<!--            />-->
-
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-actions>
-  </v-card>
-</template>
 
 <style scoped lang="scss">
+.image-container {
+  position: relative;
+  width: auto; /* Set the desired width */
+  height: 400px; /* Set the desired height */
+  overflow: hidden;
+}
 
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0; /* Background effect covers the bottom half */
+  left: 0;
+  right: 0;
+  bottom: 50%;
+  background: rgb(var(--v-theme-primary)); /* Background effect (color overlay) */
+  z-index: 1;
+}
+
+.content-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 2; /* Higher z-index to ensure avatar and text sit on top */
+}
 </style>

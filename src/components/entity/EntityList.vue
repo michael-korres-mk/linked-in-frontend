@@ -55,11 +55,9 @@
 
     <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
       <!-- 👉 Table Container Legend -->
-      <div v-if="!hideLegend">
-        <legend class="legend-title">
-          {{ legendTitle }}
-        </legend>
-      </div>
+      <legend v-if="!hideLegend" class="legend-title">
+        {{ legendTitle }}
+      </legend>
       <div class="card-body">
         <VCard class="elevation-0">
           <!-- 👉 Table Container Buttons -->
