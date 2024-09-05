@@ -59,11 +59,18 @@
                 {{ modalLegendTitle }}
               </legend>
               <div class="card-body p-5 m-5">
-                <EntityEditSection
-                  :entity="editedItem"
-                  :form-fields="formFields"
-                  @fieldUpdated="updateItem"
-                />
+                <VForm
+                  ref="form"
+                  v-model="valid"
+                  role="edit-form"
+                  autocomplete="off"
+                >
+                  <EntityEditSection
+                    :entity="editedItem"
+                    :form-fields="formFields"
+                    @fieldUpdated="updateItem"
+                  />
+                </VForm>
               </div>
             </div>
           </VCardText>
