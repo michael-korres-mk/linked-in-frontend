@@ -29,7 +29,7 @@ if (isLoggedIn) {
       },
       {
           title: 'Αγγελίες',
-          to: 'job-postings',
+          to: 'jobs',
           icon: 'fas fa-briefcase',
           // authority: 'users',
       },

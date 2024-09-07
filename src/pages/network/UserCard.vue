@@ -5,6 +5,7 @@
     rounded="50"
   >
 
+    <RouterLink :to="`in/${card.id}`" >
     <div class="image-container">
       <div class="image-overlay"></div> <!-- Background effect -->
 
@@ -19,6 +20,7 @@
         <v-card-subtitle class="text-primary">{{ card.company }}</v-card-subtitle>
       </div>
     </div>
+    </RouterLink>
 
     <v-divider color="primary" />
 

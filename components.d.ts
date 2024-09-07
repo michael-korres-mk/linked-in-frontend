@@ -62,7 +62,7 @@ declare module 'vue' {
     OrganizationSingle: typeof import('./src/components/entity/OrganizationSingle.vue')['default']
     PlainTable: typeof import('./src/components/entity/PlainTable.vue')['default']
     Post: typeof import('./src/components/project/Post.vue')['default']
-    PostList: typeof import('./src/components/PostList.vue')['default']
+    PostList: typeof import('./src/components/project/PostList.vue')['default']
     PostPhotos: typeof import('./src/components/project/PostPhotos.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -74,6 +74,7 @@ declare module 'vue' {
     TableFilters: typeof import('./src/components/entity/TableFilters.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
     TiptapEditor: typeof import('./src/components/entity/TiptapEditor.vue')['default']
-    UsersList: typeof import('./src/components/UsersList.vue')['default']
+    UsersList: typeof import('./src/components/project/UsersList.vue')['default']
+    UsersTable: typeof import('./src/components/UsersTable.vue')['default']
   }
 }

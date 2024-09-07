@@ -5,6 +5,8 @@
 //   },
 // })
   import UsersGrid from "@/pages/network/UsersGrid.vue";
+import UsersList from "@/components/project/UsersList.vue";
+
 </script>
 
 <template>
@@ -15,11 +17,14 @@
   <v-card>
     <v-tabs v-model="tab" grow>
       <v-tab value="tab-1">
-        {{ $t('Connected Users') }}
+        {{ $t('My Network') }}
       </v-tab>
       <v-tab value="tab-2">
-        {{ $t('Connection Requests') }}
+        {{ $t('Search') }}
       </v-tab>
+<!--      <v-tab value="tab-3">-->
+<!--        {{ $t('Connection Requests') }}-->
+<!--      </v-tab>-->
     </v-tabs>
 
     <v-tabs-window v-model="tab">
@@ -27,6 +32,9 @@
           <UsersGrid :config="config" :results-per-page="9" hide-view />
       </v-tabs-window-item>
       <v-tabs-window-item class="card-body" value="tab-2">
+        <UsersList :config="config" :results-per-page="9" hide-view />
+      </v-tabs-window-item>
+      <v-tabs-window-item class="card-body" value="tab-3">
         <UsersGrid :config="config" :results-per-page="2" hide-view />
       </v-tabs-window-item>
     </v-tabs-window>
@@ -37,7 +45,7 @@
 export default {
   data() {
     return {
-      tab: 'posts',
+      tab: 'tab-2',
       tabItems:[
         {
           key: 'posts',

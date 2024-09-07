@@ -1,5 +1,5 @@
 <script setup>
-import PostList from "@/components/PostList.vue";
+import PostList from "@/components/project/PostList.vue";
 
 // definePage({
 //   meta: {

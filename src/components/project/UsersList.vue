@@ -1,36 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
   <VContainer fluid>
-    <ADialog
-      :open="deleteDialog"
-      :width="700"
-      :cancel-callback="closeDeleteModal"
-      :success-callback="handleDeleteClick"
-      title-bg="bg-danger"
-      title="Επιβεβαίωση Διαγραφής"
-      success-bg-color="white"
-      success-title="Διαγραφή"
-      success-icon="fa-trash-can"
-      cancel-icon="xmark"
-      hide-icon
-      persistent
-    >
-      <div class="mt-10">
-        <VAlert
-          type="error"
-          variant="outlined"
-          prominent
-        >
-          <p class="font-20 mt-4">
-            ΕΙΣΤΕ ΣΙΓΟΥΡΟΙ ΟΤΙ ΘΕΛΕΤΕ ΝΑ ΠΡΟΧΩΡΗΣΕΤΕ ΣΕ
-            <strong>ΔΙΑΓΡΑΦH;</strong>
-            <br />
-            Μετά απο αυτήν την ενέργεια δεν θα είναι εφικτή η επαναφορά.
-          </p>
-        </VAlert>
-      </div>
-    </ADialog>
-
     <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
       <!-- 👉 Table Container Legend -->
       <legend v-if="!hideLegend" class="legend-title">
@@ -38,26 +8,6 @@
       </legend>
       <div class="card-body">
         <VCard class="elevation-0">
-          <!-- 👉 Table Container Buttons -->
-          <VRow :class="!hideLegend? 'mb-0 pb-0': 'd-flex justify-center mb-0 pb-0'">
-            <VCol
-              cols="12"
-              class="d-flex text-end justify-end"
-            >
-              <!-- 👉 Extra Btn Slot -->
-              <slot name="extraHeaderContent" />
-              <!-- 👉 Add Btn -->
-              <VBtn
-                v-if="allowInsert && !hideInsertBtn"
-                color="primary"
-                variant="outlined"
-                @click="handleAddClick"
-              >
-                {{config.title.createBtn ? $t(config.title.createBtn) : $t('Add New') + ' ' + $t(config.title.geniki)}}
-                <template #append><FontAwesomeIcon :icon="'file-circle-plus'" class="ms-2 color-orange"/></template>
-              </VBtn>
-            </VCol>
-          </VRow>
           <!-- 👉 Table Container Card -->
           <VRow class="mt-0 pt-0">
             <VCol>
@@ -75,72 +25,38 @@
                 @update:options="fetchEntities"
               >
                 <template #default="{ items }">
-                    <Post v-for="item in items.map(i => i.value)" :post="item" @update-post="handleUpdatePost">
-                      <template #actions>
-                        <div class="w-130px">
-                          <div class="d-flex justify-end">
-                            <!-- 👉 View btn -->
-                            <ActionBtn
-                              v-if="viewShouldRender(item)"
-                              :icon="detailsViewIcon"
-                              :label="detailsViewTitle"
-                              @click="handleViewClick(item)"
-                            />
 
-                            <!-- 👉 Edit Btn -->
-                            <ActionBtn
-                              v-if="editShouldRender(item)"
-                              :icon="config.edit?.icon || 'fa-edit'"
-                              :label="config.edit?.label || 'Edit'"
-                              :color="config.edit?.color || 'warning'"
-                              @click="handleEntityClick(item)"
-                            />
+                  <VContainer :style="{marginBottom:'50px'}" fluid v-for="item in items.map(i => i.value)">
+                    <div class="list-item">
+                      <VRow>
+                      <VCol>
+                        <v-avatar :style="{ marginLeft: '50px' }" color="grey" rounded="25" size="160">
+                          <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+                        </v-avatar>
+                      </VCol>
+                      <VCol>
+                        <h2 class="text-info">{{ item.title }}</h2>
+                        <h4 class="text-primary">{{ item.jobTitle }}</h4>
+                        <h4 class="text-primary">{{ item.company }}</h4>
 
-                            <!-- 👉 Toggle enabled Btn -->
-                            <ActionBtn
-                              v-if="!hideEnabled && editShouldRender(item)"
-                              :icon="item.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"
-                              variant="text"
-                              :label="item.enabled ? 'Disable' : 'Enable'"
-                              :disabled="disableActions"
-                              @click="toggleEnableDisable(item)"
-                            />
+                        <BigActionBtn
+                          v-if="!requesting"
+                          :icon="(requested)? 'fa-xmark' : 'fa-user-plus'"
+                          :label="(requested)? 'Withdraw' : 'Connect'"
+                          :color="(requested)? 'danger' : 'primary'"
+                          @click="sendRequest"
+                        />
+                        <!--            <v-progress-circular-->
+                        <!--              v-else-->
+                        <!--              indeterminate-->
+                        <!--              :size="22"-->
+                        <!--              :width="4"-->
+                        <!--            />-->
 
-                            <!-- 👉 Delete Btn -->
-                            <ActionBtn
-                              v-if="deleteShouldRender(item)"
-                              icon="trash-can"
-                              label="Delete"
-                              color="error"
-                              class="text-black"
-                              @click="updateDeleteModalId(item.id)"
-                            />
-
-                            <!-- 👉 Duplicate Btn -->
-                            <ActionBtn
-                              v-if="allowDuplicate && editShouldRender(item)"
-                              icon="fa-copy"
-                              label="Duplicate"
-                              color="purple"
-                              @click="handleEntityClick(item, true)"
-                            />
-
-                            <!-- 👉 ExtraAction Btn -->
-                            <template v-for="extraAction in extraActions">
-                              <ActionBtn
-                                v-if="extraActionShouldRender(extraAction, item)"
-                                :key="extraAction.icon"
-                                color="orange"
-                                :icon="(extraAction.dynamicIcon && item[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"
-                                :label="extraAction.title"
-                                :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"
-                                @click="handleExtraActionClick(item, extraAction)"
-                              />
-                            </template>
-                          </div>
-                        </div>
-                      </template>
-                    </Post>
+                      </VCol>
+                    </VRow>
+                    </div>
+                  </VContainer>
                 </template>
 
                 <!-- 👉 Pagination Setup -->
@@ -176,7 +92,7 @@
                       />
                     </VCol>
                   </VRow>
-                  </template>
+                </template>
               </VDataIterator>
             </VCol>
           </VRow>
@@ -187,10 +103,10 @@
 </template>
 
 <script>
-import useGenericEntityStore from '@/stores/entity'
+import useGenericEntityStore from '@/stores/entity.js'
 import { defineStore } from 'pinia'
-import ADialog from './Dialog.vue'
-import ActionBtn from './entity/ActionBtn.vue'
+import ADialog from '../Dialog.vue'
+import ActionBtn from '../entity/ActionBtn.vue'
 
 /**
  * The generic EntityList component for lists.
@@ -708,10 +624,38 @@ export default {
         return prev ? prev[curr] : null
       }, obj)
     },
-    handleUpdatePost(updatedPost){
-      const i = this.entities.findIndex(post => post.id === updatedPost.id)
-      this.entities[i] = updatedPost
+    handleUpdateUser(updatedUser){
+      const i = this.entities.findIndex(user => user.id === updatedUser.id)
+      this.entities[i] = updatedUser
     }
   },
 }
 </script>
+
+<style lang="scss">
+.list-item {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(
+      to right,
+      rgb(var(--v-theme-primary)) 50%,  /* Left half with overlay */
+      transparent 50% /* Right half transparent */
+  );
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.profile-picture {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+}
+
+</style>

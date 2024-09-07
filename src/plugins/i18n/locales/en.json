@@ -399,5 +399,16 @@
   "Skills" : "Skills",
   "Post": "Post",
   "Posts": "Posts",
-  "Post Details":"Post Details"
+  "Post Details":"Post Details",
+  "comments": "comments",
+  "Network": "Network",
+  "Connected Users": "Connected Users",
+  "Connection Requests" : "Connection Requests",
+  "Connect" : "Connect",
+  "Withdraw" : "Withdraw",
+  "Like!" : "Like!",
+  "Liked!" : "Liked!",
+  "Comment" : "Comment",
+  "Visit" : "Visit",
+  "My Network": "My Network"
 }
