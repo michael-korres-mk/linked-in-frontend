@@ -26,27 +26,6 @@
                   <v-row >
                     <v-col v-for="item in items.map(i => i.value)" :cols="4">
                       <UserCard :card="item" @connectionRequested="fetchConnectionRequests" :user-requests="userRequests" >
-                    <template #actions>
-                      <div class="w-130px">
-                        <div class="d-flex justify-end">
-
-                          <BigActionBtn
-                            v-if="!requesting"
-                            :icon="(requested)? 'fa-xmark' : 'fa-user-plus'"
-                            :label="(requested)? $t('Withdraw') : $t('Connect')"
-                            :color="(requested)? 'danger' : 'primary'"
-                            @click="sendRequest"
-                          />
-                          <!--            <v-progress-circular-->
-                          <!--              v-else-->
-                          <!--              indeterminate-->
-                          <!--              :size="22"-->
-                          <!--              :width="4"-->
-                          <!--            />-->
-
-                        </div>
-                      </div>
-                    </template>
                   </UserCard>
                     </v-col >
                   </v-row >
@@ -289,6 +268,10 @@ export default {
     },
   },
   computed: {
+    requested() {
+      return false
+      // return this.post.likes.some(like => like.creator.id === this.$store.userData.id && like.creationDate != null);
+    },
     selectedItems: {
       get() {
         return this.selections

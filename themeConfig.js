@@ -17,21 +17,21 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
     contentLayoutNav: AppContentLayoutNav.Horizontal,
     overlayNavFromBreakpoint: breakpointsVuetify.md + 16,
     i18n: {
-      enable: false,
-      defaultLocale: 'el',
-      langConfig: [
-        {
-          label: 'English',
-          i18nLang: 'en',
-          isRTL: false,
-        },
-        {
-          label: 'Ελληνικά',
-          i18nLang: 'el',
-          isRTL: false,
-        },
-      ],
-    },
+          enable: false,
+          defaultLocale: 'el',
+          langConfig: [
+              {
+                  label: 'English',
+                  i18nLang: 'en',
+                  isRTL: false,
+              },
+              {
+                  label: 'Ελληνικά',
+                  i18nLang: 'el',
+                  isRTL: false,
+              },
+          ],
+},
     theme: 'light',
     isRtl: false,
     skin: Skins.Default,

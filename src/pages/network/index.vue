@@ -15,10 +15,10 @@
   <v-card>
     <v-tabs v-model="tab" grow>
       <v-tab value="tab-1">
-        {{ this.$t('Connected Users') }}
+        {{ $t('Connected Users') }}
       </v-tab>
       <v-tab value="tab-2">
-        {{ this.$t('Connection Requests') }}
+        {{ $t('Connection Requests') }}
       </v-tab>
     </v-tabs>
 
@@ -43,13 +43,11 @@ export default {
           key: 'posts',
           value: 'posts',
           text: 'Posts',
-          component: PostList,
         },
         {
           key: 'users',
           value: 'users',
           text: 'Users',
-          component: () => import('@/pages/network/UsersGrid.vue'), // Lazy-load the component
         }
       ]
     }
