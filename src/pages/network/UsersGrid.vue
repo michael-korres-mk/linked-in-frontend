@@ -374,6 +374,7 @@ export default {
     },
     pageChange(newPage) {
       this.currentPage = newPage
+      this.refetchData()
     },
     sortByChange(sortArr) {
       this.sortBy = sortArr.length ? sortArr[0] : { key: this.sortBy.key, order: this.sortBy.order == 'asc' ? 'desc' : 'asc' }
