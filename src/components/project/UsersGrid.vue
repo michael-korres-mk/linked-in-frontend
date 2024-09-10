@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import UserCard from "@/pages/network/UserCard.vue";
+import UserCard from "@/components/project/UserCard.vue";
 import {defineStore} from "pinia";
 import useGenericEntityStore from "@/stores/entity.js";
 
@@ -268,10 +268,6 @@ export default {
     },
   },
   computed: {
-    requested() {
-      return false
-      // return this.post.likes.some(like => like.creator.id === this.$store.userData.id && like.creationDate != null);
-    },
     selectedItems: {
       get() {
         return this.selections

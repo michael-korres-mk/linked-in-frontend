@@ -32,19 +32,6 @@
 
             <div class="w-130px">
               <div class="d-flex justify-end">
-              <BigActionBtn
-                v-if="!requesting"
-                :icon="(requested)? 'fa-xmark' : 'fa-user-plus'"
-                :label="(requested)? 'Withdraw' : 'Connect'"
-                :color="(requested)? 'danger' : 'primary'"
-                @click="sendRequest"
-              />
-              <!--            <v-progress-circular-->
-              <!--              v-else-->
-              <!--              indeterminate-->
-              <!--              :size="22"-->
-              <!--              :width="4"-->
-              <!--            />-->
 
               <slot name="actions" />
               </div>
@@ -59,11 +46,6 @@
 <script>
 export default {
   name: "UserCard",
-  data() {
-    return {
-      requesting: false
-    }
-  },
   props: {
     card: {
       type: Object,
@@ -79,23 +61,6 @@ export default {
       return this.userRequests.some(request => request.recipient.id === this.card.id); // && request.acceptanceDate == null
     },
   },
-  methods: {
-    freezeCard(){
-      this.requesting = true
-      // setTimeout(() => (this.loading = false), 2000)
-    },
-    unfreezeCard(){
-      this.requesting = false
-    },
-    async sendRequest(){
-      this.freezeCard()
-      // await this.commentStore.saveEntity({postId:this.post.id,description:this.commentText},false)
-      // let updatedPost = await this.entityStore.getEntity(this.post.id)
-      // this.$emit('update-post', updatedPost);
-      // this.commentText = ''
-      this.unfreezeCard()
-    },
-  }
 }
 </script>
 

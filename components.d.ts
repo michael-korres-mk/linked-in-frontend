@@ -74,6 +74,9 @@ declare module 'vue' {
     TableFilters: typeof import('./src/components/entity/TableFilters.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
     TiptapEditor: typeof import('./src/components/entity/TiptapEditor.vue')['default']
+    UserCard: typeof import('./src/components/project/UserCard.vue')['default']
+    UserListItem: typeof import('./src/components/project/UserListItem.vue')['default']
+    UsersGrid: typeof import('./src/components/project/UsersGrid.vue')['default']
     UsersList: typeof import('./src/components/project/UsersList.vue')['default']
     UsersTable: typeof import('./src/components/UsersTable.vue')['default']
   }

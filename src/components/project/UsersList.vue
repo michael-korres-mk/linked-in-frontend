@@ -8,6 +8,20 @@
       </legend>
       <div class="card-body">
         <VCard class="elevation-0">
+
+          <TableFilters
+            v-if="filters.length"
+            ref="filters"
+            :filters-legend-title="filtersLegendTitle"
+            :filters="filters"
+            :hide-filter-legend="hideFilterLegend"
+            :auto-update-filters="autoUpdateFilters"
+            @initFilters="initFilterValues"
+            @filterUpdated="filterUpdated"
+            @applyFilters="updateFilterValues"
+          />
+
+
           <!-- 👉 Table Container Card -->
           <VRow class="mt-0 pt-0">
             <VCol>
@@ -25,38 +39,7 @@
                 @update:options="fetchEntities"
               >
                 <template #default="{ items }">
-
-                  <VContainer :style="{marginBottom:'50px'}" fluid v-for="item in items.map(i => i.value)">
-                    <div class="list-item">
-                      <VRow>
-                      <VCol>
-                        <v-avatar :style="{ marginLeft: '50px' }" color="grey" rounded="25" size="160">
-                          <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
-                        </v-avatar>
-                      </VCol>
-                      <VCol>
-                        <h2 class="text-info">{{ item.title }}</h2>
-                        <h4 class="text-primary">{{ item.jobTitle }}</h4>
-                        <h4 class="text-primary">{{ item.company }}</h4>
-
-                        <BigActionBtn
-                          v-if="!requesting"
-                          :icon="(requested)? 'fa-xmark' : 'fa-user-plus'"
-                          :label="(requested)? 'Withdraw' : 'Connect'"
-                          :color="(requested)? 'danger' : 'primary'"
-                          @click="sendRequest"
-                        />
-                        <!--            <v-progress-circular-->
-                        <!--              v-else-->
-                        <!--              indeterminate-->
-                        <!--              :size="22"-->
-                        <!--              :width="4"-->
-                        <!--            />-->
-
-                      </VCol>
-                    </VRow>
-                    </div>
-                  </VContainer>
+                  <UserListItem v-for="item in items.map(i => i.value)" :item="item"/>
                 </template>
 
                 <!-- 👉 Pagination Setup -->
@@ -107,6 +90,7 @@ import useGenericEntityStore from '@/stores/entity.js'
 import { defineStore } from 'pinia'
 import ADialog from '../Dialog.vue'
 import ActionBtn from '../entity/ActionBtn.vue'
+import UserListItem from "@/components/project/UserListItem.vue";
 
 /**
  * The generic EntityList component for lists.
@@ -114,6 +98,7 @@ import ActionBtn from '../entity/ActionBtn.vue'
  */
 export default {
   components: {
+    UserListItem,
     ActionBtn,
     ADialog,
   },
@@ -151,7 +136,7 @@ export default {
     },
     legendTitle: {
       type: String,
-      default: 'Αποτελέσματα Αναζήτησης',
+      default: '',
     },
     singleEdit: {
       type: Boolean,
@@ -275,10 +260,7 @@ export default {
     'extraItemFetched',
   ],
   setup(props) {
-    const entityStore = defineStore(
-      props.config.endpoint,
-      useGenericEntityStore(props.config.endpoint),
-    )()
+    const entityStore = defineStore(props.config.endpoint, useGenericEntityStore(props.config.endpoint),)()
 
     return {
       entityStore,
@@ -627,7 +609,20 @@ export default {
     handleUpdateUser(updatedUser){
       const i = this.entities.findIndex(user => user.id === updatedUser.id)
       this.entities[i] = updatedUser
-    }
+    },
+    filterUpdated(fieldId, newVal) {
+      this.$emit('filterUpdated', fieldId, newVal)
+    },
+    initFilterValues(selFilters) {
+      this.filterVals = selFilters
+    },
+    updateFilterValues(selFilters) {
+
+      console.log(selFilters)
+
+      this.filterVals = selFilters
+      this.refetchData()
+    },
   },
 }
 </script>

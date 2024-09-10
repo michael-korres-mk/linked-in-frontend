@@ -4,7 +4,7 @@
 //     authority: 'submissions',
 //   },
 // })
-  import UsersGrid from "@/pages/network/UsersGrid.vue";
+  import UsersGrid from "@/components/project/UsersGrid.vue";
 import UsersList from "@/components/project/UsersList.vue";
 
 </script>
@@ -29,12 +29,15 @@ import UsersList from "@/components/project/UsersList.vue";
 
     <v-tabs-window v-model="tab">
       <v-tabs-window-item class="card-body" value="tab-1">
+        <h2 class="text-center text-info">{{ $t('My Network') }}</h2>
           <UsersGrid :config="config" :results-per-page="9" hide-view />
       </v-tabs-window-item>
       <v-tabs-window-item class="card-body" value="tab-2">
-        <UsersList :config="config" :results-per-page="9" hide-view />
+        <h2 class="text-center text-info">{{ $t('Search') }}</h2>
+        <UsersList :config="config" :filters="filters" :filters-legend-title="''" :results-per-page="9" hide-view />
       </v-tabs-window-item>
       <v-tabs-window-item class="card-body" value="tab-3">
+        <h2 class="text-center text-info">{{ $t('Connection Requests') }}</h2>
         <UsersGrid :config="config" :results-per-page="2" hide-view />
       </v-tabs-window-item>
     </v-tabs-window>
@@ -71,6 +74,16 @@ export default {
           geniki: 'Post(gen)',
         },
       }
+    },
+    filters() {
+      return [
+          {
+            id: 'searchTerm',
+            type: 'text',
+            label: this.$t('User Search'),
+            colSize: 4,
+          },
+      ]
     },
   }
 }
