@@ -26,7 +26,7 @@
           <VRow class="mt-0 pt-0">
             <VCol>
               <VDataIterator
-                v-if="tableReady"
+                v-if="tableReady && filteredEntities.length > 0"
                 :items-per-page="perPage"
                 :items-length="totalRows"
                 :items="filteredEntities"
@@ -77,6 +77,11 @@
                   </VRow>
                 </template>
               </VDataIterator>
+              <div
+                v-else
+              >
+                {{ $t('No users found')}}
+              </div>
             </VCol>
           </VRow>
         </VCard>
@@ -330,6 +335,9 @@ export default {
     },
   },
   mounted() {
+
+    this.fetchEntities()
+
     const rights = this.$store.userRights
 
     this.allowInsert = true

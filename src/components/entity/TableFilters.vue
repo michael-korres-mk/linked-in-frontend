@@ -8,7 +8,7 @@
         <h2>{{ filtersLegendTitle }}</h2>
       </legend>
     </div>
-    <div class="card-body mb-0 pb-0">
+    <div class="card-body mb-8 pb-0">
       <VRow>
         <VCol
           v-for="field in fields"
@@ -29,7 +29,7 @@
       <VRow v-if="!autoUpdateFilters">
         <VCol
           cols="12"
-          class="text-center d-flex gap-3 justify-center flex-wrap"
+          class="text-center gap-3 justify-left"
         >
           <VBtn
             class="me-2"

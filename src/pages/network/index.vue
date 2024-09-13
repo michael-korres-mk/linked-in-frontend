@@ -48,7 +48,7 @@ import UsersList from "@/components/project/UsersList.vue";
 export default {
   data() {
     return {
-      tab: 'tab-2',
+      tab: 'tab-1',
       tabItems:[
         {
           key: 'posts',

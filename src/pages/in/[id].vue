@@ -2,79 +2,98 @@
 
   <header>
     <div class="profile-header">
-      <img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" alt="Profile Picture" class="profile-picture">
-      <h1> {{ entity.title }}</h1>
-      <h2> {{ entity.jobTitle}}</h2>
+      <div class="profile-info">
+        <img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" alt="Profile Picture" class="profile-picture">
+        <h1 class="text-white"> {{ entity.title }}</h1>
+        <h2 class="text-info"> {{ entity.jobTitle}}</h2>
+      </div>
+      <div class="actions">
+        <VBtn
+          size="large"
+          color="secondary"
+          @click="() => $router.push({name: 'network'})"
+        >
+          {{ $t('My Network') }}
+        </VBtn>
+        <VBtn
+          size="large"
+          color="secondary"
+          @click="() => $router.push({name: 'chats'})"
+        >
+          {{ $t('Send Message') }}
+        </VBtn>
+      </div>
+
     </div>
   </header>
 
   <section class="about">
-    <h3>About Me</h3>
-    <p>
-      I’m a passionate Front-End Developer with over 5 years of experience building responsive
-      and dynamic web applications using modern frameworks like Vue.js. My expertise lies in
-      creating scalable, maintainable solutions, from single-page applications to complex user interfaces.
-    </p>
+    <h2 class="text-info">
+      {{ $t('About Me') }}
+    </h2>
+    {{entity.aboutMe}}
   </section>
 
   <section class="experience">
-    <h3>Experience</h3>
+    <h2 class="text-info">
+      {{ $t('Experience') }}
+    </h2>
 
-    <div class="job">
-      <h4>Front-End Developer | Company Name</h4>
-      <p><em>Month/Year – Present</em></p>
-      <ul>
-        <li>Led front-end development for several high-traffic single-page applications using Vue.js</li>
-        <li>Integrated Vuex for state management, improving application efficiency by 30%</li>
-        <li>Collaborated with back-end teams to integrate RESTful APIs</li>
-      </ul>
-    </div>
+    {{entity.workExperience}}
 
-    <div class="job">
-      <h4>Junior Developer | Another Company</h4>
-      <p><em>Month/Year – Month/Year</em></p>
-      <ul>
-        <li>Developed components using Vue.js for a large-scale enterprise app</li>
-        <li>Migrated legacy systems from Angular to Vue.js, reducing load time by 40%</li>
-        <li>Utilized Vue Router to handle multi-page navigation seamlessly</li>
-      </ul>
-    </div>
+<!--    <div class="job">-->
+<!--      <h4>Front-End Developer | Company Name</h4>-->
+<!--      <p><em>Month/Year – Present</em></p>-->
+<!--      <ul>-->
+<!--        <li>Led front-end development for several high-traffic single-page applications using Vue.js</li>-->
+<!--        <li>Integrated Vuex for state management, improving application efficiency by 30%</li>-->
+<!--        <li>Collaborated with back-end teams to integrate RESTful APIs</li>-->
+<!--      </ul>-->
+<!--    </div>-->
+
+<!--    <div class="job">-->
+<!--      <h4>Junior Developer | Another Company</h4>-->
+<!--      <p><em>Month/Year – Month/Year</em></p>-->
+<!--      <ul>-->
+<!--        <li>Developed components using Vue.js for a large-scale enterprise app</li>-->
+<!--        <li>Migrated legacy systems from Angular to Vue.js, reducing load time by 40%</li>-->
+<!--        <li>Utilized Vue Router to handle multi-page navigation seamlessly</li>-->
+<!--      </ul>-->
+<!--    </div>-->
   </section>
 
   <section class="skills">
-    <h3>Skills</h3>
-    <ul class="skills-list">
-      <li>Vue.js</li>
-      <li>Vuex</li>
-      <li>Nuxt.js</li>
-      <li>JavaScript (ES6+)</li>
-      <li>HTML5 / CSS3</li>
-      <li>TailwindCSS / Bootstrap</li>
-    </ul>
+    <h2 class="text-info">
+      {{ $t('Skills') }}
+    </h2>
+    {{entity.skills}}
+    <!--    <ul class="skills-list">-->
+<!--      <li>Vue.js</li>-->
+<!--      <li>Vuex</li>-->
+<!--      <li>Nuxt.js</li>-->
+<!--      <li>JavaScript (ES6+)</li>-->
+<!--      <li>HTML5 / CSS3</li>-->
+<!--      <li>TailwindCSS / Bootstrap</li>-->
+<!--    </ul>-->
   </section>
 
   <section class="projects">
-    <h3>Projects</h3>
-    <div class="project">
-      <h4>E-commerce Dashboard (Vue.js, Vuex, Firebase)</h4>
-      <p>Developed a full-stack e-commerce dashboard for managing products, orders, and customers.</p>
-    </div>
-    <div class="project">
-      <h4>Social Media Platform (Vue.js, Node.js, GraphQL)</h4>
-      <p>Built a social media platform with user authentication, real-time messaging, and media sharing.</p>
-    </div>
-  </section>
-
-  <section class="certifications">
-    <h3>Certifications & Courses</h3>
-    <ul>
-      <li>Vue Mastery – “Intro to Vue 3”</li>
-      <li>Udemy – “Vue.js 3: From Beginner to Advanced”</li>
-    </ul>
+    <h2 class="text-info">
+      {{ $t('Projects') }}
+    </h2>
+    {{entity.projects}}
+<!--    <div class="project">-->
+<!--      <h4>E-commerce Dashboard (Vue.js, Vuex, Firebase)</h4>-->
+<!--      <p>Developed a full-stack e-commerce dashboard for managing products, orders, and customers.</p>-->
+<!--    </div>-->
+<!--    <div class="project">-->
+<!--      <h4>Social Media Platform (Vue.js, Node.js, GraphQL)</h4>-->
+<!--      <p>Built a social media platform with user authentication, real-time messaging, and media sharing.</p>-->
+<!--    </div>-->
   </section>
 
   <footer>
-    <p>&copy; 2024 John Doe. All rights reserved.</p>
+    <p>&copy; 2024 {{entity.title}}. All rights reserved.</p>
   </footer>
 </template>
 
@@ -130,9 +149,10 @@ header {
 }
 
 .profile-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr auto; /* Creates two columns, one for profile info and one for actions */
+  align-items: center; /* Vertically centers items in the grid cells */
+  gap: 16px; /* Space between columns */
   padding: 20px;
 }
 
@@ -141,6 +161,15 @@ header {
   width: 150px;
   height: 150px;
 }
+
+.profile-info {
+  display: flex;
+  align-items: start;
+  /* Align to the start of the header */
+  justify-content: start; /* Optional, since it's the default for flex items */
+  flex-direction: column;
+}
+
 
 h1 {
   margin: 10px 0;
@@ -243,9 +272,15 @@ footer {
   text-align: center;
   padding: 10px;
   background-color: #2c3e50;
+  border-radius: 5px;
   color: #fff;
   margin-top: 20px;
 }
 
+.actions {
+  display: flex;
+  gap: 8px; /* Space between buttons */
+  justify-self: end; /* Aligns the actions to the end (right) of its grid cell */
+}
 
 </style>
