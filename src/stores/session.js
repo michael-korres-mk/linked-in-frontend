@@ -133,7 +133,7 @@ const actions = {
     )
   },
   roles() {
-    return this.fetchCachedList('roles')
+    return this.fetchCachedList('users/roles')
   },
   rights(subsystem) {
     return this.fetchCachedList('roles/rights', { subsystem })

@@ -78,7 +78,7 @@ export default {
     filters() {
       return [
           {
-            id: 'searchTerm',
+            id: 'q',
             type: 'text',
             label: this.$t('User Search'),
             colSize: 4,
