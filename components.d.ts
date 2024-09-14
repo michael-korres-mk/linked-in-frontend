@@ -55,6 +55,8 @@ declare module 'vue' {
     ErrorSummary: typeof import('./src/components/ErrorSummary.vue')['default']
     FormField: typeof import('./src/components/entity/FormField.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
+    JobListItem: typeof import('./src/components/project/JobListItem.vue')['default']
+    JobsList: typeof import('./src/components/project/JobsList.vue')['default']
     Loader: typeof import('./src/components/Loader.vue')['default']
     LoginWall: typeof import('./src/components/LoginWall.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
