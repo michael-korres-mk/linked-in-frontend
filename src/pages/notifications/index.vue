@@ -31,7 +31,7 @@ export default {
         endpoint: 'notifications',
         route: 'notifications',
         title: {
-          geniki: 'Ειδοποιήσεις',
+          geniki: 'Notifications',
         },
       }
     },
@@ -39,15 +39,15 @@ export default {
       return [
         {
           key: 'creationDate',
-          title: this.$t('Date'),
+          title: 'Date',
         },
         {
           key: 'kind',
-          title: this.$t('Kind'),
+          title: 'Kind',
         },
         {
           key: 'title',
-          title: this.$t('Title'),
+          title: 'Title',
         },
       ]
     },

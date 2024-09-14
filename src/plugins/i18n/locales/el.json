@@ -404,5 +404,20 @@
   "Post": "Άρθρο",
   "Posts": "Άρθρα",
   "Post(gen)": "Άρθρου",
-  "Post Details":"Στοιχεία Άρθρου"
+  "Post Details":"Στοιχεία Άρθρου",
+  "comments": "σχόλια",
+  "Network": "Δίκτυο",
+  "Connected Users": "Συνδεδεμένοι Χρήστες",
+  "Connection Requests" : "Αιτήματα Σύνδεσης",
+  "Connect" : "Σύνδεση",
+  "Withdraw" : "Ακύρωση",
+  "Like!" : "Μου Αρέσει!",
+  "Liked!" : "Μου Αρέσει!",
+  "Comment" : "Σχόλιο",
+  "Visit" : "Επίσκεψη",
+  "My Network": "Το Δίκτυό μου",
+  "Send Message": "Στείλε Μήνυμα",
+  "About Me": "Σχετικά με Εμένα",
+  "Experience": "Εμπειρία",
+  "Projects": "Έργα"
 }

@@ -54,13 +54,13 @@
     </ADialog>
 
     <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
-      <div v-if="!hideLegend">
-        <legend class="legend-title">
-          {{ legendTitle }}
-        </legend>
-      </div>
+      <!-- 👉 Table Container Legend -->
+      <legend v-if="!hideLegend" class="legend-title">
+        {{ legendTitle }}
+      </legend>
       <div class="card-body">
         <VCard class="elevation-0">
+          <!-- 👉 Table Container Buttons -->
           <VRow :class="!hideLegend? 'mb-0 pb-0': 'd-flex justify-center mb-0 pb-0'">
             <VCol
               cols="12"
@@ -68,34 +68,19 @@
             >
               <!-- 👉 Extra Btn Slot -->
               <slot name="extraHeaderContent" />
-              <RouterLink
+              <!-- 👉 Add Btn -->
+              <VBtn
                 v-if="allowInsert && !hideInsertBtn"
-                data-test="add-new-button"
-                :to="getCreateLink()"
-                class="ms-2"
+                color="primary"
+                variant="outlined"
                 @click="handleAddClick"
               >
-                <VBtn
-                  color="primary"
-                  variant="outlined"
-                >
-                  {{
-                    config.title.createBtn
-                      ? $t(config.title.createBtn)
-                      : $t('Add New') + ' ' + $t(config.title.geniki)
-                  }}
-                  <template #append>
-                    <FontAwesomeIcon
-                      :icon="['fas', 'file-circle-plus']"
-                      class="ms-2 color-orange"
-                    /> 
-                  </template>
-                </VBtn>
-              </RouterLink>
+                {{config.title.createBtn ? $t(config.title.createBtn) : $t('Add New') + ' ' + $t(config.title.geniki)}}
+                <template #append><FontAwesomeIcon :icon="'file-circle-plus'" class="ms-2 color-orange"/></template>
+              </VBtn>
             </VCol>
           </VRow>
-
-          <!-- Table Container Card -->
+          <!-- 👉 Table Container Card -->
           <VRow class="mt-0 pt-0">
             <VCol>
               <VDataTableServer
@@ -117,17 +102,103 @@
                 @update:sortBy="sortByChange"
                 @update:options="fetchEntities"
               >
+                <template #item.selection="{ item }">
+                  <VCheckboxBtn
+                    v-model="customSelections[item.id]"
+                    @update:modelValue="value => updateSelections(item, value)"
+                  />
+                </template>
+                <!-- Column: name -->
+                <template #item.title="{ item }">
+                  <div
+                    v-if="!hideEdit"
+                    class="font-weight-bold d-block"
+                    @click="handleEntityClick(item)"
+                  >
+                    {{ item.title }}
+                  </div>
+                  <span v-else>
+                    {{ item.title }}
+                  </span>
+                </template>
+                <template
+                  v-for="field in formattedColumns"
+                  :key="field.key"
+                  #[`item.${field.key}`]="{ item }"
+                >
+                  <div v-html="callFunc(field.callback, getValueByPath(item, field.key))"/>
+                </template>
+                <template #item.actions="{ item }">
+                  <div class="w-130px">
+                    <div class="d-flex justify-end">
+                      <!-- 👉 View btn -->
+                      <ActionBtn
+                        v-if="viewShouldRender(item)"
+                        :icon="detailsViewIcon"
+                        :label="detailsViewTitle"
+                        @click="handleViewClick(item)"
+                      />
+
+                      <!-- 👉 Edit Btn -->
+                      <ActionBtn
+                        v-if="editShouldRender(item)"
+                        :icon="config.edit?.icon || 'fa-edit'"
+                        :label="config.edit?.label || 'Edit'"
+                        :color="config.edit?.color || 'warning'"
+                        @click="handleEntityClick(item)"
+                      />
+
+                      <!-- 👉 Toggle enabled Btn -->
+                      <ActionBtn
+                        v-if="!hideEnabled && editShouldRender(item)"
+                        :icon="item.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"
+                        variant="text"
+                        :label="item.enabled ? 'Disable' : 'Enable'"
+                        :disabled="disableActions"
+                        @click="toggleEnableDisable(item)"
+                      />
+
+                      <!-- 👉 Delete Btn -->
+                      <ActionBtn
+                        v-if="deleteShouldRender(item)"
+                        icon="trash-can"
+                        label="Delete"
+                        color="error"
+                        class="text-black"
+                        @click="updateDeleteModalId(item.id)"
+                      />
+
+                      <!-- 👉 Duplicate Btn -->
+                      <ActionBtn
+                        v-if="allowDuplicate && editShouldRender(item)"
+                        icon="fa-copy"
+                        label="Duplicate"
+                        color="purple"
+                        @click="handleEntityClick(item, true)"
+                      />
+
+                      <!-- 👉 ExtraAction Btn -->
+                      <template v-for="extraAction in extraActions">
+                        <ActionBtn
+                          v-if="extraActionShouldRender(extraAction, item)"
+                          :key="extraAction.icon"
+                          color="orange"
+                          :icon="(extraAction.dynamicIcon && item[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"
+                          :label="extraAction.title"
+                          :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"
+                          @click="handleExtraActionClick(item, extraAction)"
+                        />
+                      </template>
+                    </div>
+                  </div>
+                </template>
+                <!-- 👉 Pagination Setup -->
                 <template #bottom>
                   <slot name="extraFooterContent" />
-                  <VRow
-                    v-if="!hidePagination"
-                    class="pt-4 pb-3"
-                  >
+                  <VRow v-if="!hidePagination" class="pt-4 pb-3">
+                    <!-- 👉 Pagination Label -->
                     <VCol class="pt-6 ps-4">
-                      <label
-                        v-if="totalRows"
-                        class="font-15"
-                      >
+                      <label v-if="totalRows" class="font-15">
                         {{
                           $t('ShowingEntries', {
                             from: (currentPage - 1) * perPage + 1,
@@ -140,6 +211,7 @@
                         }}
                       </label>
                     </VCol>
+                    <!-- 👉 Pagination Functionality -->
                     <VCol>
                       <VPagination
                         v-show="totalPages > 0"
@@ -153,109 +225,6 @@
                       />
                     </VCol>
                   </VRow>
-                </template>
-                <template #item.selection="{ item }">
-                  <VCheckboxBtn
-                    v-model="customSelections[item.id]"
-                    @update:modelValue="value => updateSelections(item, value)"
-                  />
-                </template>
-                <!-- Column: name -->
-                <template #item.title="{ item }">
-                  <RouterLink
-                    v-if="!hideEdit"
-                    :to="getEditLink(item.id)"
-                    class="font-weight-bold d-block"
-                    @click="handleEntityClick(item)"
-                  >
-                    {{ item.title }}
-                  </RouterLink>
-                  <span v-else>
-                    {{ item.title }}
-                  </span>
-                </template>
-                <template
-                  v-for="field in formattedColumns"
-                  :key="field.key"
-                  #[`item.${field.key}`]="{ item }"
-                >
-                  <div
-                    v-html="
-                      callFunc(field.callback, getValueByPath(item, field.key))
-                    "
-                  />
-                </template>
-                <template #item.actions="{ item }">
-                  <div class="w-130px">
-                    <div class="d-flex justify-end">
-                      <!-- View btn -->
-                      <RouterLink
-                        v-if="viewShouldRender(item)"
-                        :to="getViewLink(item.id)"
-                        @click="handleViewClick(item)"
-                      >
-                        <ActionBtn
-                          :icon="detailsViewIcon"
-                          :label="detailsViewTitle"
-                        />
-                      </RouterLink>
-                      <!-- Edit Btn -->
-                      <RouterLink
-                        v-if="editShouldRender(item)"
-                        :to="getEditLink(item.id)"
-                        @click="handleEntityClick(item)"
-                      >
-                        <ActionBtn
-                          :icon="config.edit?.icon || 'fa-edit'"
-                          :label="config.edit?.label || 'Edit'"
-                          :color="config.edit?.color || 'warning'"
-                        />
-                      </RouterLink>
-                      <!-- Duplicate Btn -->
-                      <RouterLink
-                        v-if="allowDuplicate && editShouldRender(item)"
-                        :to="getCopyLink(item.id)"
-                        @click="handleEntityClick(item, true)"
-                      >
-                        <ActionBtn
-                          icon="fa-copy"
-                          label="Duplicate"
-                          color="purple"
-                        />
-                      </RouterLink>
-                      <ActionBtn
-                        v-if="!hideEnabled && editShouldRender(item)"
-                        :icon="item.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"
-                        variant="text"
-                        :label="item.enabled ? 'Disable' : 'Enable'"
-                        :disabled="disableActions"
-                        @click="toggleEnableDisable(item)"
-                      />
-
-                      <!-- 👉 ExtraAction Btn -->
-                      <template v-for="extraAction in extraActions">
-                        <ActionBtn
-                          v-if="extraActionShouldRender(extraAction, item)"
-                          :key="extraAction.icon"
-                          color="orange"
-                          data-test="extra-action"
-                          :icon="(extraAction.dynamicIcon && item[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"
-                          :label="extraAction.title"
-                          :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"
-                          @click="handleExtraActionClick(item, extraAction)"
-                        />
-                      </template>
-                      <!-- 👉 Delete Btn -->
-                      <ActionBtn
-                        v-if="deleteShouldRender(item)"
-                        icon="trash-can"
-                        label="Delete"
-                        color="error"
-                        class="text-black"
-                        @click="updateDeleteModalId(item.id)"
-                      />
-                    </div>
-                  </div>
                 </template>
               </VDataTableServer>
             </VCol>
@@ -788,16 +757,29 @@ export default {
       this.editDialogOpen = true
     },
     handleAddClick() {
+
+      this.$router.push(this.getCreateLink());
+
       if (!this.singleEdit || this.dialogCreate) {
         this.setEntityData(JSON.parse(JSON.stringify(this.blankEntity)))
       }
     },
     handleViewClick(entityData) {
+
+      this.$router.push(this.getViewLink(entityData.id))
+
       if (this.storeTarget != '') {
         this.$store['selected' + this.storeTarget] = entityData
       }
     },
     handleEntityClick(entityData, duplicate = false) {
+      if(duplicate){
+        this.$router.push(this.getCopyLink(entityData.id))
+      }
+      else{
+        this.$router.push(this.getEditLink(entityData.id))
+      }
+
       if (!this.singleEdit) {
         if (duplicate) {
           delete entityData.id

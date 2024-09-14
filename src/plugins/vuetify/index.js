@@ -4,6 +4,8 @@ import { VBtn } from 'vuetify/components/VBtn'
 import defaults from './defaults'
 import { icons } from './icons'
 import { staticPrimaryColor, themes } from './theme'
+import { VDateInput } from 'vuetify/labs/VDateInput'
+import { el } from 'vuetify/locale'
 
 // Styles
 import { cookieRef } from '@/@layouts/stores/config'
@@ -32,6 +34,14 @@ export default function (app) {
   const vuetify = createVuetify({
     aliases: {
       IconBtn: VBtn,
+    },
+    components: {
+      VDateInput,
+    },
+    locale: {
+      locale: 'el',
+      fallback: 'en',
+      messages: { el },
     },
     defaults,
     icons,

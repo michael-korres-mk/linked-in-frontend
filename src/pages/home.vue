@@ -1,5 +1,5 @@
 <script setup>
-import PostList from "@/components/PostList.vue";
+import PostList from "@/components/project/PostList.vue";
 
 // definePage({
 //   meta: {
@@ -12,7 +12,7 @@ import PostList from "@/components/PostList.vue";
   <h1 class="text-center text-info">
     Αρχική
   </h1>
-  <div class="card-wrapper">
+  <div class="card-wrapper bg-global-primary">
     <div class="card-body text-center">
 
       <PostList
@@ -28,11 +28,6 @@ import PostList from "@/components/PostList.vue";
 
 <script>
 export default {
-  data() {
-    return {
-      title: "Disruptive Tech News"
-    }
-  },
   computed: {
     config() {
       return {

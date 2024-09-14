@@ -1,200 +1,52 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
   <VContainer fluid>
-    <ADialog
-      v-if="tableReady"
-      :open="editDialogOpen"
-      :title="dialogTitle"
-      :cancel-callback="
-        () => ((editDialogOpen = false), $emit('editModeSet', false))
-      "
-      hide-actions
-    >
-      <slot name="editmodal" />
-    </ADialog>
-    <TableFilters
-      ref="filters"
-      v-if="filters.length"
-      :filters-legend-title="filtersTitle"
-      :filters="filters"
-      :hide-filter-legend="hideFilterLegend"
-      :auto-update-filters="autoUpdateFilters"
-      @initFilters="initFilterValues"
-      @filterUpdated="filterUpdated"
-      @applyFilters="updateFilterValues"
-    />
-    <ADialog
-      :open="deleteDialog"
-      :width="700"
-      :cancel-callback="closeDeleteModal"
-      :success-callback="handleDeleteClick"
-      title-bg="bg-danger"
-      title="Επιβεβαίωση Διαγραφής"
-      success-bg-color="white"
-      success-title="Διαγραφή"
-      success-icon="fa-trash-can"
-      cancel-icon="xmark"
-      hide-icon
-      persistent
-    >
-      <div class="mt-10">
-        <VAlert type="error" variant="outlined" prominent>
-          <p class="font-20 mt-4">
-            ΕΙΣΤΕ ΣΙΓΟΥΡΟΙ ΟΤΙ ΘΕΛΕΤΕ ΝΑ ΠΡΟΧΩΡΗΣΕΤΕ ΣΕ
-            <strong>ΔΙΑΓΡΑΦH;</strong>
-            <br />
-            Μετά απο αυτήν την ενέργεια δεν θα είναι εφικτή η επαναφορά.
-          </p>
-        </VAlert>
-      </div>
-    </ADialog>
-
     <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
-      <div v-if="!hideLegend">
-        <legend class="legend-title">
-          {{ legendTitle }}
-        </legend>
-      </div>
+      <!-- 👉 Table Container Legend -->
+      <legend v-if="!hideLegend" class="legend-title">
+        {{ legendTitle }}
+      </legend>
       <div class="card-body">
         <VCard class="elevation-0">
-          <VRow :class="!hideLegend? 'mb-0 pb-0': 'd-flex justify-center mb-0 pb-0'">
-            <VCol
-              cols="12"
-              class="d-flex text-end justify-end"
-            >
-              <!-- 👉 Extra Btn Slot -->
-              <slot name="extraHeaderContent" />
-              <RouterLink
-                v-if="allowInsert && !hideInsertBtn"
-                data-test="add-new-button"
-                :to="getCreateLink()"
-                class="ms-2"
-                @click="handleAddClick"
-              >
-                <VBtn
-                  color="primary"
-                  variant="outlined"
-                >
-                  {{
-                    config.title.createBtn
-                      ? $t(config.title.createBtn)
-                      : $t('Add New') + ' ' + $t(config.title.geniki)
-                  }}
-                  <template #append>
-                    <FontAwesomeIcon
-                      :icon="['fas', 'file-circle-plus']"
-                      class="ms-2 color-orange"
-                    />
-                  </template>
-                </VBtn>
-              </RouterLink>
-            </VCol>
-          </VRow>
 
-          <!-- Table Container Card -->
+          <TableFilters
+            v-if="filters.length"
+            ref="filters"
+            :filters-legend-title="filtersLegendTitle"
+            :filters="filters"
+            :hide-filter-legend="hideFilterLegend"
+            :auto-update-filters="autoUpdateFilters"
+            @initFilters="initFilterValues"
+            @filterUpdated="filterUpdated"
+            @applyFilters="updateFilterValues"
+          />
+
+
+          <!-- 👉 Table Container Card -->
           <VRow class="mt-0 pt-0">
             <VCol>
               <VDataIterator
-                v-if="tableReady"
-                ref="refEntitiesTable"
-                v-model="selectedItems"
+                v-if="tableReady && filteredEntities.length > 0"
                 :items-per-page="perPage"
                 :items-length="totalRows"
                 :items="filteredEntities"
-                :headers="tableColumns"
                 :loading="loading"
                 :sort-by="[sortBy]"
                 :page="currentPage"
-                :show-select="showSelect"
-                :select-strategy="multiSelect ? 'page' : 'single'"
-                item-selectable="selectable"
                 return-object
                 dense
                 @update:sortBy="sortByChange"
                 @update:options="fetchEntities"
               >
-                <template v-slot:default="{ items }">
-                  <template v-for="(item, i) in items" :key="i">
-                    <Post :post="item.value" @update-post="handleUpdatePost">
-                      <template #actions>
-                        <div class="w-130px">
-                          <div class="d-flex justify-end">
-                            <!-- View btn -->
-                            <RouterLink
-                              v-if="viewShouldRender(item.value)"
-                              :to="getViewLink(item.value.id)"
-                              @click="handleViewClick(item.value)"
-                            >
-                              <ActionBtn
-                                :icon="detailsViewIcon"
-                                :label="detailsViewTitle"
-                              />
-                            </RouterLink>
-                            <!-- Edit Btn -->
-                            <RouterLink
-                              v-if="editShouldRender(item.value)"
-                              :to="getEditLink(item.value.id)"
-                              @click="handleEntityClick(item.value)"
-                            >
-                              <ActionBtn
-                                :icon="config.edit?.icon || 'fa-edit'"
-                                :label="config.edit?.label || 'Edit'"
-                                :color="config.edit?.color || 'warning'"
-                              />
-                            </RouterLink>
-                            <!-- Duplicate Btn -->
-                            <RouterLink
-                              v-if="allowDuplicate && editShouldRender(item.value)"
-                              :to="getCopyLink(item.value.id)"
-                              @click="handleEntityClick(item.value, true)"
-                            >
-                              <ActionBtn
-                                icon="fa-copy"
-                                label="Duplicate"
-                                color="purple"
-                              />
-                            </RouterLink>
-                            <ActionBtn
-                              v-if="!hideEnabled && editShouldRender(item.value)"
-                              :icon="item.value.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"
-                              variant="text"
-                              :label="item.value.enabled ? 'Disable' : 'Enable'"
-                              :disabled="disableActions"
-                              @click="toggleEnableDisable(item.value)"
-                            />
+                <template #default="{ items }">
+                  <UserListItem v-for="item in items.map(i => i.value)" :item="item"/>
+                </template>
 
-                            <!-- 👉 ExtraAction Btn -->
-                            <template v-for="extraAction in extraActions">
-                              <ActionBtn
-                                v-if="extraActionShouldRender(extraAction, item.value)"
-                                :key="extraAction.icon"
-                                color="orange"
-                                data-test="extra-action"
-                                :icon="(extraAction.dynamicIcon && item.value[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"
-                                :label="extraAction.title"
-                                :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item.value, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item.value, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"
-                                @click="handleExtraActionClick(item.value, extraAction)"
-                              />
-                            </template>
-                            <!-- 👉 Delete Btn -->
-                            <ActionBtn
-                              v-if="deleteShouldRender(item.value)"
-                              icon="trash-can"
-                              label="Delete"
-                              color="error"
-                              class="text-black"
-                              @click="updateDeleteModalId(item.value.id)"
-                            />
-                          </div>
-                        </div>
-                      </template>
-                    </Post>
-
-                  <br>
-
-                  </template>
-
+                <!-- 👉 Pagination Setup -->
+                <template #footer>
+                  <slot name="extraFooterContent" />
                   <VRow v-if="!hidePagination" class="pt-4 pb-3">
+                    <!-- 👉 Pagination Label -->
                     <VCol class="pt-6 ps-4">
                       <label v-if="totalRows" class="font-15">
                         {{
@@ -209,6 +61,7 @@
                         }}
                       </label>
                     </VCol>
+                    <!-- 👉 Pagination Functionality -->
                     <VCol>
                       <VPagination
                         v-show="totalPages > 0"
@@ -222,11 +75,13 @@
                       />
                     </VCol>
                   </VRow>
-                  </template>
-
-
-
+                </template>
               </VDataIterator>
+              <div
+                v-else
+              >
+                {{ $t('No users found')}}
+              </div>
             </VCol>
           </VRow>
         </VCard>
@@ -236,11 +91,11 @@
 </template>
 
 <script>
-import useGenericEntityStore from '@/stores/entity'
+import useGenericEntityStore from '@/stores/entity.js'
 import { defineStore } from 'pinia'
-import ADialog from './Dialog.vue'
-import ActionBtn from './entity/ActionBtn.vue'
-import TableFilters from './entity/TableFilters.vue'
+import ADialog from '../Dialog.vue'
+import ActionBtn from '../entity/ActionBtn.vue'
+import UserListItem from "@/components/project/UserListItem.vue";
 
 /**
  * The generic EntityList component for lists.
@@ -248,8 +103,8 @@ import TableFilters from './entity/TableFilters.vue'
  */
 export default {
   components: {
+    UserListItem,
     ActionBtn,
-    TableFilters,
     ADialog,
   },
   props: {
@@ -286,7 +141,7 @@ export default {
     },
     legendTitle: {
       type: String,
-      default: 'Αποτελέσματα Αναζήτησης',
+      default: '',
     },
     singleEdit: {
       type: Boolean,
@@ -406,15 +261,11 @@ export default {
     'itemSelected',
     'itemFetched',
     'entityDeleted',
-    'filterUpdated',
     'editModeSet',
     'extraItemFetched',
   ],
   setup(props) {
-    const entityStore = defineStore(
-      props.config.endpoint,
-      useGenericEntityStore(props.config.endpoint),
-    )()
+    const entityStore = defineStore(props.config.endpoint, useGenericEntityStore(props.config.endpoint),)()
 
     return {
       entityStore,
@@ -441,7 +292,6 @@ export default {
       disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,
-      filterVals: {},
       entityHeaderTitleField: {},
     }
   },
@@ -455,32 +305,6 @@ export default {
       },
     },
 
-    tableColumns() {
-      const cols = this.columns.map(field => ({
-        ...field,
-        title: this.$t(field.title),
-        align: 'center',
-      }))
-   
-      if (!this.hideTableActions) {
-        cols.push({
-          key: 'actions',
-          title: this.$t('actions'),
-          sortable: false,
-        })
-      }
-
-      return cols
-    },
-    customSelections() {
-      const selObj = {}
-
-      this.selectedItems.forEach(item => {
-        selObj[item.id] = true
-      })
-
-      return selObj
-    },
     filteredEntities() {
       if (this.isSelectable) {
         return this.entities.map(entity => {
@@ -509,11 +333,11 @@ export default {
           ? this.$t('Add New') + ' ' + this.$t(this.config.title.geniki)
           : this.$t('Edit') + ' ' + this.$t(this.config.title.geniki)
     },
-    filtersTitle() {
-      return this.filtersLegendTitle || this.$t('Search') + ' ' + this.$t(this.config.title.geniki)
-    },
   },
   mounted() {
+
+    this.fetchEntities()
+
     const rights = this.$store.userRights
 
     this.allowInsert = true
@@ -528,16 +352,6 @@ export default {
     this.tableReady = true
   },
   methods: {
-    updateSelections(item, val) {
-      if (val) {
-        this.selectedItems.push(item)
-      } else {
-        this.selectedItems.splice(
-          this.selectedItems.findIndex(entity => entity.id === item.id),
-          1,
-        )
-      }
-    },
     updateDeleteModalId(deleteId) {
       this.deleteModalId = deleteId
       this.deleteDialog = true
@@ -553,7 +367,7 @@ export default {
           this.currentPage = maxPage
         }
       }
-      
+
       const queryParams = {
         searchquery: this.searchQuery || null,
         page: this.currentPage - 1,
@@ -590,13 +404,7 @@ export default {
     fetchEntities() {
       return this.getEntities(this.getQueryParams())
     },
-    fetchAllEntities() {
-      return this.getEntities({
-        ...this.getQueryParams(),
-        size: null,
-      })
-    },
-    async getEntities(params) {
+    getEntities(params) {
       return this.entityStore
         .getEntities(params)
         .then(response => {
@@ -679,11 +487,11 @@ export default {
     extraActionShouldRender(action, item) {
       return (
         (!action.hasOwnProperty('authorityValidation') ||
-            action.authorityValidation) &&
-          (!action.renderCondition ||
-            item[action.renderCondition.key] === action.renderCondition.value) &&
-          (!action.propertyExists || item[action.propertyExists]) &&
-          (!action.propertyNotExists || !item[action.propertyNotExists])
+          action.authorityValidation) &&
+        (!action.renderCondition ||
+          item[action.renderCondition.key] === action.renderCondition.value) &&
+        (!action.propertyExists || item[action.propertyExists]) &&
+        (!action.propertyNotExists || !item[action.propertyNotExists])
       )
     },
     viewShouldRender(item) {
@@ -691,7 +499,7 @@ export default {
         !this.hideView &&
         (!this.config.viewCondition ||
           item[this.config.viewCondition.key] ===
-            this.config.viewCondition.value)
+          this.config.viewCondition.value)
       )
     },
     editShouldRender(item) {
@@ -700,7 +508,7 @@ export default {
         !this.hideEdit &&
         (!this.config.editRenderCondition ||
           item[this.config.editRenderCondition.key] ===
-            this.config.editRenderCondition.value) &&
+          this.config.editRenderCondition.value) &&
         (!this.config.editPropertyExists ||
           item[this.config.editPropertyExists]) &&
         (!this.config.editPropertyNotExists ||
@@ -710,64 +518,49 @@ export default {
     deleteShouldRender(item) {
       return (
         this.allowDelete &&
-          !this.hideDelete &&
-          (!this.config.hasOwnProperty('deleteValidation') ||
-            this.config.deleteValidation) &&
-          (!this.config.deleteRenderCondition ||
-            item[this.config.deleteRenderCondition.key] ===
-            this.config.deleteRenderCondition.value) &&
-          (!this.config.deletePropertyExists ||
-            item[this.config.deletePropertyExists]) &&
-          (!this.config.deletePropertyNotExists ||
-            !item[this.config.deletePropertyNotExists])
+        !this.hideDelete &&
+        (!this.config.hasOwnProperty('deleteValidation') ||
+          this.config.deleteValidation) &&
+        (!this.config.deleteRenderCondition ||
+          item[this.config.deleteRenderCondition.key] ===
+          this.config.deleteRenderCondition.value) &&
+        (!this.config.deletePropertyExists ||
+          item[this.config.deletePropertyExists]) &&
+        (!this.config.deletePropertyNotExists ||
+          !item[this.config.deletePropertyNotExists])
       )
-    },
-    filterUpdated(fieldId, newVal) {
-      this.$emit('filterUpdated', fieldId, newVal)
-    },
-    initFilterValues(selFilters) {
-      this.filterVals = selFilters
-    },
-    updateFilterValues(selFilters) {
-      this.filterVals = selFilters
-      this.refetchData()
-    },
-    clearFilter(filter) {
-      this.$refs.filters.filterVals[filter] = null
-    },
-    closeModal(refetch) {
-      this.editDialogOpen = false
-      this.isEntityDuplicate = false
-      if (refetch) {
-        this.refetchData()
-      }
     },
     fetchItem(item) {
       this.$emit('itemFetched', item)
-    },
-    fetchExtraItem(item) {
-      this.$emit('extraItemFetched', item)
-    },
-    handleEntitySave() {
-      this.editDialogOpen = false
-      this.refetchData()
-      this.$store.clearCache()
     },
     setEntityData(entityData) {
       this.fetchItem(entityData)
       this.editDialogOpen = true
     },
     handleAddClick() {
+
+      this.$router.push(this.getCreateLink());
+
       if (!this.singleEdit || this.dialogCreate) {
         this.setEntityData(JSON.parse(JSON.stringify(this.blankEntity)))
       }
     },
     handleViewClick(entityData) {
+
+      this.$router.push(this.getViewLink(entityData.id))
+
       if (this.storeTarget != '') {
         this.$store['selected' + this.storeTarget] = entityData
       }
     },
     handleEntityClick(entityData, duplicate = false) {
+      if(duplicate){
+        this.$router.push(this.getCopyLink(entityData.id))
+      }
+      else{
+        this.$router.push(this.getEditLink(entityData.id))
+      }
+
       if (!this.singleEdit) {
         if (duplicate) {
           delete entityData.id
@@ -816,15 +609,56 @@ export default {
       await this.entityStore.toggleEnabled(item)
       this.refetchData()
     },
-    getValueByPath(obj, path) {      
+    getValueByPath(obj, path) {
       return path.split('.').reduce((prev, curr) => {
         return prev ? prev[curr] : null
       }, obj)
     },
-    handleUpdatePost(updatedPost){
-      const i = this.entities.findIndex(post => post.id === updatedPost.id)
-      this.entities[i] = updatedPost
-    }
+    handleUpdateUser(updatedUser){
+      const i = this.entities.findIndex(user => user.id === updatedUser.id)
+      this.entities[i] = updatedUser
+    },
+    filterUpdated(fieldId, newVal) {
+      this.$emit('filterUpdated', fieldId, newVal)
+    },
+    initFilterValues(selFilters) {
+      this.filterVals = selFilters
+    },
+    updateFilterValues(selFilters) {
+
+      console.log(selFilters)
+
+      this.filterVals = selFilters
+      this.refetchData()
+    },
   },
 }
 </script>
+
+<style lang="scss">
+.list-item {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(
+      to right,
+      rgb(var(--v-theme-primary)) 50%,  /* Left half with overlay */
+      transparent 50% /* Right half transparent */
+  );
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.profile-picture {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+}
+
+</style>

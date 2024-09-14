@@ -94,13 +94,13 @@
 
       <BigActionBtn
         icon="fa-thumbs-up"
-        :label="(liked)? $t('Liked!') : $t('Like!')"
+        :label="(liked)? 'Liked!' : 'Like!'"
         :color="(liked)? 'success' : 'primary'"
         @click="like"
       />
       <BigActionBtn
         icon="fa-comment"
-        :label="$t('Comment')"
+        :label="'Comment'"
         color="warning"
         @click="comment"
       />

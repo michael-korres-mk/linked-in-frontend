@@ -58,6 +58,9 @@ export default {
       roleOptions: [],
     }
   },
+  mounted() {
+    this.fetchRoles()
+  },
   computed: {
     config() {
       return {
@@ -129,7 +132,7 @@ export default {
           colSize: 4,
         },
         {
-          id: 'role',
+          id: 'userRole',
           type: 'select',
           label: this.$t('Role'),
           options: this.roleOptions,
@@ -157,12 +160,14 @@ export default {
       return 'Επιλέξτε Χρήστη για να εμφανιστούν οι ανατεθειμένοι ρόλοι του'
     },
   },
-  async mounted() {
-  },
   methods: {
     handleSelectedChange(selectedItems) {
       this.selections = selectedItems
       this.selectedEntity = selectedItems.length ? selectedItems[0] : null
+    },
+    async fetchRoles(){
+      this.roleOptions = await this.$store.roles()
+      console.log(this.roleOptions)
     },
   },
 }
