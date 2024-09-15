@@ -10,6 +10,7 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
 import NavBarI18n from '@core/components/I18n.vue'
 import { HorizontalNavLayout } from '@layouts'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
+import UserSidebar from "@/layouts/components/UserSidebar.vue";
 
 // SECTION: Loading Indicator
 const isFallbackStateActive = ref(false)
@@ -52,20 +53,41 @@ watch([
 
     <AppLoadingIndicator ref="refLoadingIndicator" />
 
-    <!-- 👉 Pages -->
-    <RouterView v-slot="{ Component }">
+    <div v-if="sideBarLayout()" class="my-page">
+      <UserSidebar class="my-sidebar" />
 
+      <div class="my-main">
+        <!-- 👉 Pages -->
+        <RouterView v-slot="{ Component }">
 
-<!--      <Breadcrumbs />-->
+    <!--      <Breadcrumbs />-->
 
-      <Suspense
-        :timeout="0"
-        @fallback="isFallbackStateActive = true"
-        @resolve="isFallbackStateActive = false"
-      >
-        <Component :is="Component" />
-      </Suspense>
-    </RouterView>
+          <Suspense
+            :timeout="0"
+            @fallback="isFallbackStateActive = true"
+            @resolve="isFallbackStateActive = false"
+          >
+            <Component :is="Component" />
+          </Suspense>
+        </RouterView>
+      </div>
+    </div>
+
+    <div v-else >
+      <!-- 👉 Pages -->
+      <RouterView v-slot="{ Component }">
+
+        <!--      <Breadcrumbs />-->
+
+        <Suspense
+          :timeout="0"
+          @fallback="isFallbackStateActive = true"
+          @resolve="isFallbackStateActive = false"
+        >
+          <Component :is="Component" />
+        </Suspense>
+      </RouterView>
+    </div>
 
     <!-- 👉 Footer -->
     <template #footer>
@@ -76,3 +98,32 @@ watch([
     <!-- <TheCustomizer /> -->
   </HorizontalNavLayout>
 </template>
+
+<script>
+
+export default {
+  methods: {
+    sideBarLayout() {
+      return ['home'].includes(this.$route.name) //&& !(this.user.userRole === 'ADMIN') // TODO: check this out
+    },
+  }
+}
+
+</script>
+
+<style lang="scss" scoped>
+.my-page {
+  display: grid;
+  grid-template-areas: "sidebar main";
+  grid-template-rows: 1fr; /* Only one row since we have a single horizontal layout */
+  grid-template-columns: 25% 75%; /* Sidebar is 25%, main content is 75% */
+}
+
+.my-sidebar {
+  grid-area: sidebar;
+}
+
+.my-main {
+  grid-area: main;
+}
+</style>
