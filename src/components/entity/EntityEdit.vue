@@ -49,7 +49,7 @@
       </VBtn>
 
       <VBtn
-        v-if="canEdit"
+        v-if="canEdit && !hideSubmitButton"
         v-show="wizardSteps == 0 || wizardSteps == tabIndex + 1"
         :disabled="disableActions || !(valid && allowSave)"
         type="submit"
@@ -76,6 +76,11 @@
           data-test="extra-action-button"
           @click="handleExtraActionClick(extraAction)"
         >
+          <FontAwesomeIcon
+            :icon="extraAction.icon"
+            size="lg"
+            class="pe-5"
+          />
           {{ extraAction.title }}
         </VBtn>
       </template>
@@ -87,6 +92,7 @@
     >
       <!-- Return Button -->
       <VBtn
+        v-if="!hideReturnButton"
         class="px-5"
         color="secondary"
         variant="flat"
@@ -103,7 +109,7 @@
         Επιστροφή
       </VBtn>
       <VBtn
-        v-if="canEdit"
+        v-if="canEdit && !hideEditButton"
         class="px-5 mx-2"
         variant="flat"
         rounded="md"
@@ -160,7 +166,19 @@ export default {
       type: Number,
       default: 0,
     },
+    hideReturnButton: {
+      type: Boolean,
+      default: false,
+    },
+    hideEditButton: {
+      type: Boolean,
+      default: false,
+    },
     hideCancelButton: {
+      type: Boolean,
+      default: false,
+    },
+    hideSubmitButton: {
       type: Boolean,
       default: false,
     },

@@ -88,6 +88,9 @@ legend.legend-title {
   min-block-size: 1px;
   padding-block: 1.5rem;
   padding-inline: 1rem;
+  flex-direction: column;
+  align-items: center; /* Vertical centering */
+  justify-content: center; /* Optional: Horizontal centering */
 }
 
 // .v-expansion-panel {
@@ -492,6 +495,7 @@ body
   padding: 10px;
   border: 1px solid #C8C7CB;
   border-radius: 10px;
+  opacity: 0.6;
   background-color: #FBFBFB;
 }
 
