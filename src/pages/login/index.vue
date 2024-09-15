@@ -53,11 +53,11 @@ export default {
       this.$router.push('/login-wall');
     },
     async myLoginUser() {
-      let userData = await this.$store.jwtLoginCredentials(this.form.email, this.form.password)
+      await this.$store.jwtLoginCredentials(this.form.email, this.form.password)
         .then(res => {
           this.$store.userData = res.data;
           sessionStorage.setItem('userData', JSON.stringify(res.data));
-          this.$router.push('/home');
+          this.$router.push((this.$store.isAdmin)? '/users' : '/home');
         })
         .catch(err => {this.loginError(err.response.data.message)})
       ;

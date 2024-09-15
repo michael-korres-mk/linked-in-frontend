@@ -25,16 +25,13 @@
         v-if="!hideActions"
         class="d-flex justify-center my-6"
       >
-        <div class="">
+        <div>
           <!-- Cancel Button -->
           <VBtn
-            class="btn-lightblue px-5"
-            color="secondary"
+            :color="cancelColor"
             variant="flat"
             rounded="md"
             size="large"
-            role="return-button"
-            data-test="return-button"
             @click="cancelCallback"
           >
             <FontAwesomeIcon
@@ -47,12 +44,10 @@
           <!-- Submit Button -->
           <VBtn
             v-if="!hideSubmitBtn"
-            class="px-5"
-            color="primary"
+            :color="successColor"
             variant="flat"
             rounded="md"
             size="large"
-            data-test="edit-button"
             @click="successCallback"
           >
             <FontAwesomeIcon
@@ -99,13 +94,13 @@ export default {
       type: String,
       default: 'fa-xmark',
     },
+    cancelColor: {
+      type: String,
+      default: 'secondary',
+    },
     successColor: {
       type: String,
       default: 'primary',
-    },
-    successBgColor: {
-      type: String,
-      default: 'darkblue',
     },
     cancelTitle: {
       type: String,

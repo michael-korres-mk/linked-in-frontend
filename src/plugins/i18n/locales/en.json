@@ -420,5 +420,10 @@
   "Employment Type": "Employment Type",
   "Apply":"Apply",
   "Applied": "Applied !",
-  "My Profile": "My Profile"
+  "My Profile": "My Profile",
+  "-- Choose --":"-- Choose --",
+  "Download User Data": "Download User Data",
+  "Add Selected": "Add Selected",
+  "Download XML": "Download XML",
+  "Download JSON": "Download JSON"
 }

@@ -10,7 +10,7 @@
       size="lg"
       class="pe-5"
     />
-    <div class="font-20">
+    <div>
       {{ $t(label) }}
     </div>
   </VBtn>
@@ -51,5 +51,6 @@ export default {
 .my-button {
   min-width: 150px;
   max-width: 300px;
+  margin: 5px;
 }
 </style>

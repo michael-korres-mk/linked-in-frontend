@@ -425,5 +425,10 @@
   "Employment Type": "Τύπος εργασίας",
   "Apply": "Υποβολή Αίτησης",
   "Applied": "Η Αίτηση Υπεβλήθη !",
-  "My Profile": "Το Προφίλ μου"
+  "My Profile": "Το Προφίλ μου",
+  "-- Choose --": "-- Επιλέξτε --",
+  "Download User Data": "Λήψη Δεδομένων Χρηστών",
+  "Add Selected": "Προσθήκη Επιλεγμένων",
+  "Download XML": "Λήψη XML",
+  "Download JSON": "Λήψη JSON"
 }

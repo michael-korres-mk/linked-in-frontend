@@ -20,12 +20,12 @@ definePage({
     @editModeSet="editModeSet"
     @propUpdated="afterPropUpdate"
   >
-    <CardList
-      v-if="!editMode"
-      legend-title="User Rights"
-      no-data-title="Κανένα καταχωρημένο δικαίωμα στους ανατεθειμένους ρόλους"
-      :data-object="categorizedRights"
-    />
+<!--    <CardList-->
+<!--      v-if="!editMode"-->
+<!--      legend-title="User Rights"-->
+<!--      no-data-title="Κανένα καταχωρημένο δικαίωμα στους ανατεθειμένους ρόλους"-->
+<!--      :data-object="categorizedRights"-->
+<!--    />-->
   </EntitySingle>
 </template>
 
@@ -109,16 +109,16 @@ export default {
           optionLabel: this.$t('enabled'),
           colSize: 3,
         },
-        {
-          id: 'roles',
-          type: 'select',
-          object: true,
-          options: this.roleOptions,
-          multiple: true,
-          label: this.$t('Roles'),
-          colsize: 6,
-          readonly: !this.editMode,
-        },
+        // {
+        //   id: 'roles',
+        //   type: 'select',
+        //   object: true,
+        //   options: this.roleOptions,
+        //   multiple: true,
+        //   label: this.$t('Roles'),
+        //   colsize: 6,
+        //   readonly: !this.editMode,
+        // },
       ]
     },
     // notAssignedRoles() {
@@ -132,15 +132,15 @@ export default {
     //
     //   return this.roleOptions.filter(r => !assignedRoleIds.includes(r.id))
     // },
-    categorizedRights() {
-      return this.entity.authorities.reduce((acc, right) => {
-        (acc[right.group.title] = acc[right.group.title] || []).push(
-          right.title,
-        )
-
-        return acc
-      }, {})
-    },
+    // categorizedRights() {
+    //   return this.entity.authorities.reduce((acc, right) => {
+    //     (acc[right.group.title] = acc[right.group.title] || []).push(
+    //       right.title,
+    //     )
+    //
+    //     return acc
+    //   }, {})
+    // },
   },
   async mounted() {
     this.setParentField()
@@ -148,14 +148,14 @@ export default {
   methods: {
     entityHasBeenUpdated(entity) {
       this.setEntity(entity)
-      this.fetchRoles()
+      // this.fetchRoles()
     },
-    async fetchRoles() {
-      this.roleOptions = await this.$store.roles()
-    },
+    // async fetchRoles() {
+    //   this.roleOptions = await this.$store.roles()
+    // },
     afterPropUpdate(fieldObj) {
       if (fieldObj.id === 'organization') {
-        this.fetchRoles()
+        // this.fetchRoles()
         this.entity.roles.splice(0, this.entity.roles.length)
       }
     },
