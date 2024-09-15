@@ -17,7 +17,10 @@
       :data-transformation="dataTransformation"
       :edit-transformation="editTransformation"
       :edit-mode="editMode"
+      :hide-return-button="hideReturnButton"
+      :hide-edit-button="hideEditButton"
       :hide-cancel-button="hideCancelButton"
+      :hide-submit-button="hideSubmitButton"
       :single-edit="singleEdit"
       :return-to-list="returnToList"
       :authority="authority"
@@ -179,7 +182,19 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideReturnButton: {
+      type: Boolean,
+      default: false,
+    },
+    hideEditButton: {
+      type: Boolean,
+      default: false,
+    },
     hideCancelButton: {
+      type: Boolean,
+      default: false,
+    },
+    hideSubmitButton: {
       type: Boolean,
       default: false,
     },

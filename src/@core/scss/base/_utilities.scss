@@ -53,13 +53,22 @@ $card-spacer-content: 16px;
   color: #fff !important;
 }
 
+.text-info {
+  color: rgba(var(--v-theme-info))!important;
+}
+
 .text-white-variant {
   color: rgba(211, 212, 220);
 }
 
 .text-link{
-  &:not(:hover){
-    color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity))
+  &:not(:hover) {
+    color: rgba(var(--v-theme-info)); /* Applies when not hovered */
+  }
+
+  &:hover {
+    color: rgba(var(--v-theme-info)); /* Applies when hovered */
+    text-decoration: underline;
   }
 }
 

@@ -1,23 +1,9 @@
 <template>
 
   <VBtn
-    v-if="iconOnly"
-    color="white"
-    size="large"
-    class="mb-2 rounded my-button"
-  >
-    <FontAwesomeIcon
-      :icon="icon"
-      size="lg"
-      class="pe-5"
-    />
-  </VBtn>
-
-  <VBtn
-    v-else
     color="primary"
     class="mb-2 rounded my-button"
-    size="large"
+    :size="size"
   >
     <FontAwesomeIcon
       :icon="icon"
@@ -48,6 +34,10 @@ export default {
     label: {
       type: String,
       required: 'Btn',
+    },
+    size:{
+      type: String,
+      default: 'large',
     }
   },
 }

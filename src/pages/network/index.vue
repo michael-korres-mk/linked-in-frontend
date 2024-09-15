@@ -13,35 +13,38 @@ import UsersList from "@/components/project/UsersList.vue";
   <h1 class="text-center text-info">
     {{ $t('Network') }}
   </h1>
+  <div class="card-wrapper bg-global-primary">
+    <div class="card-body text-center">
+      <v-card>
+        <v-tabs v-model="tab" grow>
+          <v-tab value="tab-1">
+            {{ $t('My Network') }}
+          </v-tab>
+          <v-tab value="tab-2">
+            {{ $t('Search') }}
+          </v-tab>
+    <!--      <v-tab value="tab-3">-->
+    <!--        {{ $t('Connection Requests') }}-->
+    <!--      </v-tab>-->
+        </v-tabs>
 
-  <v-card>
-    <v-tabs v-model="tab" grow>
-      <v-tab value="tab-1">
-        {{ $t('My Network') }}
-      </v-tab>
-      <v-tab value="tab-2">
-        {{ $t('Search') }}
-      </v-tab>
-<!--      <v-tab value="tab-3">-->
-<!--        {{ $t('Connection Requests') }}-->
-<!--      </v-tab>-->
-    </v-tabs>
-
-    <v-tabs-window v-model="tab">
-      <v-tabs-window-item class="card-body" value="tab-1">
-        <h2 class="text-center text-info">{{ $t('My Network') }}</h2>
-          <UsersGrid :config="config" :results-per-page="9" hide-view />
-      </v-tabs-window-item>
-      <v-tabs-window-item class="card-body" value="tab-2">
-        <h2 class="text-center text-info">{{ $t('Search') }}</h2>
-        <UsersList :config="config" :filters="filters" :filters-legend-title="''" :results-per-page="9" hide-view />
-      </v-tabs-window-item>
-      <v-tabs-window-item class="card-body" value="tab-3">
-        <h2 class="text-center text-info">{{ $t('Connection Requests') }}</h2>
-        <UsersGrid :config="config" :results-per-page="2" hide-view />
-      </v-tabs-window-item>
-    </v-tabs-window>
-  </v-card>
+        <v-tabs-window v-model="tab">
+          <v-tabs-window-item class="card-body" value="tab-1">
+            <h2 class="text-center text-info">{{ $t('My Network') }}</h2>
+              <UsersGrid :config="config" :results-per-page="9" hide-view />
+          </v-tabs-window-item>
+          <v-tabs-window-item class="card-body" value="tab-2">
+            <h2 class="text-center text-info">{{ $t('Search') }}</h2>
+            <UsersList :config="config" :filters="filters" :filters-legend-title="''" :results-per-page="9" hide-view />
+          </v-tabs-window-item>
+          <v-tabs-window-item class="card-body" value="tab-3">
+            <h2 class="text-center text-info">{{ $t('Connection Requests') }}</h2>
+            <UsersGrid :config="config" :results-per-page="2" hide-view />
+          </v-tabs-window-item>
+        </v-tabs-window>
+      </v-card>
+    </div>
+  </div>
 </template>
 
 <script>

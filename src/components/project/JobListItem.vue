@@ -8,26 +8,9 @@
           </v-avatar>
         </VCol>
         <VCol>
-          <h2 class="text-info">{{ item.title }}</h2>
+          <RouterLink :to="`/jobs/applications/${this.item.id}?view=1`"><h2 class="text-link">{{ item.title }}</h2></RouterLink>
           <h4 class="text-primary">{{ item.company }}</h4>
           <h4 class="text-primary">{{ item.workplaceType }} | {{ item.employmentType }}</h4>
-
-
-<!--          <BigActionBtn-->
-<!--            v-if="!requesting"-->
-<!--            :icon="(requested)? 'fa-check' : 'fa-user-plus'"-->
-<!--            :label="(requested)? 'Sent' : 'Connect'"-->
-<!--            :disabled="requested"-->
-<!--            :color="(requested)? 'info' : 'primary'"-->
-<!--            @click="sendRequest"-->
-<!--          />-->
-<!--          <v-progress-circular-->
-<!--            v-else-->
-<!--            indeterminate-->
-<!--            :size="22"-->
-<!--            :width="4"-->
-<!--          />-->
-
         </VCol>
       </VRow>
     </VCard>

@@ -28,6 +28,7 @@ declare module 'vue-router/auto-routes' {
     'home': RouteRecordInfo<'home', '/home', Record<never, never>, Record<never, never>>,
     'in-id': RouteRecordInfo<'in-id', '/in/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'jobs': RouteRecordInfo<'jobs', '/jobs', Record<never, never>, Record<never, never>>,
+    'jobs-applications-id': RouteRecordInfo<'jobs-applications-id', '/jobs/applications/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-wall': RouteRecordInfo<'login-wall', '/login-wall', Record<never, never>, Record<never, never>>,
     'network': RouteRecordInfo<'network', '/network', Record<never, never>, Record<never, never>>,
