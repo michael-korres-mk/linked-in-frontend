@@ -75,13 +75,13 @@ import editmixins from "@/mixins/entityedit.js"
             color="primary"
             icon="fa-download"
             :label="'Download XML'"
-            @click="downloadUsers(true)"
+            @click="() => downloadUsers(true)"
           />
           <BigActionBtn
             color="primary"
             icon="fa-download"
             :label="'Download JSON'"
-            @click="downloadUsers"
+            @click="() => downloadUsers(false)"
           />
         </div>
       </div>
@@ -255,14 +255,14 @@ export default {
         //   this.essFilter = val
         // }
       },
-      async downloadUsers(xml = false){
+      async downloadUsers(xml){
 
         const fileObj = await this.$store.fetchUsersFile(this.users,xml)
 
         const link = document.createElement('a')
 
         link.href = window.URL.createObjectURL(new Blob([fileObj.data]))
-        link.setAttribute('download', 'Users' + (xml)? 'XML' : 'JSON')
+        link.setAttribute('download', 'users-list.' + ((xml)? 'xml' : 'json'))
         document.body.appendChild(link)
         link.click()
         // this.downloadingFile = false
