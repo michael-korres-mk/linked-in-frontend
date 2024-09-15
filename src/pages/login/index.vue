@@ -53,32 +53,32 @@ export default {
       this.$router.push('/login-wall');
     },
     async myLoginUser() {
-      let userData = await this.$store.jwtLoginCredentials(this.form.email, this.form.password);
-      this.$store.userData = userData.data;
-      sessionStorage.setItem('userData', JSON.stringify(userData.data));
-      this.$router.push('/home');
-    },
-    authenticateUser(token) {
-      useJwt.setToken(token);
-      this.$store
-        .jwtLogin(token)
+      let userData = await this.$store.jwtLoginCredentials(this.form.email, this.form.password)
         .then(res => {
-          let userData = res.data;
-          userData.token = token;
-          this.$store.userData = userData;
-          sessionStorage.setItem('userData', JSON.stringify(userData));
+          this.$store.userData = res.data;
+          sessionStorage.setItem('userData', JSON.stringify(res.data));
           this.$router.push('/home');
         })
-        .catch(error => {
-          console.error('Authentication failed:', error);
-          this.failedLogin = true;
-          this.loginError();
-        });
+        .catch(err => {this.loginError(err.response.data.message)})
+      ;
     },
-    loginError() {
+    // authenticateUser(token) {
+    //   useJwt.setToken(token);
+    //   this.$store.jwtLogin(token)
+    //     .then(res => {
+    //       let userData = res.data;
+    //       userData.token = token;
+    //       this.$store.userData = userData;
+    //       sessionStorage.setItem('userData', JSON.stringify(userData));
+    //       this.$router.push('/home');
+    //     })
+    //     .catch(err => {this.loginError(err.response.data.message)})
+    //
+    // },
+    loginError(errorMessage) {
       this.errorToast({
         title: 'Αδυναμία Σύνδεσης',
-        text: 'Δεν βρέθηκε χρήστης με το συγκεκριμένο ΑΦΜ',
+        text: errorMessage,
       });
     },
   },
