@@ -8,7 +8,7 @@
           </v-avatar>
         </VCol>
         <VCol>
-          <RouterLink :to="`/jobs/applications/${this.item.id}?view=1`"><h2 class="text-link">{{ item.title }}</h2></RouterLink>
+          <RouterLink :to="`/jobs/${this.item.id}?view=1`"><h2 class="text-link">{{ item.title }}</h2></RouterLink>
           <h4 class="text-primary">{{ item.company }}</h4>
           <h4 class="text-primary">{{ item.workplaceType }} | {{ item.employmentType }}</h4>
         </VCol>

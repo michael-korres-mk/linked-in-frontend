@@ -49,6 +49,7 @@ export default {
 }
 
 .my-button {
-  width: 150px; /* Set a fixed width */
+  min-width: 150px;
+  max-width: 300px;
 }
 </style>
