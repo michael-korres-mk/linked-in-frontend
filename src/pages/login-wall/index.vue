@@ -65,9 +65,6 @@ export default {
     if (this.hasToken) {
       this.authenticateUser(this.$route.query.token)
     }
-    if (this.hasError) {
-      this.loginError()
-    }
   },
   methods: {
     webLogin() {
@@ -75,29 +72,6 @@ export default {
     },
     webSignup() {
       this.$router.push({ name: 'sign-up' })
-    },
-    authenticateUser(token) {
-      useJwt.setToken(token)
-      this.$store
-        .jwtLogin(token)
-        .then(res => {
-          let userData = res.data
-          userData.token = token
-          this.$store.userData = userData
-          sessionStorage.setItem('userData', JSON.stringify(userData))
-          this.$router.push('/home')
-        })
-        .catch(error => {
-          console.error('Authentication failed:', error)
-          this.failedLogin = true
-          this.loginError()
-        })
-    },
-    loginError() {
-      this.errorToast({
-        title: 'Αδυναμία Σύνδεσης',
-        text: 'Δεν βρέθηκε χρήστης με το συγκεκριμένο ΑΦΜ',
-      })
     },
   },
 }

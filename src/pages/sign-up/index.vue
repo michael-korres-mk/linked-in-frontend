@@ -33,7 +33,7 @@ definePage({ meta: { layout: 'blank' } })
           <div class="d-flex justify-end flex-wrap gap-3 padding-top-2">
             <VBtn color="secondary" variant="tonal" @click="returnToLoginWall"> Cancel </VBtn>
 
-            <VBtn @click="mySignUpUser">
+            <VBtn @click="signUpUser">
               Sign Up
               <VIcon end icon="tabler-arrow-right" class="flip-in-rtl"/>
             </VBtn>
@@ -64,6 +64,7 @@ export default {
         mobile: '',
         password: '',
         confirmPassword: '',
+        userRole:'PROFESSIONAL',
         photo:{}
       },
       logoImage: logo,
@@ -73,44 +74,25 @@ export default {
     returnToLoginWall() {
       this.$router.push('/login-wall');
     },
-    async mySignUpUser() {
-
-      const userData = await this.entityStore.saveEntity(this.form,false)
-
-      this.$store.userData = userData;
-      sessionStorage.setItem('userData', JSON.stringify(userData));
-      this.$router.push('/home');
-    },
-    authenticateUser(token) {
-      useJwt.setToken(token);
-      this.$store
-        .jwtLogin(token)
+    async signUpUser() {
+      await this.entityStore.saveEntity(this.form,false)
         .then(res => {
-          let userData = res.data;
-          userData.token = token;
-          this.$store.userData = userData;
-          sessionStorage.setItem('userData', JSON.stringify(userData));
+          this.$store.userData = res;
+          sessionStorage.setItem('userData', JSON.stringify(res));
           this.$router.push('/home');
         })
-        .catch(error => {
-          console.error('Authentication failed:', error);
-          this.failedLogin = true;
-          this.loginError();
-        });
+        .catch(err => {this.signupError(err.response.data.message)})
     },
-    loginError() {
+    signupError(errorMessage) {
       this.errorToast({
-        title: 'Αδυναμία Σύνδεσης',
-        text: 'Δεν βρέθηκε χρήστης με το συγκεκριμένο ΑΦΜ',
-      });
+        title: 'Αδυναμία Εγγραφής Χρήστη',
+        text: errorMessage,
+      })
     },
   },
   mounted() {
     if (this.hasToken) {
       this.authenticateUser(this.$route.query.token);
-    }
-    if (this.hasError) {
-      this.loginError();
     }
   },
 };
