@@ -7,23 +7,20 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
   <VBadge
     dot
     bordered
-    location="bottom right"
-    offset-x="3"
-    offset-y="3"
     color="success"
+    @mouseover="isHovered = true"
+    @mouseleave="isHovered = false"
   >
     <VAvatar
       class="cursor-pointer"
       color="primary"
-      variant="tonal"
+      variant="outlined"
     >
-      <VIcon
-        size="large"
-        icon="tabler-user"
-      />
+      <FontAwesomeIcon :icon="(!isHovered && !$refs.userMenu?.modelValue)?'far fa-user' : 'fas fa-user'"/>
 
       <!-- SECTION Menu -->
       <VMenu
+        ref="userMenu"
         activator="parent"
         width="350"
         location="bottom end"
@@ -41,10 +38,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
                   color="success"
                   bordered
                 >
-                  <VIcon
-                    size="large"
-                    icon="fa-user-circle-o"
-                  />
+                  <FontAwesomeIcon :icon="'fas fa-user-circle'"/>
                 </VBadge>
                 <VListItemTitle class="ms-4">
                   {{ user.username }}
@@ -85,8 +79,12 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 </template>
 
 <script>
-
   export default {
+    data(){
+      return {
+        isHovered: false,
+      }
+    },
     computed: {
         personalInfoTitle() {
           return this.$t("Personal Info")
@@ -96,5 +94,4 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
         }
     }
   }
-
 </script>

@@ -1,15 +1,9 @@
 <script setup>
 import navItems from '@/navigation/horizontal'
-import { themeConfig } from '@themeConfig'
 
 // Components
 import Footer from '@/layouts/components/Footer.vue'
-import NavBarNotifications from '@/layouts/components/NavBarNotifications.vue'
-import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
-import UserProfile from '@/layouts/components/UserProfile.vue'
-import NavBarI18n from '@core/components/I18n.vue'
 import { HorizontalNavLayout } from '@layouts'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import UserSidebar from "@/layouts/components/UserSidebar.vue";
 
 // SECTION: Loading Indicator
@@ -30,34 +24,21 @@ watch([
 
 <template>
   <HorizontalNavLayout :nav-items="navItems">
-    <!-- 👉 navbar -->
-    <template #navbar>
-      <div class="app-logo d-flex  gap-x-3">
-        <VNodeRenderer :nodes="themeConfig.app.logo" />
 
-<!--        <h1 class="app-title font-weight-bold leading-normal text-xl text-capitalize">-->
-<!--          {{ themeConfig.app.title }}-->
-<!--        </h1>-->
-      </div>
-      <VSpacer />
 
-      <NavBarI18n
-        v-if="themeConfig.app.i18n.enable && themeConfig.app.i18n.langConfig?.length"
-        :languages="themeConfig.app.i18n.langConfig"
-      />
-
-<!--      <NavbarThemeSwitcher class="me-2" />-->
-      <NavBarNotifications />
-      <UserProfile />
-    </template>
+<!--    <NavBarI18n-->
+<!--      v-if="themeConfig.app.i18n.enable && themeConfig.app.i18n.langConfig?.length"-->
+<!--      :languages="themeConfig.app.i18n.langConfig"-->
+<!--    />-->
+<!--  <NavbarThemeSwitcher class="me-2" />-->
 
     <AppLoadingIndicator ref="refLoadingIndicator" />
 
-    <div v-if="sideBarLayout()" class="my-page">
-      <UserSidebar class="my-sidebar" />
+          <div v-if="sideBarLayout()" class="my-page">
+            <UserSidebar class="my-sidebar" />
 
-      <div class="my-main">
-        <!-- 👉 Pages -->
+            <div class="my-main">
+              <!-- 👉 Pages -->
         <RouterView v-slot="{ Component }">
 
     <!--      <Breadcrumbs />-->
