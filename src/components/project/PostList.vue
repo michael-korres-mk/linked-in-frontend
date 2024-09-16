@@ -31,13 +31,13 @@
       </div>
     </ADialog>
 
-    <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
+    <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'" class="post-list">
       <!-- 👉 Table Container Legend -->
       <legend v-if="!hideLegend" class="legend-title">
         {{ legendTitle }}
       </legend>
       <div class="card-body">
-        <VCard class="elevation-0">
+        <VCard class="elevation-0 post-list" >
           <!-- 👉 Table Container Buttons -->
           <VRow :class="!hideLegend? 'mb-0 pb-0': 'd-flex justify-center mb-0 pb-0'">
             <VCol
@@ -715,3 +715,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.post-list{
+  background-color: #EEE!important;
+}
+</style>
