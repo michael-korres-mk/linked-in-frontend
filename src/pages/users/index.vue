@@ -74,12 +74,14 @@ import editmixins from "@/mixins/entityedit.js"
           <BigActionBtn
             color="primary"
             icon="fa-download"
+            :disabled="users.length === 0"
             :label="'Download XML'"
             @click="() => downloadUsers(true)"
           />
           <BigActionBtn
             color="primary"
             icon="fa-download"
+            :disabled="users.length === 0"
             :label="'Download JSON'"
             @click="() => downloadUsers(false)"
           />

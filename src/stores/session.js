@@ -125,7 +125,7 @@ const actions = {
     return axios.get(`files/${fileId}`, { responseType: 'blob' })
   },
   async fetchUsersFile(users,xml) {
-      return axios.post(`files/users-download`, {users: users,xml: xml},{ responseType: 'blob' })
+      return axios.post(`files/users-download?xml=${xml}`, users,{ responseType: 'blob' })
   },
   getSearchItems(endpoint, parameter, val, prependPath) {
     return this.axiosGet(
