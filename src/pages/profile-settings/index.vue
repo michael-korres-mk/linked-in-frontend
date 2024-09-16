@@ -1,11 +1,10 @@
 <script setup>
 import EntitySingle from '@/components/entity/EntitySingle.vue'
+import entityedit from '@/mixins/entityedit.js'
 </script>
 
 <template>
-  <h1 class="text-center text-info mb-0">
-    {{ title}}
-  </h1>
+  <h1 class="text-center text-info mb-0">{{ title }}</h1>
   <VContainer fluid>
     <VRow>
       <VCol>
@@ -17,6 +16,7 @@ import EntitySingle from '@/components/entity/EntitySingle.vue'
               :entity="entity"
               :form-fields="formFields"
               hide-title
+              @editModeSet="editModeSet"
             />
           </div>
         </div>
@@ -27,8 +27,10 @@ import EntitySingle from '@/components/entity/EntitySingle.vue'
 
 <script>
 export default {
+  mixins: [entityedit],
   data() {
     return {
+      editMode: false,
       entity: {
         roles: [],
       },
@@ -37,12 +39,13 @@ export default {
   },
   computed: {
     title(){
-      return this.$t("Personal Info")
+      return this.$t("Settings")
     },
     config() {
       return {
         endpoint: 'users',
-        route: 'home',
+        route: 'users',
+        returnRoute: (this.$store.isAdmin)? 'users' : 'home',
         title: {
           geniki: 'Χρήστη',
         },
@@ -52,67 +55,32 @@ export default {
     formFields() {
       return [
         {
-          id: 'firstName',
-          type: 'text',
-          label: this.$t('User FirstName'),
-          required: true,
-          colSize: this.colSize,
-        },
-        {
-          id: 'lastName',
-          type: 'text',
-          label: this.$t('User LastName'),
-          required: true,
-          colSize: this.colSize,
-        },
-        {
           id: 'email',
           type: 'text',
           label: this.$t('Email'),
           required: true,
           rules: ['email'],
-          readOnly: true,
           colSize: this.colSize,
         },
         {
-          id: 'username',
+          id: 'password',
           type: 'text',
-          label: this.$t('Username'),
-          rules: ['username'],
-          disabled: true,
-          colSize: this.colSize,
-        },
-        {
-          id: 'mobile',
-          type: 'text',
-          label: this.$t('Telephone'),
-          rules: ['phone'],
+          label: this.$t('Password'),
           required: true,
           colSize: this.colSize,
         },
-        // TODO: Add enabled/disabled (public/private)
         {
-          id: 'workExperience',
-          type: 'tiptap',
-          label: this.$t('Work Experience'),
-          colSize: 12,
-        },
-        {
-          id: 'education',
-          type: 'tiptap',
-          label: this.$t('Education'),
-          colSize: 12,
-        },
-        {
-          id: 'skills',
-          type: 'tiptap',
-          label: this.$t('Skills'),
-          colSize: 12,
+          id: 'confirmPassword',
+          type: 'text',
+          label: this.$t('Confirm Password'),
+          required: true,
+          hidden: !this.editMode,
+          colSize: this.colSize,
         },
       ]
     },
     colSize() {
-      return 6
+      return 12
     },
 
     sections() {

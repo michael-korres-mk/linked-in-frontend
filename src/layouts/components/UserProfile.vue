@@ -1,5 +1,6 @@
 <script setup>
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 </script>
 
 <template>
@@ -52,54 +53,27 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
             </template>
           </VListItem>
           <PerfectScrollbar :options="{ wheelPropagation: false }">
-            <VListItem
-              to="/users/personal-info?view=1"
-              link
-            >
-              <template #prepend>
-                <VIcon
-                  class="me-2"
-                  icon="tabler-user"
-                  size="22"
-                />
-              </template>
 
+            <!-- 👉 Personal Info -->
+            <VListItem to="/personal-info?view=1" link>
+              <template #prepend><FontAwesomeIcon class="me-2" icon="address-card"/></template>
               <VListItemTitle>{{ personalInfoTitle }}</VListItemTitle>
             </VListItem>
 
 
-            <!-- Divider -->
             <VDivider class="my-2" />
 
-            <VListItem
-              to="/users/profile-settings?view=1"
-              link
-            >
-              <template #prepend>
-                <VIcon
-                  class="me-2"
-                  icon="tabler-user"
-                  size="22"
-                />
-              </template>
-
+            <!-- 👉 Profile Settings -->
+            <VListItem to="/profile-settings?view=1" link>
+              <template #prepend><FontAwesomeIcon class="me-2" icon="fa-gear"/></template>
               <VListItemTitle>{{ settingsTitle }}</VListItemTitle>
             </VListItem>
 
-
-            <!-- Divider -->
             <VDivider class="my-2" />
 
             <!-- 👉 Logout -->
             <VListItem @click="logoutUser">
-              <template #prepend>
-                <VIcon
-                  class="me-2"
-                  icon="tabler-logout"
-                  size="22"
-                />
-              </template>
-
+              <template #prepend><FontAwesomeIcon class="me-2" icon="arrow-right-from-bracket"/></template>
               <VListItemTitle>Αποσύνδεση</VListItemTitle>
             </VListItem>
           </PerfectScrollbar>

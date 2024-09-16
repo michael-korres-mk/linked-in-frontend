@@ -33,12 +33,11 @@ declare module 'vue-router/auto-routes' {
     'login-wall': RouteRecordInfo<'login-wall', '/login-wall', Record<never, never>, Record<never, never>>,
     'network': RouteRecordInfo<'network', '/network', Record<never, never>, Record<never, never>>,
     'notifications': RouteRecordInfo<'notifications', '/notifications', Record<never, never>, Record<never, never>>,
+    'personal-info': RouteRecordInfo<'personal-info', '/personal-info', Record<never, never>, Record<never, never>>,
     'posts-id': RouteRecordInfo<'posts-id', '/posts/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
-    'settings': RouteRecordInfo<'settings', '/settings', Record<never, never>, Record<never, never>>,
+    'profile-settings': RouteRecordInfo<'profile-settings', '/profile-settings', Record<never, never>, Record<never, never>>,
     'sign-up': RouteRecordInfo<'sign-up', '/sign-up', Record<never, never>, Record<never, never>>,
     'users': RouteRecordInfo<'users', '/users', Record<never, never>, Record<never, never>>,
     'users-id': RouteRecordInfo<'users-id', '/users/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
-    'users-personal-info': RouteRecordInfo<'users-personal-info', '/users/personal-info', Record<never, never>, Record<never, never>>,
-    'users-profile-settings': RouteRecordInfo<'users-profile-settings', '/users/profile-settings', Record<never, never>, Record<never, never>>,
   }
 }

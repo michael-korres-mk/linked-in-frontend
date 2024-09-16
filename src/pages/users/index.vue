@@ -215,12 +215,6 @@ export default {
           options: this.statusOptions,
           colSize: 4,
         },
-        {
-          id: 'userRole',
-          type: 'select',
-          label: this.$t('Role'),
-          colSize: 8,
-        },
       ]
     },
   },
