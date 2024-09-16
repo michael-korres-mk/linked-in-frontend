@@ -1,28 +1,26 @@
 <script setup>
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 </script>
 
 <template>
   <VBadge
     dot
     bordered
-    location="bottom right"
-    offset-x="3"
-    offset-y="3"
     color="success"
+    @mouseover="isHovered = true"
+    @mouseleave="isHovered = false"
   >
     <VAvatar
       class="cursor-pointer"
       color="primary"
-      variant="tonal"
+      variant="outlined"
     >
-      <VIcon
-        size="large"
-        icon="tabler-user"
-      />
+      <FontAwesomeIcon :icon="(!isHovered && !$refs.userMenu?.modelValue)?'far fa-user' : 'fas fa-user'"/>
 
       <!-- SECTION Menu -->
       <VMenu
+        ref="userMenu"
         activator="parent"
         width="350"
         location="bottom end"
@@ -40,10 +38,7 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
                   color="success"
                   bordered
                 >
-                  <VIcon
-                    size="large"
-                    icon="fa-user-circle-o"
-                  />
+                  <FontAwesomeIcon :icon="'fas fa-user-circle'"/>
                 </VBadge>
                 <VListItemTitle class="ms-4">
                   {{ user.username }}
@@ -52,54 +47,27 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
             </template>
           </VListItem>
           <PerfectScrollbar :options="{ wheelPropagation: false }">
-            <VListItem
-              to="/users/personal-info?view=1"
-              link
-            >
-              <template #prepend>
-                <VIcon
-                  class="me-2"
-                  icon="tabler-user"
-                  size="22"
-                />
-              </template>
 
+            <!-- 👉 Personal Info -->
+            <VListItem to="/personal-info?view=1" link>
+              <template #prepend><FontAwesomeIcon class="me-2" icon="address-card"/></template>
               <VListItemTitle>{{ personalInfoTitle }}</VListItemTitle>
             </VListItem>
 
 
-            <!-- Divider -->
             <VDivider class="my-2" />
 
-            <VListItem
-              to="/users/profile-settings?view=1"
-              link
-            >
-              <template #prepend>
-                <VIcon
-                  class="me-2"
-                  icon="tabler-user"
-                  size="22"
-                />
-              </template>
-
+            <!-- 👉 Profile Settings -->
+            <VListItem to="/profile-settings?view=1" link>
+              <template #prepend><FontAwesomeIcon class="me-2" icon="fa-gear"/></template>
               <VListItemTitle>{{ settingsTitle }}</VListItemTitle>
             </VListItem>
 
-
-            <!-- Divider -->
             <VDivider class="my-2" />
 
             <!-- 👉 Logout -->
             <VListItem @click="logoutUser">
-              <template #prepend>
-                <VIcon
-                  class="me-2"
-                  icon="tabler-logout"
-                  size="22"
-                />
-              </template>
-
+              <template #prepend><FontAwesomeIcon class="me-2" icon="arrow-right-from-bracket"/></template>
               <VListItemTitle>Αποσύνδεση</VListItemTitle>
             </VListItem>
           </PerfectScrollbar>
@@ -111,8 +79,12 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 </template>
 
 <script>
-
   export default {
+    data(){
+      return {
+        isHovered: false,
+      }
+    },
     computed: {
         personalInfoTitle() {
           return this.$t("Personal Info")
@@ -122,5 +94,4 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
         }
     }
   }
-
 </script>
