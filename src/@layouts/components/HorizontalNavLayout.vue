@@ -21,7 +21,7 @@ const configStore = useLayoutConfigStore()
 
 <template>
   <div class="layout-wrapper" :class="configStore._layoutClasses">
-    <VToolbar class="layout-navbar-and-nav-container">
+    <VToolbar fixed class="layout-navbar-and-nav-container position-fixed">
         <VContainer fluid>
           <VRow>
             <VCol cols="3">
