@@ -15,11 +15,12 @@ const getCacheKey = (endpoint, params) => {
 
 const getters = {
   isAuthenticated: state => state.userData.token != '',
-  userRights: state => {
-    return state.userData?.authorities
-      ? state.userData.authorities.map(right => right.authority)
-      : []
-  },
+  isAdmin: state => state.userData.userRole === 'ADMIN',
+    // userRights: state => {
+  //   return state.userData?.authorities
+  //     ? state.userData.authorities.map(right => right.authority)
+  //     : []
+  // },
 }
 
 const actions = {
@@ -122,6 +123,9 @@ const actions = {
   },
   async fetchFile(fileId) {
     return axios.get(`files/${fileId}`, { responseType: 'blob' })
+  },
+  async fetchUsersFile(users,xml) {
+      return axios.post(`files/users-download?xml=${xml}`, users,{ responseType: 'blob' })
   },
   getSearchItems(endpoint, parameter, val, prependPath) {
     return this.axiosGet(

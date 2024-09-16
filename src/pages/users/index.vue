@@ -1,70 +1,130 @@
 <script setup>
-definePage({
-  meta: {
-    authority: 'users',
-  },
-})
+import editmixins from "@/mixins/entityedit.js"
 </script>
 
 <template>
-  <div>
-    <h1 class="text-center text-info">
-      Διαχείριση Χρηστών
-    </h1>
-    <EntityList
-      ref="entityList"
+    <DataTable
+      ref="list"
       :config="config"
       :columns="columns"
-      :formatted-columns="formattedColumns"
       :filters="filters"
       :selections="selections"
-      show-select
-      authority="users"
+      :show-select="allowEdit"
+      :custom-query="customQuery"
+      :formatted-columns="formattedColumns"
+      :single-edit="false"
+      :initial-filter-values="initialFilterValues"
+      :is-selectable="isSelectable"
+      authority="ess"
+      multi-select
+      hide-edit
+      details-view
+      hide-insert-btn
       @itemSelected="handleSelectedChange"
-    />
-<!--    <VContainer fluid>-->
-<!--      <div class="card-wrapper">-->
-<!--        <legend class="legend-title">-->
-<!--          Ανατεθειμένοι Ρόλοι-->
-<!--        </legend>-->
-<!--        <VRow class="text-center font-weight-bold font-size-20 my-4">-->
-<!--          <VCol class="text-center text-darkred mx-7">-->
-<!--            {{ rolesTitle }}-->
-<!--          </VCol>-->
-<!--        </VRow>-->
-<!--        <div-->
-<!--          v-if="selectedEntity"-->
-<!--          class="card-body mx-3 mb-3"-->
-<!--        >-->
-<!--          <VDataTable-->
-<!--            :headers="rolesHeaders"-->
-<!--            :items="selectedEntity.roles"-->
-<!--          >-->
-<!--            <template #bottom />-->
-<!--          </VDataTable>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </VContainer>-->
-  </div>
+      @filterUpdated="handleFilterUpdated"
+      @applyFilters="handleFilterUpdated"
+    >
+      <template #extra-button>
+        <BigActionBtn
+          v-if="!allowEdit"
+          color="primary"
+          icon="fa-download"
+          :label="'Download User Data'"
+          @click="editModeSet(true)"
+        />
+      </template>
+    </DataTable>
+    <div v-if="allowEdit" class="text-center py-n3">
+      <BigActionBtn
+        color="primary"
+        icon="fa-circle-down"
+        :disabled="btnIsDisabled"
+        :label="'Add Selected'"
+        @click="addUsers"
+      />
+    </div>
+    <div v-if="allowEdit" class="card-wrapper mx-5">
+
+      <div class="card-body d-flex flex-column justify-center">
+        <VDataTable
+          :headers="headers"
+          :items="users"
+          items-per-page="-1"
+        >
+          <template
+            v-if="allowEdit"
+            #item.actions="{ item }"
+          >
+            <ActionBtn
+              icon="trash-can"
+              label="Delete"
+              color="error"
+              class="text-black"
+              @click="deleteItem(item)"
+            />
+          </template>
+        </VDataTable>
+        <div>
+          <BigActionBtn
+            color="secondary"
+            icon="fa-xmark"
+            :label="'Cancel'"
+            @click="editModeSet(false)"
+          />
+          <BigActionBtn
+            color="primary"
+            icon="fa-download"
+            :disabled="users.length === 0"
+            :label="'Download XML'"
+            @click="() => downloadUsers(true)"
+          />
+          <BigActionBtn
+            color="primary"
+            icon="fa-download"
+            :disabled="users.length === 0"
+            :label="'Download JSON'"
+            @click="() => downloadUsers(false)"
+          />
+        </div>
+      </div>
+
+    </div>
+
+
 </template>
 
 <script>
+import DataTable from "@/components/entity/DataTable.vue";
+
 export default {
+  mixins:[editmixins],
+  components: {DataTable},
+  props: {
+    initialUsers: {
+      type: Array,
+      default: () => [],
+    },
+    questionnaireId: {
+      type: Number,
+      default: null,
+    },
+  },
+  emits: ['usersChanged'],
   data() {
     return {
-      selectedEntity: null,
+      users: this.initialUsers,
       selections: [],
-      organizationOptions: [],
-      roleOptions: [],
+      filterAboveEmpty: true,
+      essFilter: !!this.questionnaireId,
     }
   },
   mounted() {
-    this.fetchRoles()
+    this.editModeSet(this.editMode)
   },
   computed: {
     config() {
       return {
-        endpoint: 'users',
+        endpoint: 'users/as-list',
         route: 'users',
         title: {
           single: 'User',
@@ -72,6 +132,30 @@ export default {
           geniki: 'User(gen)',
         },
       }
+    },
+    allowEdit(){
+      return this.editMode
+    },
+    customQuery() {
+      return {
+        questionnaire: this.essFilter ? this.questionnaireId : null,
+      }
+    },
+    initialFilterValues() {
+      return {
+        ess: !!this.$route.params.id,
+      }
+    },
+    headers() {
+      return this.allowEdit
+        ? [...this.columns, { key: 'actions', title: this.$t('Actions') }]
+        : this.columns
+    },
+    btnIsDisabled() {
+      return !this.selections.length
+    },
+    userIds() {
+      return this.users.map(user => user.id)
     },
     columns() {
       return [
@@ -135,40 +219,57 @@ export default {
           id: 'userRole',
           type: 'select',
           label: this.$t('Role'),
-          options: this.roleOptions,
           colSize: 8,
         },
       ]
     },
-    rolesHeaders() {
-      return [
-        {
-          key: 'assignDate',
-          title: this.$t('Assign Date'),
-        },
-        {
-          key: 'role.title',
-          title: this.$t('User Role'),
-        },
-      ]
-    },
-    rolesTitle() {
-      if (this.selectedEntity) {
-        return `Ανατεθειμένοι Ρόλοι στον χρήστη: "${this.selectedEntity.title}"`
-      }
-
-      return 'Επιλέξτε Χρήστη για να εμφανιστούν οι ανατεθειμένοι ρόλοι του'
-    },
   },
   methods: {
-    handleSelectedChange(selectedItems) {
-      this.selections = selectedItems
-      this.selectedEntity = selectedItems.length ? selectedItems[0] : null
+      handleSelectedChange(selectedItems) {
+        this.selections = selectedItems
+        this.selectedEntity = selectedItems.length ? selectedItems[0] : null
+      },
+      addUsers() {
+        this.users = [
+          ...this.users,
+          ...this.selections.filter(
+            item =>
+              !this.userIds.includes(
+                item.id,
+              ),
+          ),
+        ]
+        // this.$emit('usersChanged', this.users)
+        // this.selections = []
+      },
+      deleteItem(item) {
+        this.users.splice(this.users.indexOf(item), 1)
+        this.$emit('usersChanged', this.users)
+      },
+      isSelectable(item){
+        return !this.users.some(selection => selection.id === item.id)
+      },
+      handleFilterUpdated(fieldId, val) {
+        // if (fieldId === 'above') {
+        //   this.filterAboveEmpty = val === null
+        // }
+        // if (fieldId === 'ess') {
+        //   this.essFilter = val
+        // }
+      },
+      async downloadUsers(xml){
+
+        const fileObj = await this.$store.fetchUsersFile(this.users,xml)
+
+        const link = document.createElement('a')
+
+        link.href = window.URL.createObjectURL(new Blob([fileObj.data]))
+        link.setAttribute('download', 'users-list.' + ((xml)? 'xml' : 'json'))
+        document.body.appendChild(link)
+        link.click()
+        // this.downloadingFile = false
+      },
     },
-    async fetchRoles(){
-      this.roleOptions = await this.$store.roles()
-      console.log(this.roleOptions)
-    },
-  },
+
 }
 </script>
