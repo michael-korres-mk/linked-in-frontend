@@ -54,15 +54,15 @@ export default {
             {
               sender: { id: 1,title: 'Petros' },
               recipient: { id: 2 },
-              createdTimestamp: '2024-09-16T10:00:00',
-              text: 'Hello! How are you? #1',
+              createdTimestamp: '2022-09-26T10:00:00',
+              text: 'Hello! How are you? #1Hello! How are you? #1',
               delivered: true,
               read: false,
             },
             {
               sender: { id: 2,title: this.$store.userData.title },
               recipient: { id: 1 },
-              createdTimestamp: '2024-09-17T10:05:00',
+              createdTimestamp: '2023-10-03T10:05:00',
               text: 'I am doing great, thanks! How about you? #1',
               delivered: true,
               read: true,

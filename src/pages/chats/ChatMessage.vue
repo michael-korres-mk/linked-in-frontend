@@ -1,25 +1,14 @@
 <template>
   <v-list-item :class="['message-information','display-flex']">
 
-    <template v-slot:prepend>
-      <v-avatar class="border-thin" color="grey" rounded="25" size="100">
+    <v-list-item-title class="d-flex align-center font-16">
+      <v-avatar class="border-thin mr-2" color="grey" rounded="25" size="70">
         <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
       </v-avatar>
-    </template>
-
-    <v-list-item-title class="name text-info font-weight-bold">
-      <div class="d-flex justify-content-between ma-1">
-        <span class="name text-info font-weight-bold">{{ message.sender.title }}</span>
-        <span> <FontAwesomeIcon icon="fa-solid fa-calendar-days" /> {{ midDate(message.createdTimestamp) }} </span>
-      </div>
+      <span> <strong>{{ message.sender.title }}</strong> <FontAwesomeIcon icon="fa-circle" style="width:3px" /> {{ shortTime(message.createdTimestamp) }} </span>
     </v-list-item-title>
-<!--    <v-list-item-subtitle class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.message }}</v-list-item-subtitle>-->
+    <v-list-item-subtitle class="text-black">{{ message.text }}</v-list-item-subtitle>
 
-    <template v-slot:append>
-      <div> <span class="icon fas fa-clock" /> {{ shortTime(message.createdTimestamp) }} </div>
-      <!--        <div class="message-info">-->
-      <!--        </div>-->
-      <div :class="isSender ? 'bg-info' : ''" class="message-content">{{ message.text }} </div>    </template>
   </v-list-item>
 </template>
 

@@ -105,10 +105,13 @@ export default {
       return moment(time).format('DD/MM')
     },
     midDate(time) {
-      return moment(time).format('DD MMMM YY')
+      return moment(time).format('DD MMMM YYYY')
     },
     monthDate(time) {
       return moment(time).format('MMMM YYYY')
+    },
+    dayMonth(time) {
+      return moment(time).format('DD MMMM')
     },
     shortTime(time) {
       return moment(time).format('HH:mm')

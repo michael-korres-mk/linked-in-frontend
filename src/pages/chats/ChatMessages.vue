@@ -1,11 +1,19 @@
 <template>
   <VVirtualScroll
-    :items="chat.messages"
+    :items="groupedMessages"
     height="400"
     class="border-solid"
   >
-    <template #default="{ index,item }">
-      <ChatMessage :message="item" :index="index" />
+    <template #default="{ item }">
+      <div>
+        <!-- Display Date -->
+        <VDivider class="text-black">{{ item.date }}</VDivider>
+
+        <!-- Loop through the messages of that date -->
+        <div v-for="(message, i) in item.messages" :key="i">
+          <ChatMessage :message="message" :index="i" />
+        </div>
+      </div>
     </template>
 
   </VVirtualScroll>
@@ -70,6 +78,36 @@ export default {
     },
     token() {
       return localStorage.getItem('token')
+    },
+    groupedMessages() {
+
+      const groups = {};
+      this.chat.messages.forEach((message) => {
+        let date
+        // if (new Date(message.createdTimestamp).getFullYear() < new Date().getFullYear()) {
+        //
+
+        date = this.isoDateOnlyTrimmed(message.createdTimestamp)
+
+
+        if (!groups[date]) groups[date] = [];
+        groups[date].push(message);
+      });
+
+      // Convert the groups object to an array with 'date' and 'messages'
+      return Object.keys(groups).map((date) => ({
+        date,
+        messages: groups[date],
+      }))
+      .sort((a, b) => (a.date < b.date) ? -1 : (a.date > b.date) ? 1 : 0)
+      .map(g => {
+        const timestamp = g.messages[0].createdTimestamp
+        if (new Date(timestamp).getFullYear() < new Date().getFullYear()) {
+          return {...g, date: this.midDate(g.messages[0].createdTimestamp)}
+        }
+        return {...g, date: this.dayMonth(g.messages[0].createdTimestamp)}
+
+      })
     },
   },
   // async mounted() {
