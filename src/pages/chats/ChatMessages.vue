@@ -1,11 +1,14 @@
-<script setup>
-  import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
-</script>
-
 <template>
-  <PerfectScrollbar :options="{ wheelPropagation: false }" class="border-solid" style="max-block-size: 23.75rem;">
-    <ChatMessage v-for="(message,i) in chat.messages" :message="message" :my-prop="i" />
-  </PerfectScrollbar>
+  <VVirtualScroll
+    :items="chat.messages"
+    height="400"
+    class="border-solid"
+  >
+    <template #default="{ index,item }">
+      <ChatMessage :message="item" :index="index" />
+    </template>
+
+  </VVirtualScroll>
   <v-text-field
     :loading="loading"
     :disabled="sending"
@@ -41,8 +44,8 @@
 </template>
 
 <script>
-import ChatMessage from "@/pages/chats/ChatMessage.vue";
 import { Client } from '@stomp/stompjs'
+import ChatMessage from "@/pages/chats/ChatMessage.vue";
 
 export default {
   name: "ChatMessages",

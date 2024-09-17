@@ -1,10 +1,14 @@
-<script setup>
-  import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
-</script>
 <template>
-    <PerfectScrollbar :options="{ wheelPropagation: false }" class="border-solid" style="max-block-size: 23.75rem;">
-      <Chat v-for="(chat,i) in chats" :chat="chat" :index="i" @chatClicked="chatClicked" :clicked="clicked === i" />
-    </PerfectScrollbar>
+    <VVirtualScroll
+      :items="chats"
+      height="450"
+      class="border-solid"
+    >
+      <template #default="{ index , item }">
+        <Chat :chat="item" :index="index" @chatClicked="chatClicked" :clicked="clicked === index" />
+      </template>
+
+    </VVirtualScroll>
 </template>
 
 
@@ -38,4 +42,7 @@ export default {
 
 <style scoped lang="scss">
 
+.ps {
+  max-height: 100px; /* or height: 100px; */
+}
 </style>

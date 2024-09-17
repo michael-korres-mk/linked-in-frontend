@@ -31,6 +31,8 @@ declare module 'vue' {
     CardStatisticsHorizontal: typeof import('./src/@core/components/cards/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./src/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsVerticalSimple: typeof import('./src/@core/components/CardStatisticsVerticalSimple.vue')['default']
+    ChatMessageUsingGrid: typeof import('./src/components/project/ChatMessageUsingGrid.vue')['default']
+    ChatUsingGrid: typeof import('./src/components/project/ChatUsingGrid.vue')['default']
     CircularsPlainTable: typeof import('./src/components/project/CircularsPlainTable.vue')['default']
     Comment: typeof import('./src/components/project/Comment.vue')['default']
     CommentsTimeline: typeof import('./src/components/project/CommentsTimeline.vue')['default']

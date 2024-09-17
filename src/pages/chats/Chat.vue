@@ -1,31 +1,26 @@
 <template>
-  <VRow
-      :key="chat.lastMessage.createdTimestamp"
-      :class="['message-information', 'display-flex', 'border-thin',{'clicked-connection': clicked}]"
-      @click="chatClicked"
+  <v-list-item
+     :class="['message-information', 'display-flex', 'border-thin',{'clicked-connection': clicked}]"
+     @click="chatClicked"
   >
-    <VCol :cols="4">
-      <div class="float-left">
+      <template v-slot:prepend>
         <v-avatar class="border-thin" color="grey" rounded="25" size="100">
           <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
         </v-avatar>
-      </div>
-    </VCol>
-    <VCol :cols="5">
-      <div class="d-flex flex-column justify-start align-items-center font-18">
-        <div class="name text-info font-weight-bold">{{ chat.connection.recipient.title }}</div>
-        <div class="message-description cut font-roboto-condensed font-italic"> {{ chat.lastMessage.message }} </div>
-      </div>
-    </VCol>
-    <VCol :cols="3">
-      <div class="font-12">{{ shortDate(chat.createdTimestamp) }}</div>
-    </VCol>
-  </VRow>
+      </template>
+
+      <v-list-item-title class="name text-info font-weight-bold">{{ chat.connection.recipient.title }}</v-list-item-title>
+      <v-list-item-subtitle class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.message }}</v-list-item-subtitle>
+
+      <template v-slot:append>
+        <div class="font-12">{{ shortDate(chat.createdTimestamp) }}</div>
+      </template>
+    </v-list-item>
 </template>
 
 <script>
 export default {
-  name: "Chat",
+  name: "Chat2",
   emits:['chatClicked'],
   props: {
     chat: {
