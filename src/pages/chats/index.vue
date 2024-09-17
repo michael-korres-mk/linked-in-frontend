@@ -59,7 +59,7 @@ export default {
     },
     // searchField() {
     //   return {
-    //     id: 'contactTypeahead',
+    //     id: 'connectionTypeahead',
     //     type: 'autocomplete',
     //     placeholder: 'Αναζήτηση...',
     //     filter: (itemTitle, query, item) => {

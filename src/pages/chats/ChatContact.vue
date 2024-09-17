@@ -1,10 +1,10 @@
 <template>
-  <div class="all-contact-persons-messages">
+  <div class="all-connection-persons-messages">
     <Loader v-if="isLoading" />
-    <RouterLink v-for="contact in contacts" :key="contact.title" :to="`chat-history/${contact.recipient.id}`">
-      <div class="contact-persons-message-container display-flex">
+    <RouterLink v-for="connection in connections" :key="connection.title" :to="`chat-history/${connection.recipient.id}`">
+      <div class="connection-persons-message-container display-flex">
 
-        <div class="contact-persons-profile-picture float-left">
+        <div class="connection-persons-profile-picture float-left">
           <span class="fas fa-circle green-status"><FontAwesomeIcon icon="fa-solid fa-circle" /></span>
         </div>
 
@@ -12,12 +12,12 @@
 
         <div class="message-information display-flex">
           <div class="float-left message-content">
-            <div class="name">{{ contact.recipient.title }}</div>
-            <div class="message-description">{{ contact.description }}</div>
-            <div class="message">{{ contact.message }}</div>
+            <div class="name">{{ connection.recipient.title }}</div>
+            <div class="message-description">{{ connection.description }}</div>
+            <div class="message">{{ connection.message }}</div>
           </div>
           <div class="date float-right font-weight-light grey-label">
-            {{ contact.creationDate ? longDate(contact.creationDate) : '' }}
+            {{ connection.creationDate ? longDate(connection.creationDate) : '' }}
           </div>
           <div class="clearfix" />
         </div>
@@ -31,12 +31,12 @@ export default {
   data() {
     return {
       isLoading: true,
-      contacts: [],
+      connections: [],
     }
   },
 
   async mounted() {
-    this.contacts = await this.$store.fetchChatContacts()
+    this.connections = await this.$store.fetchChatContacts()
     this.isLoading = false
   }
 }

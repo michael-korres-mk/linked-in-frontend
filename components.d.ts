@@ -24,7 +24,6 @@ declare module 'vue' {
     AppStepper: typeof import('./src/@core/components/AppStepper.vue')['default']
     AppTextarea: typeof import('./src/@core/components/app-form-elements/AppTextarea.vue')['default']
     AppTextField: typeof import('./src/@core/components/app-form-elements/AppTextField.vue')['default']
-    ArrowIcon: typeof import('./src/components/ArrowIcon.vue')['default']
     AToast: typeof import('./src/components/AToast.vue')['default']
     BigActionBtn: typeof import('./src/components/BigActionBtn.vue')['default']
     CardList: typeof import('./src/components/CardList.vue')['default']
@@ -79,10 +78,8 @@ declare module 'vue' {
     TiptapEditor: typeof import('./src/components/entity/TiptapEditor.vue')['default']
     UserCard: typeof import('./src/components/project/UserCard.vue')['default']
     UserListItem: typeof import('./src/components/project/UserListItem.vue')['default']
-    UsersDataTable: typeof import('./src/components/project/UsersDataTable.vue')['default']
     UsersGrid: typeof import('./src/components/project/UsersGrid.vue')['default']
     UsersList: typeof import('./src/components/project/UsersList.vue')['default']
-    UsersListDataServer: typeof import('./src/components/project/UsersListDataServer.vue')['default']
     UsersTable: typeof import('./src/components/UsersTable.vue')['default']
   }
 }

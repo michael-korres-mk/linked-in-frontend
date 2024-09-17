@@ -23,7 +23,7 @@ declare module 'vue-router/auto-routes' {
     'chat-history-recipient-id': RouteRecordInfo<'chat-history-recipient-id', '/chat-history/:recipientId', { recipientId: ParamValue<true> }, { recipientId: ParamValue<false> }>,
     'chat-history-chat-msg': RouteRecordInfo<'chat-history-chat-msg', '/chat-history/ChatMsg', Record<never, never>, Record<never, never>>,
     'chats': RouteRecordInfo<'chats', '/chats', Record<never, never>, Record<never, never>>,
-    'chats-chat-contact': RouteRecordInfo<'chats-chat-contact', '/chats/ChatContact', Record<never, never>, Record<never, never>>,
+    'chats-chat-connection': RouteRecordInfo<'chats-chat-connection', '/chats/ChatContact', Record<never, never>, Record<never, never>>,
     'chats-chat-recent': RouteRecordInfo<'chats-chat-recent', '/chats/ChatRecent', Record<never, never>, Record<never, never>>,
     'home': RouteRecordInfo<'home', '/home', Record<never, never>, Record<never, never>>,
     'in-id': RouteRecordInfo<'in-id', '/in/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,

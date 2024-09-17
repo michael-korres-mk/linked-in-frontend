@@ -6,7 +6,7 @@
       <div> <span class="icon fas fa-clock" /> {{ shortTime(msg.createdTimestamp) }} </div>
     </div>
 
-    <div :class="isSender ? 'bg-info' : ''" class="message-content">{{ msg.message }} </div>
+    <div :class="isSender ? 'bg-info' : ''" class="message-content">{{ msg.text }} </div>
 
     <div class="profile-picture">
       <FontAwesomeIcon icon="fa-solid fa-user" :style="{ position: 'relative', top: '9px', left: '15px', color: isSender ? '#d04a02' : '#AAAAAA' }"/>

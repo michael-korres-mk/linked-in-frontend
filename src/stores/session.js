@@ -143,7 +143,7 @@ const actions = {
     return this.fetchCachedList('roles/rights', { subsystem })
   },
   fetchChatContacts() {
-    return this.fetchCachedList('users/contacts')
+    return this.fetchCachedList('users/connections')
   },
   fetchRecentChats() {
     return this.fetchCachedList('chats/recent')
