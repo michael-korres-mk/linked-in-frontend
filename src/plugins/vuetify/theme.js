@@ -33,7 +33,7 @@ export const themes = {
       'grey-700': '#616161',
       'grey-800': '#424242',
       'grey-900': '#212121',
-      'perfect-scrollbar-thumb': '#DBDADE',
+      'perfect-scrollbar-thumb': '#1f4e79',
       'skin-bordered-background': '#fff',
       'skin-bordered-surface': '#fff',
       'bg-wrapper': '#fff',

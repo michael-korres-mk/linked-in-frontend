@@ -17,7 +17,7 @@ import PostList from "@/components/project/PostList.vue";
 
       <PostList
         :config="config"
-        :results-per-page="2"
+        :results-per-page="7"
         hide-view
       />
 
@@ -40,22 +40,6 @@ export default {
         },
       }
     },
-    filters() {
-      return [
-        {
-          id: 'id',
-          type: 'number',
-          label: this.$t('User Code'),
-          colSize: 4,
-        },
-        {
-          id: 'searchTerm',
-          type: 'text',
-          label: this.$t('Search'),
-          colSize: 4,
-        },
-      ]
-    }
   }
 }
 </script>
