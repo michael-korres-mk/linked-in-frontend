@@ -183,7 +183,7 @@
                         <ActionBtn
                           v-if="extraActionShouldRender(extraAction, item)"
                           :key="extraAction.icon"
-                          color="orange"
+                          :color="extraAction.color ?? 'primary'"
                           :icon="(extraAction.dynamicIcon && item[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"
                           :label="extraAction.title"
                           :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"

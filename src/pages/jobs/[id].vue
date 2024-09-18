@@ -24,7 +24,6 @@
             <VForm
               ref="form"
               v-model="valid"
-              role="edit-form"
               autocomplete="off"
             >
               <EntityEditSection

@@ -2,7 +2,6 @@
   <VContainer
     fluid
     class="mt-4"
-    data-test="entitySingle"
   >
     <h1
       v-if="!hideTitle"

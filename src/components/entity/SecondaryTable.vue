@@ -62,7 +62,6 @@
                 <VForm
                   ref="form"
                   v-model="valid"
-                  role="edit-form"
                   autocomplete="off"
                 >
                   <EntityEditSection
@@ -138,7 +137,6 @@
         />
         <ActionBtn
           v-if="allowEdit && !hideDeleteButton"
-          data-test="delete-button"
           icon="xmark"
           label="Delete"
           color="error"

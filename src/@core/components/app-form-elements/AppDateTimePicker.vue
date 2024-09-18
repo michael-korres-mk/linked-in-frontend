@@ -141,7 +141,6 @@ const elementId = computed(() => {
         <VField
           v-bind="{ ...fieldProps, label: undefined }"
           :id="id.value"
-          role="textbox"
           :active="focused || isDirty.value || isCalendarOpen"
           :focused="focused || isCalendarOpen"
           :dirty="isDirty.value || props.dirty"

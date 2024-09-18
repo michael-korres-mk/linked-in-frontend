@@ -110,11 +110,16 @@ export default {
         {
           title: 'Accept',
           icon: 'fa-check',
+          color: 'success',
+          // renderCondition: this.renderAppeal,
+          // callback: item => this.openDialog('Appeal', item, `submissions/appeal`),
           // callback: this.acceptRequest,
         },
         {
           title: 'Delete',
           icon: 'fa-trash-can',
+          color: 'error',
+          // renderCondition: this.renderAppeal,
           // callback: this.deleteRequest,
         },
         {

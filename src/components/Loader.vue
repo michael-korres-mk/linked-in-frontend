@@ -1,7 +1,6 @@
 <template>
   <div
     class="loader-overlay"
-    role="status"
   >
     <div class="loader-spinner" />
     <div class="loader-message">{{ loaderMessage }}</div>

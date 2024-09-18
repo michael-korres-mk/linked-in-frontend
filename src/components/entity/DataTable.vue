@@ -163,7 +163,7 @@
                         :key="extraAction.icon"
                         :icon="extraAction.icon"
                         :label="extraAction.title"
-                        :color="extraAction.color ? extraAction.color : 'info'"
+                        :color="extraAction.color ?? 'primary'"
                         @click="handleExtraActionClick(item, extraAction)"
                       />
                     </template>

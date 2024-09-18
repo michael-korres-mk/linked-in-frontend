@@ -2,9 +2,7 @@
   <VForm
     ref="form"
     v-model="valid"
-    role="edit-form"
     autocomplete="off"
-    data-test="edit-form"
     @submit.prevent="submitForm"
   >
     <slot />
@@ -17,8 +15,6 @@
         v-show="tabIndex < wizardSteps - 1"
         :disabled="nextStepCallback()"
         type="button"
-        role="save-button"
-        data-test="save-button-temp"
         @click="updateTabIndex(1)"
       >
         {{ tempSave ? 'Αποθήκευση & Συνέχεια' : 'Συνέχεια' }}
@@ -31,8 +27,6 @@
         variant="flat"
         rounded="md"
         size="large"
-        role="cancel-button"
-        data-test="cancel-button"
         @click="setEditMode(false)"
       >
         <FontAwesomeIcon
@@ -57,7 +51,6 @@
         variant="flat"
         rounded="md"
         size="large"
-        data-test="save-button"
       >
         <FontAwesomeIcon
           icon="save"
@@ -71,9 +64,8 @@
           :key="extraAction.title"
           :disabled="disableActions"
           class="ms-3"
+          :color="extraAction.color ?? 'primary'"
           :class="extraAction.class ? extraAction.class : 'btn-blue'"
-          role="extra-action-button"
-          data-test="extra-action-button"
           @click="handleExtraActionClick(extraAction)"
         >
           <FontAwesomeIcon
@@ -98,8 +90,6 @@
         variant="flat"
         rounded="md"
         size="large"
-        role="return-button"
-        data-test="return-button"
         @click="routeToList"
       >
         <FontAwesomeIcon
@@ -114,7 +104,6 @@
         variant="flat"
         rounded="md"
         size="large"
-        data-test="edit-button"
         @click="setEditMode(true)"
       >
         <FontAwesomeIcon

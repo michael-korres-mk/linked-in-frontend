@@ -430,5 +430,6 @@
   "Add Selected": "Προσθήκη Επιλεγμένων",
   "Download XML": "Λήψη XML",
   "Download JSON": "Λήψη JSON",
-  "No chat picked": "Δεν έχει επιλεγεί συνομιλία"
+  "No chat picked": "Δεν έχει επιλεγεί συνομιλία",
+  "Accept" : "Αποδοχή"
 }
