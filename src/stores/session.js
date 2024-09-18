@@ -149,7 +149,10 @@ const actions = {
     return this.fetchCachedList('chats/recent')
   },
   fetchChatMessages(id) {
-   return this.axiosGet({ url: `chats/history/${id}` })
+   return this.axiosGet({ url: `chats/messages/${id}` })
+  },
+  fetchChats() {
+      return this.fetchCachedList('chats')
   },
   fetchUserRequests() {
     return this.fetchList('users/connection-requests')

@@ -11,7 +11,8 @@
             <Chats :chats="chats" @chatClicked="chatClicked"/>
           </VCol>
           <VCol :cols="8">
-            <ChatMessages :chat="chats[clicked]"/>
+            <ChatMessages v-if="clicked !== -1" :chat="clickedChat"/>
+            <h1 class="text-info" v-else > {{ $t('No chat picked') }}  </h1>
           </VCol>
         </VContainer>
       </VCardText>
@@ -24,6 +25,7 @@
 import FormField from '@/components/entity/FormField.vue'
 import Chats from "@/pages/chats/Chats.vue";
 import ChatMessages from "@/pages/chats/ChatMessages.vue";
+
 export default {
   components: {
     ChatMessages,
@@ -31,218 +33,222 @@ export default {
     FormField,
   },
   mounted(){
+    this.fetchChats()
     this.isLoading = false
   },
   data() {
     return {
-      clicked: 0,
+      clicked: -1,
       isLoading: true,
-      chats: [
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message'
-          },
-          messages:[
-            {
-              sender: { id: 1,title: 'Petros' },
-              recipient: { id: 2 },
-              createdTimestamp: '2022-09-26T10:00:00',
-              text: 'Hello! How are you? #1Hello! How are you? #1',
-              delivered: true,
-              read: false,
-            },
-            {
-              sender: { id: 2,title: this.$store.userData.title },
-              recipient: { id: 1 },
-              createdTimestamp: '2023-10-03T10:05:00',
-              text: 'I am doing great, thanks! How about you? #1',
-              delivered: true,
-              read: true,
-            },
-            {
-              sender: { id: 1,title: 'Petros' },
-              recipient: { id: 2 },
-              createdTimestamp: '2024-09-17T10:10:00',
-              text: 'I am good too! Let’s catch up later. #1',
-              delivered: true,
-              read: false,
-            },
-            {
-              sender: { id: 2,title: this.$store.userData.title },
-              recipient: { id: 1 },
-              createdTimestamp: '2024-09-17T10:05:00',
-              text: 'I am doing great, thanks! How about you? #1',
-              delivered: true,
-              read: true,
-            },
-            {
-              sender: { id: 1,title: 'Petros' },
-              recipient: { id: 2 },
-              createdTimestamp: '2024-09-17T10:10:00',
-              text: 'I am good too! Let’s catch up later. #1',
-              delivered: true,
-              read: false,
-            },
-
-          ]
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message',
-          },
-          messages:[
-            {
-              sender: { id: 1,title: 'Petros' },
-              recipient: { id: 2 },
-              createdTimestamp: '2024-09-16T10:00:00',
-              text: 'Hello! How are you? #2',
-              delivered: true,
-              read: false,
-            },
-            {
-              sender: { id: 2,title: this.$store.userData.title },
-              recipient: { id: 1 },
-              createdTimestamp: '2024-09-17T10:05:00',
-              text: 'I am doing great, thanks! How about you? #2',
-              delivered: true,
-              read: true,
-            },
-          ]
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message',
-          },
-          messages:[
-            {
-              sender: { id: 1,title: 'Petros' },
-              recipient: { id: 2 },
-              createdTimestamp: '2024-09-16T10:00:00',
-              text: 'Hello! How are you? #3',
-              delivered: true,
-              read: false,
-            },
-            {
-              sender: { id: 2,title: this.$store.userData.title },
-              recipient: { id: 1 },
-              createdTimestamp: '2024-09-17T10:05:00',
-              text: 'I am doing great, thanks! How about you? #3',
-              delivered: true,
-              read: true,
-            },
-            {
-              sender: { id: 1,title: 'Petros' },
-              recipient: { id: 2 },
-              createdTimestamp: '2024-09-17T10:10:00',
-              text: 'I am good too! Let’s catch up later. #3',
-              delivered: true,
-              read: false,
-            },
-          ]
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message'
-          }
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message'
-          }
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message'
-          }
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message'
-          }
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message'
-          }
-        },
-        {
-          connection: {
-            recipient: {
-              id:1000,
-              title: 'Test User'
-            }
-
-          },
-          lastMessage:{
-            createdTimestamp: '2000-01-01T00:00:00.000Z',
-            message: 'Test Message'
-          }
-        },
-      ],
+      clickedChat:{},
+      chats:[],
+      // entityStore: defineStore('chats', useGenericEntityStore('chats'))(),
+      // chats: [
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message'
+      //     },
+      //     messages:[
+      //       {
+      //         sender: { id: 1,title: 'Petros' },
+      //         recipient: { id: 2 },
+      //         createdTimestamp: '2022-09-26T10:00:00',
+      //         text: 'Hello! How are you? #1Hello! How are you? #1',
+      //         delivered: true,
+      //         read: false,
+      //       },
+      //       {
+      //         sender: { id: 2,title: this.$store.userData.title },
+      //         recipient: { id: 1 },
+      //         createdTimestamp: '2023-10-03T10:05:00',
+      //         text: 'I am doing great, thanks! How about you? #1',
+      //         delivered: true,
+      //         read: true,
+      //       },
+      //       {
+      //         sender: { id: 1,title: 'Petros' },
+      //         recipient: { id: 2 },
+      //         createdTimestamp: '2024-09-17T10:10:00',
+      //         text: 'I am good too! Let’s catch up later. #1',
+      //         delivered: true,
+      //         read: false,
+      //       },
+      //       {
+      //         sender: { id: 2,title: this.$store.userData.title },
+      //         recipient: { id: 1 },
+      //         createdTimestamp: '2024-09-17T10:05:00',
+      //         text: 'I am doing great, thanks! How about you? #1',
+      //         delivered: true,
+      //         read: true,
+      //       },
+      //       {
+      //         sender: { id: 1,title: 'Petros' },
+      //         recipient: { id: 2 },
+      //         createdTimestamp: '2024-09-17T10:10:00',
+      //         text: 'I am good too! Let’s catch up later. #1',
+      //         delivered: true,
+      //         read: false,
+      //       },
+      //
+      //     ]
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message',
+      //     },
+      //     messages:[
+      //       {
+      //         sender: { id: 1,title: 'Petros' },
+      //         recipient: { id: 2 },
+      //         createdTimestamp: '2024-09-16T10:00:00',
+      //         text: 'Hello! How are you? #2',
+      //         delivered: true,
+      //         read: false,
+      //       },
+      //       {
+      //         sender: { id: 2,title: this.$store.userData.title },
+      //         recipient: { id: 1 },
+      //         createdTimestamp: '2024-09-17T10:05:00',
+      //         text: 'I am doing great, thanks! How about you? #2',
+      //         delivered: true,
+      //         read: true,
+      //       },
+      //     ]
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message',
+      //     },
+      //     messages:[
+      //       {
+      //         sender: { id: 1,title: 'Petros' },
+      //         recipient: { id: 2 },
+      //         createdTimestamp: '2024-09-16T10:00:00',
+      //         text: 'Hello! How are you? #3',
+      //         delivered: true,
+      //         read: false,
+      //       },
+      //       {
+      //         sender: { id: 2,title: this.$store.userData.title },
+      //         recipient: { id: 1 },
+      //         createdTimestamp: '2024-09-17T10:05:00',
+      //         text: 'I am doing great, thanks! How about you? #3',
+      //         delivered: true,
+      //         read: true,
+      //       },
+      //       {
+      //         sender: { id: 1,title: 'Petros' },
+      //         recipient: { id: 2 },
+      //         createdTimestamp: '2024-09-17T10:10:00',
+      //         text: 'I am good too! Let’s catch up later. #3',
+      //         delivered: true,
+      //         read: false,
+      //       },
+      //     ]
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message'
+      //     }
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message'
+      //     }
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message'
+      //     }
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message'
+      //     }
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message'
+      //     }
+      //   },
+      //   {
+      //     connection: {
+      //       recipient: {
+      //         id:1000,
+      //         title: 'Test User'
+      //       }
+      //
+      //     },
+      //     lastMessage:{
+      //       createdTimestamp: '2000-01-01T00:00:00.000Z',
+      //       message: 'Test Message'
+      //     }
+      //   },
+      // ],
     }
   },
   computed: {
@@ -261,12 +267,12 @@ export default {
     // },
   },
   methods: {
-    chatClicked(index){
+    async fetchChats(){
+      this.chats = await this.$store.fetchChats()
+    },
+    async chatClicked(index){
       this.clicked = index
-      // this.$router.push({
-        //     name: 'chat-messages',
-        //     params: { id: key }
-        //   })
+      this.clickedChat = this.chats[this.clicked]
     }
   }
 }

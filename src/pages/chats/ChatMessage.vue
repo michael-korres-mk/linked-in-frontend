@@ -5,7 +5,7 @@
       <v-avatar class="border-thin mr-2" color="grey" rounded="25" size="70">
         <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
       </v-avatar>
-      <span> <strong>{{ message.sender.title }}</strong> <FontAwesomeIcon icon="fa-circle" style="width:3px" /> {{ shortTime(message.createdTimestamp) }} </span>
+      <span> <strong>{{ message.sender.title }}</strong> <FontAwesomeIcon icon="fa-circle" style="width:3px" /> {{ shortTime(message.createdDate) }} </span>
     </v-list-item-title>
     <v-list-item-subtitle class="text-black">{{ message.text }}</v-list-item-subtitle>
 

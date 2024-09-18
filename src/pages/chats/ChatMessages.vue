@@ -70,11 +70,12 @@ export default {
       loading: false,
       messageText:'',
       sending:false,
+      messages:[]
     }
   },
   computed: {
     recipientId() {
-      return this.$route.params.id
+      return this.chat.recipient.id
     },
     token() {
       return localStorage.getItem('token')
@@ -82,13 +83,8 @@ export default {
     groupedMessages() {
 
       const groups = {};
-      this.chat.messages.forEach((message) => {
-        let date
-        // if (new Date(message.createdTimestamp).getFullYear() < new Date().getFullYear()) {
-        //
-
-        date = this.isoDateOnlyTrimmed(message.createdTimestamp)
-
+      this.messages.forEach((message) => {
+        const date = this.isoDateOnlyTrimmed(message.createdTimestamp)
 
         if (!groups[date]) groups[date] = [];
         groups[date].push(message);
@@ -110,15 +106,16 @@ export default {
       })
     },
   },
-  // async mounted() {
-  //   this.connect()
-  //   const data = await this.$store.fetchChatMessages(this.recipientId)
-  //   if (data) {
-  //     this.msgs = data.messages.reverse()
-  //     this.connection = data.connection.recipient
-  //   }
-  //   this.loading = false
-  // },
+  mounted() {
+    this.connect()
+    this.fetchChatMessages()
+    this.loading = false
+  },
+  watch: {
+    chat() {
+      this.fetchChatMessages()
+    },
+  },
   methods: {
     connect() {
       this.stompClient = new Client({
@@ -127,9 +124,7 @@ export default {
           this.stompClient.subscribe('/user/' + this.user.id + '/queue/messages',
             (newMsg) => {
               const msg = JSON.parse(newMsg.body)
-              if (msg.sender.id === this.recipientId) {
-                this.appendMessage(msg)
-              }
+              if (msg.creator.id === this.recipientId) this.appendMessage(msg)
             }
           )
         },
@@ -142,25 +137,34 @@ export default {
       }
     },
     appendMessage(newMsg) {
-      this.msgs.push(newMsg)
+      this.messages.push(newMsg)
+    },
+    async fetchChatMessages(){
+      this.messages = await this.$store.fetchChatMessages(this.recipientId)
     },
     sendMessage() {
-      console.log(this.messageText)
-      // TODO: Fix Message saving in db - refactor chat entities
-      // if (this.stompClient && this.message.length > 0) {
-      //   const newMsg = {
-      //     connection : {recipient : { id: this.recipientId }},
-      //     lastMessage: this.message,
-      //     token: this.token,
-      //   }
-      //   this.stompClient.publish({
-      //     destination: '/app/chat',
-      //     body: JSON.stringify(newMsg),
-      //   })
-      //   this.appendMessage(newMsg)
-      //   this.message = ''
-      // }
+      if (this.stompClient && !this.messageText.isEmpty) {
+
+        const newMessage = this.createMessageObj(this.messageText)
+
+        this.stompClient.publish({
+          destination: '/app/chat',
+          body: JSON.stringify(newMessage),
+        })
+
+        this.appendMessage(newMessage)
+        this.messageText = ''
+      }
     },
+    createMessageObj(messageText){
+      return {
+        text: messageText,
+        sender: this.user,
+        recipient : { id: this.recipientId },
+        chat: { id: this.chat.id },
+        token: this.token
+      }
+    }
   },
 }
 </script>

@@ -13,7 +13,7 @@
     </VCol>
     <VCol :cols="5">
       <div class="d-flex flex-column justify-start align-items-center font-18">
-        <div class="name text-info font-weight-bold">{{ chat.connection.recipient.title }}</div>
+        <div class="name text-info font-weight-bold">{{ chat.recipient.title }}</div>
         <div class="message-description cut font-roboto-condensed font-italic"> {{ chat.lastMessage.message }} </div>
       </div>
     </VCol>

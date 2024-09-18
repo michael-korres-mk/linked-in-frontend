@@ -9,8 +9,8 @@
         </v-avatar>
       </template>
 
-      <v-list-item-title class="name text-info font-weight-bold">{{ chat.connection.recipient.title }}</v-list-item-title>
-      <v-list-item-subtitle class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.message }}</v-list-item-subtitle>
+      <v-list-item-title v-if="chat.recipient.title" class="name text-info font-weight-bold">{{ chat.recipient.title }}</v-list-item-title>
+      <v-list-item-subtitle class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
 
       <template v-slot:append>
         <div class="font-12">{{ shortDate(chat.createdTimestamp) }}</div>
