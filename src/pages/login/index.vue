@@ -41,8 +41,8 @@ export default {
   data() {
     return {
       form: {
-        email: 'admin@demo.com',
-        password: 'admin',
+        email: 'professional@demo.com',
+        password: '111',
         remember: false,
       },
       logoImage: logo,

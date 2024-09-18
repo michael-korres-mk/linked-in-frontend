@@ -171,8 +171,7 @@
   "Label": "Ετικέτα",
   "Start": "Έναρξη",
   "End": "Λήξη",
-  "Contacts": "Επαφές",
-  "Chats": "Συνομιλίες",
+  "Chats": "Συζητήσεις",
   "Send": "Αποστολή",
   "Notifications": "Ειδοποιήσεις",
   "StartDate": "Ημερομηνία Έναρξης",
@@ -430,5 +429,6 @@
   "Download User Data": "Λήψη Δεδομένων Χρηστών",
   "Add Selected": "Προσθήκη Επιλεγμένων",
   "Download XML": "Λήψη XML",
-  "Download JSON": "Λήψη JSON"
+  "Download JSON": "Λήψη JSON",
+  "No chat picked": "Δεν έχει επιλεγεί συνομιλία"
 }

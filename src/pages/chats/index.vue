@@ -1,65 +1,55 @@
 <template>
-  <div class="rest-container">
-<!--    <div class="search-container mt-4 mb-3 px-3">-->
-<!--      <FormField-->
-<!--        :form-field="searchField"-->
-<!--        fluid-layout-->
-<!--        @fieldUpdated="setItemCode"-->
-<!--      />-->
-<!--    </div>-->
+  <h1 class="text-center text-info">
+    {{ $t('Chats') }}
+  </h1>
+  <div class="card-wrapper bg-global-primary">
+    <div class="card-body text-center">
     <VCard>
-      <VTabs
-        v-model="tab"
-        color="#1f4e79"
-        class="card-header"
-        fixed-tabs
-      >
-        <VTab
-          v-for="(item, index) in tabs"
-          :key="index"
-          :value="index"
-        >
-          {{ item }}
-        </VTab>
-      </VTabs>
       <VCardText>
-        <VWindow v-model="tab">
-          <VWindowItem :value="0">
-            <hr />
-            <ChatContact />
-          </VWindowItem>
-          <VWindowItem :value="1">
-            <hr />
-            <ChatRecent />
-          </VWindowItem>
-        </VWindow>
+        <VContainer fluid class="d-flex">
+          <VCol :cols="4">
+            <Chats :key="componentKey" :chats="chats" @chatClicked="chatClicked"/>
+          </VCol>
+          <VCol :cols="8">
+            <ChatMessages v-if="clicked !== -1" :chat="clickedChat" @messageSent="messageSent"/>
+            <h1 class="text-info" v-else > {{ $t('No chat picked') }}  </h1>
+          </VCol>
+        </VContainer>
       </VCardText>
     </VCard>
+    </div>
   </div>
 </template>
 
 <script>
 import FormField from '@/components/entity/FormField.vue'
-import ChatContact from './ChatContact.vue'
-import ChatRecent from './ChatRecent.vue'
+import Chats from "@/pages/chats/Chats.vue";
+import ChatMessages from "@/pages/chats/ChatMessages.vue";
+
 export default {
   components: {
+    ChatMessages,
+    Chats,
     FormField,
-    ChatContact,
-    ChatRecent
+  },
+  mounted(){
+    this.fetchChats()
+    this.isLoading = false
   },
   data() {
     return {
-      tab: 0,
+      componentKey:0,
+      clicked: -1,
+      isLoading: true,
+      clickedChat:{},
+      chats:[],
+      // entityStore: defineStore('chats', useGenericEntityStore('chats'))(),
     }
   },
   computed: {
-    tabs() {
-      return [this.$t('Contacts'),this.$t('Chats')]
-    },
     // searchField() {
     //   return {
-    //     id: 'contactTypeahead',
+    //     id: 'connectionTypeahead',
     //     type: 'autocomplete',
     //     placeholder: 'Αναζήτηση...',
     //     filter: (itemTitle, query, item) => {
@@ -72,12 +62,18 @@ export default {
     // },
   },
   methods: {
-    // setItemCode(captain) {
-    //   this.$router.push({
-    //     name: 'chat-history',
-    //     params: { id: captain.value.id }
-    //   })
-    // },
+    async fetchChats(){
+      this.chats = await this.$store.fetchChats()
+    },
+    async chatClicked(index){
+      this.clicked = index
+      this.clickedChat = this.chats[this.clicked]
+    },
+    async messageSent(newMessage){
+      console.log(newMessage)
+      this.clickedChat.lastMessage = newMessage
+      // this.componentKey++
+    }
   }
 }
 </script>
