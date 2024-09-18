@@ -1,7 +1,5 @@
 <script setup>
-import logo from '@images/logo_white.png';
 import { themeConfig } from '@themeConfig';
-import useJwt from "@/plugins/jwt/useJwt.js";
 
 definePage({ meta: { layout: 'blank' } })
 
@@ -52,7 +50,6 @@ definePage({ meta: { layout: 'blank' } })
 </template>
 
 <script>
-import useJwt from "@/plugins/jwt/useJwt.js";
 import {themeConfig} from "@themeConfig";
 
 export default {

@@ -1,7 +1,5 @@
 <script setup>
-import logo from '@images/logo_white.png';
 import { themeConfig } from '@themeConfig';
-import useJwt from "@/plugins/jwt/useJwt.js";
 import { defineStore } from 'pinia'
 
 definePage({ meta: { layout: 'blank' } })
@@ -78,7 +76,7 @@ export default {
       await this.entityStore.saveEntity(this.form,false)
         .then(res => {
           this.$store.userData = res;
-          sessionStorage.setItem('userData', JSON.stringify(res));
+          localStorage.setItem('userData', JSON.stringify(res));
           this.$router.push('/home');
         })
         .catch(err => {this.signupError(err.response.data.message)})
@@ -92,7 +90,7 @@ export default {
   },
   mounted() {
     if (this.hasToken) {
-      this.authenticateUser(this.$route.query.token);
+      this.authenticateUser(this.$route.query?.token);
     }
   },
 };

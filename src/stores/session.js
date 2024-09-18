@@ -14,7 +14,7 @@ const getCacheKey = (endpoint, params) => {
 }
 
 const getters = {
-  isAuthenticated: state => state.userData.token != '',
+  isAuthenticated: state => (state.userData.token !== '') || (state.userData.token !== undefined),
   isAdmin: state => state.userData.userRole === 'ADMIN',
     // userRights: state => {
   //   return state.userData?.authorities
@@ -40,22 +40,13 @@ const actions = {
   clearCache() {
     this.cache.items = {}
   },
-  jwtLogin(token) {
+  jwtLogin(token,email,password) {
     return new Promise((resolve, reject) => {
-      
+      const url = (token)? `jwt/login?token=${token}` : `jwt/login?email=${email}&password=${password}`
       axios
-        .get(`jwt/login?token=${token}`)
+        .get(url)
         .then(response => resolve(response))
         .catch(error => reject(error))
-    })
-  },
-  jwtLoginCredentials(email, password) {
-    return new Promise((resolve, reject) => {
-
-        axios
-            .get(`jwt/login?email=${email}&password=${password}`)
-            .then(response => resolve(response))
-            .catch(error => reject(error))
     })
   },
   uploadFile(file, name) {
@@ -162,7 +153,7 @@ const actions = {
 
 export const useSessionStore = defineStore('session', {
   state: () => {
-    const sessionUser = sessionStorage.getItem('userData')
+    const sessionUser = localStorage.getItem('userData')
 
     const userData = sessionUser
       ? JSON.parse(sessionUser)

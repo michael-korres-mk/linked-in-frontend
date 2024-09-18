@@ -1,7 +1,5 @@
 <script setup>
-import logo from '@images/logo_white.png';
 import { themeConfig } from '@themeConfig';
-import useJwt from "@/plugins/jwt/useJwt.js";
 definePage({ meta: { layout: 'blank' } })
 
 </script>
@@ -24,7 +22,7 @@ definePage({ meta: { layout: 'blank' } })
           <div class="d-flex justify-end flex-wrap gap-3 padding-top-2">
             <VBtn color="secondary" variant="tonal" @click="returnToLoginWall"> Cancel </VBtn>
 
-            <VBtn @click="myLoginUser">
+            <VBtn @click="() => authenticateUser()">
               Login
               <VIcon end icon="tabler-arrow-right" class="flip-in-rtl"/>
             </VBtn>
@@ -36,6 +34,9 @@ definePage({ meta: { layout: 'blank' } })
 </template>
 
 <script>
+import useJwt from "@/plugins/jwt/useJwt.js";
+import logo from '@images/logo_white.png';
+
 export default {
   name: 'Login',
   data() {
@@ -52,29 +53,22 @@ export default {
     returnToLoginWall() {
       this.$router.push('/login-wall');
     },
-    async myLoginUser() {
-      await this.$store.jwtLoginCredentials(this.form.email, this.form.password)
+    async authenticateUser(token = null) {
+      if(token !== null){
+        useJwt.setToken(token);
+      }
+
+      await this.$store.jwtLogin(token,this.form.email, this.form.password)
         .then(res => {
+          let userData = res.data;
           this.$store.userData = res.data;
-          sessionStorage.setItem('userData', JSON.stringify(res.data));
+          localStorage.setItem('userData', JSON.stringify(userData));
+          useJwt.setToken(userData.token)
           this.$router.push((this.$store.isAdmin)? '/users' : '/home');
         })
         .catch(err => {this.loginError(err.response.data.message)})
       ;
     },
-    // authenticateUser(token) {
-    //   useJwt.setToken(token);
-    //   this.$store.jwtLogin(token)
-    //     .then(res => {
-    //       let userData = res.data;
-    //       userData.token = token;
-    //       this.$store.userData = userData;
-    //       sessionStorage.setItem('userData', JSON.stringify(userData));
-    //       this.$router.push('/home');
-    //     })
-    //     .catch(err => {this.loginError(err.response.data.message)})
-    //
-    // },
     loginError(errorMessage) {
       this.errorToast({
         title: 'Αδυναμία Σύνδεσης',
@@ -83,9 +77,6 @@ export default {
     },
   },
   mounted() {
-    if (this.hasToken) {
-      this.authenticateUser(this.$route.query.token);
-    }
     if (this.hasError) {
       this.loginError();
     }

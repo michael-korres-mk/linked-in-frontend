@@ -309,12 +309,15 @@ export default {
       return this[methodName](param)
     },
     clearPrivateData() {
-      sessionStorage.clear()
+      localStorage.clear()
       this.$store.$reset()
       this.$store.clearCache()
     },
     logOutUrl(clientId) {
         return import.meta.env.VITE_LOGOUT_URL
+        //     return `${import.meta.env.VITE_LOGOUT_URL}${clientId}/?url=${
+        //               this.apiUrl
+        //           }`
     },
 
     logoutUser() {
@@ -325,6 +328,25 @@ export default {
         })
 
     },
+
+//       logoutUser() {
+//           const logout = window.open(
+//               this.logOutUrl(
+//                   this.user.type === 'OAUTH2_PA'
+//                       ? import.meta.env.VITE_AADE_PA_CLIENTID
+//                       : import.meta.env.VITE_AADE_CLIENTID,
+//               ),
+//               'oauth:taxis',
+//               'width=1,height=1,left=-1000,top=-1000',
+//           )
+//
+//           setTimeout(function() {
+//               logout.close()
+//           }, 200)
+//           this.clearPrivateData()
+//           this.$router.push({ name: 'login' })
+// },
+
     enumOptions(options) {
       return options.map(option => ({ id: option, title: this.$t(option) }))
     },
