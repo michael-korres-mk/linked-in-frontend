@@ -20,7 +20,7 @@ export default {
       default: () => ({
         sender: { id: 0 },
         recipient: { id: 0 },
-        createdTimestamp: '',
+        creationTimestamp: '',
         message: '',
         delivered: false,
         read: false,

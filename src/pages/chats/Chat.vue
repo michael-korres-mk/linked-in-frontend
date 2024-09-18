@@ -13,7 +13,7 @@
       <v-list-item-subtitle class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
 
       <template v-slot:append>
-        <div class="font-12">{{ shortDate(chat.createdTimestamp) }}</div>
+        <div class="font-12">{{ shortDate(chat.creationTimestamp) }}</div>
       </template>
     </v-list-item>
 </template>

@@ -12,9 +12,9 @@
       <div class="d-flex flex-column justify-start align-items-center font-18">
         <div class="d-flex justify-content-between ma-1">
           <span class="name text-info font-weight-bold">{{ message.sender.title }}</span>
-          <span> <FontAwesomeIcon icon="fa-solid fa-calendar-days" /> {{ midDate(message.createdTimestamp) }} </span>
+          <span> <FontAwesomeIcon icon="fa-solid fa-calendar-days" /> {{ midDate(message.creationTimestamp) }} </span>
         </div>
-        <div> <span class="icon fas fa-clock" /> {{ shortTime(message.createdTimestamp) }} </div>
+        <div> <span class="icon fas fa-clock" /> {{ shortTime(message.creationTimestamp) }} </div>
 <!--        <div class="message-info">-->
 <!--        </div>-->
         <div :class="isSender ? 'bg-info' : ''" class="message-content">{{ message.text }} </div>
@@ -35,7 +35,7 @@ export default {
       default: () => ({
         sender: { id: 0 },
         recipient: { id: 0 },
-        createdTimestamp: '',
+        creationTimestamp: '',
         message: '',
         delivered: false,
         read: false,

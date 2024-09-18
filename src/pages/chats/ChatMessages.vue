@@ -58,6 +58,7 @@ import ChatMessage from "@/pages/chats/ChatMessage.vue";
 export default {
   name: "ChatMessages",
   components: {ChatMessage},
+  emits: ['messageSent'],
   props: {
     chat: {
       type: {},
@@ -78,13 +79,13 @@ export default {
       return this.chat.recipient.id
     },
     token() {
-      return localStorage.getItem('token')
+      return this.$store.userData.token
     },
     groupedMessages() {
 
       const groups = {};
       this.messages.forEach((message) => {
-        const date = this.isoDateOnlyTrimmed(message.createdTimestamp)
+        const date = this.isoDateOnlyTrimmed(message.creationTimestamp)
 
         if (!groups[date]) groups[date] = [];
         groups[date].push(message);
@@ -97,11 +98,11 @@ export default {
       }))
       .sort((a, b) => (a.date < b.date) ? -1 : (a.date > b.date) ? 1 : 0)
       .map(g => {
-        const timestamp = g.messages[0].createdTimestamp
+        const timestamp = g.messages[0].creationTimestamp
         if (new Date(timestamp).getFullYear() < new Date().getFullYear()) {
-          return {...g, date: this.midDate(g.messages[0].createdTimestamp)}
+          return {...g, date: this.midDate(g.messages[0].creationTimestamp)}
         }
-        return {...g, date: this.dayMonth(g.messages[0].createdTimestamp)}
+        return {...g, date: this.dayMonth(g.messages[0].creationTimestamp)}
 
       })
     },
@@ -153,6 +154,7 @@ export default {
         })
 
         this.appendMessage(newMessage)
+        this.$emit('messageSent',newMessage)
         this.messageText = ''
       }
     },
@@ -163,6 +165,8 @@ export default {
         recipient : { id: this.recipientId },
         chat: { id: this.chat.id },
         token: this.token
+        // token: useJwt.getToken()
+
       }
     }
   },

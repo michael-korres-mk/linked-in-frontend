@@ -1,6 +1,6 @@
 <template>
   <VRow
-      :key="chat.lastMessage.createdTimestamp"
+      :key="chat.lastMessage.creationTimestamp"
       :class="['message-information', 'display-flex', 'border-thin',{'clicked-connection': clicked}]"
       @click="chatClicked"
   >
@@ -18,7 +18,7 @@
       </div>
     </VCol>
     <VCol :cols="3">
-      <div class="font-12">{{ shortDate(chat.createdTimestamp) }}</div>
+      <div class="font-12">{{ shortDate(chat.creationTimestamp) }}</div>
     </VCol>
   </VRow>
 </template>
