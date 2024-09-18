@@ -145,9 +145,11 @@ const actions = {
   fetchChats() {
       return this.fetchCachedList('chats')
   },
-  fetchUserRequests() {
-    return this.fetchList('users/connection-requests')
-  },
+    // TODO: Check this out
+  // fetchConnectionRequests() {
+  //   return this.fetchList('connection-requests',{ accepted: true})
+  // },
+
 
 }
 

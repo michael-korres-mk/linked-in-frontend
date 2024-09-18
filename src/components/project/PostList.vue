@@ -579,6 +579,11 @@ export default {
         : ''
     },
     extraActionShouldRender(action, item) {
+
+      if (typeof action.renderCondition === 'function') {
+        return action.renderCondition(item)
+      }
+
       return (
         (!action.hasOwnProperty('authorityValidation') ||
           action.authorityValidation) &&

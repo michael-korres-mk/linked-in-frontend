@@ -374,8 +374,6 @@ export default {
     },
     extraActionShouldRender(action) {
       if (typeof action.renderCondition === 'function') {
-        alert('extraActionShouldRender')
-        
         return action.renderCondition(action)
       } else {
         return (
