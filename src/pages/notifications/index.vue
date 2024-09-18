@@ -53,10 +53,10 @@ export default {
     },
     formattedColumns() {
       return [
-        {
-          key: 'kind',
-          callback: 'translate',
-        },
+        // {
+        //   key: 'kind',
+        //   callback: 'translate',
+        // },
         {
           key: 'creationDate',
           callback: 'dateOnly',
