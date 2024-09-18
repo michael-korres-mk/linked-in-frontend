@@ -1,25 +1,43 @@
 <script setup>
 import EntityList from '../../components/entity/EntityList.vue';
 
-definePage({
-  meta: {
-    authority: 'announcements',
-  },
-})
+// definePage({
+//   meta: {
+//     authority: 'announcements',
+//   },
+// })
 </script>
 
 <template>
+
   <EntityList
     ref="list"
     :config="config"
     :columns="columns"
     :formatted-columns="formattedColumns"
-    :extra-actions="extraActions"
-    authority="announcements"
+    :filters="connectionRequestFilter"
+    :extra-actions="connectionRequestActions"
     hide-insert-btn
     hide-edit
     hide-view
     hide-delete
+    auto-update-filters
+    hide-filters
+  />
+
+  <EntityList
+    ref="list"
+    :config="config"
+    :columns="columns"
+    :filters="expressionOfInterestFilter"
+    :formatted-columns="formattedColumns"
+    :extra-actions="expressionOfInterestActions"
+    hide-insert-btn
+    hide-edit
+    hide-view
+    hide-delete
+    auto-update-filters
+    hide-filters
   />
 </template>
 
@@ -42,10 +60,6 @@ export default {
           title: 'Date',
         },
         {
-          key: 'kind',
-          title: 'Kind',
-        },
-        {
           key: 'title',
           title: 'Title',
         },
@@ -53,17 +67,35 @@ export default {
     },
     formattedColumns() {
       return [
-        {
-          key: 'kind',
-          callback: 'translate',
-        },
+        // {
+        //   key: 'kind',
+        //   callback: 'translate',
+        // },
         {
           key: 'creationDate',
           callback: 'dateOnly',
         },
       ]
     },
-    extraActions() {
+    expressionOfInterestFilter() {
+      return [
+        {
+          id: 'kind',
+          type: 'text',
+          initVal: 'EXPRESSION_OF_INTEREST',
+        }
+        ]
+    },
+    connectionRequestFilter() {
+      return [
+        {
+          id: 'kind',
+          type: 'text',
+          initVal: 'CONNECTION_REQUEST',
+        }
+      ]
+    },
+    expressionOfInterestActions() {
       return [
         {
           title: 'Visit',
@@ -72,7 +104,27 @@ export default {
           propertyExists: 'url',
         },
       ]
-    },    
+    },
+    connectionRequestActions() {
+      return [
+        {
+          title: 'Accept',
+          icon: 'fa-check',
+          // callback: this.acceptRequest,
+        },
+        {
+          title: 'Delete',
+          icon: 'fa-trash-can',
+          // callback: this.deleteRequest,
+        },
+        {
+          title: 'Visit',
+          icon: 'fa-link',
+          callback: this.fetchExtraItem,
+          propertyExists: 'url',
+        },
+      ]
+    },
   },
   methods: {
     fetchExtraItem(item) {

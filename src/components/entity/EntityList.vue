@@ -18,6 +18,7 @@
       :filters-legend-title="filtersTitle"
       :filters="filters"
       :hide-filter-legend="hideFilterLegend"
+      :hide-filters="hideFilters"
       :auto-update-filters="autoUpdateFilters"
       @initFilters="initFilterValues"
       @filterUpdated="filterUpdated"
@@ -385,6 +386,10 @@ export default {
       default: false,
     },
     hideFilterLegend: {
+      type: Boolean,
+      default: false,
+    },
+    hideFilters: {
       type: Boolean,
       default: false,
     },

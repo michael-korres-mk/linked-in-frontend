@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="filters.length"
-    :class="hideFilterLegend ? 'card-wrapper-nl' : 'card-wrapper'"
+    :class="[hideFilterLegend ? 'card-wrapper-nl' : 'card-wrapper',hideFilters? 'd-none' : '']"
   >
     <div v-if="!hideFilterLegend">
       <legend class="legend-title">
@@ -85,6 +85,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideFilters: {
+      type: Boolean,
+      default: false,
+    },
     autoUpdateFilters: {
       type: Boolean,
       default: false,
@@ -144,4 +148,3 @@ export default {
   },
 }
 </script>
-
