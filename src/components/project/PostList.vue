@@ -713,16 +713,10 @@ export default {
         return prev ? prev[curr] : null
       }, obj)
     },
-    handleUpdatePost(updatedPost){
-      const i = this.entities.findIndex(post => post.id === updatedPost.id)
-      this.entities[i] = updatedPost
+    itemUpdated(updatedItem){
+      const i = this.entities.findIndex(item => item.id === updatedItem.id)
+      this.entities[i] = updatedItem
     }
   },
 }
 </script>
-
-<style>
-.post-list{
-  background-color: #EEE!important;
-}
-</style>

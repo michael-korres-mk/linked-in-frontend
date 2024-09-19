@@ -49,6 +49,7 @@ declare module 'vue' {
     CustomRadios: typeof import('./src/@core/components/app-form-elements/CustomRadios.vue')['default']
     CustomRadiosWithIcon: typeof import('./src/@core/components/app-form-elements/CustomRadiosWithIcon.vue')['default']
     CustomRadiosWithImage: typeof import('./src/@core/components/app-form-elements/CustomRadiosWithImage.vue')['default']
+    DataIterator: typeof import('./src/components/entity/DataIterator.vue')['default']
     DataTable: typeof import('./src/components/entity/DataTable.vue')['default']
     DetailsBtn: typeof import('./src/components/entity/DetailsBtn.vue')['default']
     Dialog: typeof import('./src/components/Dialog.vue')['default']

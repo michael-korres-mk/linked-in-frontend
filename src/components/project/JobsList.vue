@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
   <VContainer fluid>
-    <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
+    <div>
       <!-- 👉 Table Container Legend -->
       <legend v-if="!hideLegend" class="legend-title">
         {{ legendTitle }}

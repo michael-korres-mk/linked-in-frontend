@@ -4,8 +4,8 @@
 //     authority: 'submissions',
 //   },
 // })
-  import UsersGrid from "@/components/project/UsersGrid.vue";
-import UsersList from "@/components/project/UsersList.vue";
+import UserCard from "@/components/project/UserCard.vue";
+import DataIterator from "@/components/entity/DataIterator.vue";
 
 </script>
 
@@ -17,15 +17,15 @@ import UsersList from "@/components/project/UsersList.vue";
       <div v-if="$route.params.id != '0'">
           <div class="card-wrapper" style="margin: 1.5em;">
             <h2 class="text-center text-info card-body">{{$t('The Network of user: ') + networkUser.title}}</h2>
-            <UsersGrid
-              :config="connectionsConfig"
-              :results-per-page="9"
-              :filters="connectionsfilters"
-              auto-update-filters
-              hide-view
-              hide-legend
-              hide-filters
-            />
+<!--            <UsersGrid-->
+<!--              :config="connectionsConfig"-->
+<!--              :results-per-page="9"-->
+<!--              :filters="connectionsfilters"-->
+<!--              auto-update-filters-->
+<!--              hide-view-->
+<!--              hide-legend-->
+<!--              hide-filters-->
+<!--            />-->
           </div>
       </div>
     <div v-else class="card-body text-center">
@@ -42,7 +42,7 @@ import UsersList from "@/components/project/UsersList.vue";
         <v-tabs-window v-model="tab">
           <v-tabs-window-item class="card-body" value="tab-1">
             <h2 class="text-center text-info">{{ $t('My Network')}}</h2>
-            <UsersGrid
+            <DataIterator
               :config="connectionsConfig"
               :results-per-page="9"
               :filters="connectionsfilters"
@@ -50,18 +50,36 @@ import UsersList from "@/components/project/UsersList.vue";
               hide-view
               hide-legend
               hide-filters
-            />
+              hide-insert-btn
+            >
+              <template #default="{ items }">
+                <VContainer>
+                  <v-row>
+                    <v-col v-for="item in items.map(i => i.value)" :cols="4">
+                      <UserCard :card="item" />
+                    </v-col >
+                  </v-row >
+                </VContainer>
+              </template>
+            </DataIterator>
+
           </v-tabs-window-item>
           <v-tabs-window-item class="card-body" value="tab-2">
             <h2 class="text-center text-info">{{ $t('Search') }}</h2>
-            <UsersList
+
+            <DataIterator
               :config="config"
               :filters="filters"
               :results-per-page="9"
               auto-update-filters
               hide-filter-legend
               hide-view
-            />
+              hide-insert-btn
+            >
+              <template #default="{ items }" >
+                <UserListItem v-for="item in items.map(i => i.value)" :item="item" />
+              </template>
+            </DataIterator>
           </v-tabs-window-item>
         </v-tabs-window>
       </v-card>
@@ -76,13 +94,13 @@ import {defineStore} from "pinia";
 export default {
   data() {
     return {
-      tab: 'tab-2',
+      tab: 'tab-1',
       userStore: defineStore('users', useGenericEntityStore('users'))(),
       networkUser: {}
     }
   },
   mounted(){
-    if(this.$route.params.id !== 0) this.fetchNetworkUser();
+    if(this.$route.params.id != '0') this.fetchNetworkUser();
   },
   computed: {
     connectionsConfig() {
@@ -102,8 +120,8 @@ export default {
         route: 'users',
         title: {
           single: 'Network',
-          plural: 'Posts',
-          geniki: 'Post(gen)',
+          plural: 'Network',
+          geniki: 'Network',
         },
       }
     },
@@ -112,14 +130,12 @@ export default {
         {
           id: 'creator',
           type: 'text',
-          label: this.$t('User Search'),
           initVal: (this.$route.params.id == '0') ? this.user.id : this.$route.params.id,
           colSize: 4,
         },
         {
           id: 'accepted',
           type: 'checkbox',
-          label: this.$t('User Search'),
           initVal: true,
           colSize: 4,
         }
@@ -139,7 +155,6 @@ export default {
         {
           id: 'exceptLoggedUser',
           type: 'checkbox',
-          label: this.$t('User Search'),
           initVal: true,
           hidden:true,
           colSize: 4,

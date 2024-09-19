@@ -47,7 +47,7 @@
 
         <VDivider />
 
-        <VCardActions :style="{backgroundColor:'#EEEEEE'}">
+        <VCardActions :style="{backgroundColor:'#EEE'}">
           <VContainer fluid>
             <VRow>
               <VCol>
@@ -106,7 +106,68 @@
       />
 
       <span :style="{display: 'inline-flex', justifyContent: 'flex-end', width: '100%'}">
-        <slot :style="{display: 'flex', justifyContent: 'flex-end'}" name="actions"/>
+<!--          <div class="w-130px">-->
+<!--            <div class="d-flex justify-end">-->
+<!--              &lt;!&ndash; 👉 View btn &ndash;&gt;-->
+<!--              <ActionBtn-->
+<!--                v-if="viewShouldRender(item)"-->
+<!--                :icon="detailsViewIcon"-->
+<!--                :label="detailsViewTitle"-->
+<!--                @click="handleViewClick(item)"-->
+<!--              />-->
+
+<!--              &lt;!&ndash; 👉 Edit Btn &ndash;&gt;-->
+<!--              <ActionBtn-->
+<!--                v-if="editShouldRender(item)"-->
+<!--                :icon="config.edit?.icon || 'fa-edit'"-->
+<!--                :label="config.edit?.label || 'Edit'"-->
+<!--                :color="config.edit?.color || 'warning'"-->
+<!--                @click="handleEntityClick(item)"-->
+<!--              />-->
+
+<!--              &lt;!&ndash; 👉 Toggle enabled Btn &ndash;&gt;-->
+<!--              <ActionBtn-->
+<!--                v-if="!hideEnabled && editShouldRender(item)"-->
+<!--                :icon="item.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"-->
+<!--                variant="text"-->
+<!--                :label="item.enabled ? 'Disable' : 'Enable'"-->
+<!--                :disabled="disableActions"-->
+<!--                @click="toggleEnableDisable(item)"-->
+<!--              />-->
+
+<!--              &lt;!&ndash; 👉 Delete Btn &ndash;&gt;-->
+<!--              <ActionBtn-->
+<!--                v-if="deleteShouldRender(item)"-->
+<!--                icon="trash-can"-->
+<!--                label="Delete"-->
+<!--                color="error"-->
+<!--                class="text-black"-->
+<!--                @click="updateDeleteModalId(item.id)"-->
+<!--              />-->
+
+<!--              &lt;!&ndash; 👉 Duplicate Btn &ndash;&gt;-->
+<!--              <ActionBtn-->
+<!--                v-if="allowDuplicate && editShouldRender(item)"-->
+<!--                icon="fa-copy"-->
+<!--                label="Duplicate"-->
+<!--                color="purple"-->
+<!--                @click="handleEntityClick(item, true)"-->
+<!--              />-->
+
+<!--              &lt;!&ndash; 👉 ExtraAction Btn &ndash;&gt;-->
+<!--              <template v-for="extraAction in extraActions">-->
+<!--                <ActionBtn-->
+<!--                  v-if="extraActionShouldRender(extraAction, item)"-->
+<!--                  :key="extraAction.icon"-->
+<!--                  color="orange"-->
+<!--                  :icon="(extraAction.dynamicIcon && item[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"-->
+<!--                  :label="extraAction.title"-->
+<!--                  :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"-->
+<!--                  @click="handleExtraActionClick(item, extraAction)"-->
+<!--                />-->
+<!--              </template>-->
+<!--            </div>-->
+<!--          </div>-->
       </span>
 
     </VCardActions>
@@ -122,6 +183,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
   components: {FontAwesomeIcon, PostPhotos, CommentsTimeline, BigActionBtn},
+  emits:['itemUpdated'],
   props: {
     title: {
       type: String,
@@ -191,7 +253,7 @@ export default {
       this.freezeComment()
       await this.commentStore.saveEntity({postId:this.post.id,description:this.commentText},false)
       let updatedPost = await this.entityStore.getEntity(this.post.id)
-      this.$emit('update-post', updatedPost);
+      this.$emit('itemUpdated', updatedPost);
       this.commentText = ''
       this.unfreezeComment()
     },

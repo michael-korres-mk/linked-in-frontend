@@ -8,7 +8,8 @@
     <RouterLink :to="`/in/${cardData.id}`" >
     <div class="image-container">
       <div class="image-overlay"></div> <!-- Background effect -->
-
+      <div class="image-overlay-bottom"></div> <!-- Background effect -->
+      image-overlay-bottom
       <!-- Avatar and text sit on top of the container -->
       <div class="content-overlay">
         <v-avatar :style="{ marginTop: '80px' }" color="grey" rounded="25" size="160">
@@ -86,6 +87,16 @@ export default {
   right: 0;
   bottom: 50%;
   background: rgb(var(--v-theme-primary)); /* Background effect (color overlay) */
+  z-index: 1;
+}
+
+.image-overlay-bottom {
+  position: absolute;
+  top: 50%; /* Starts from the bottom half */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white; /* White background for the bottom half */
   z-index: 1;
 }
 

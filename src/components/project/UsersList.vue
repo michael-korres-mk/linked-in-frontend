@@ -292,6 +292,7 @@ export default {
       disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,
+      filterVals: {},
       entityHeaderTitleField: {},
     }
   },

@@ -1,4 +1,6 @@
 <script setup>
+import DataIterator from "@/components/entity/DataIterator.vue";
+
 definePage({
   meta: {
     authority: 'submissions',
@@ -12,7 +14,22 @@ definePage({
   </h1>
   <div class="card-wrapper bg-global-primary">
 
-      <JobsList :config="config" :filters="filters" :filters-legend-title="''" :results-per-page="9" hide-view />
+<!--      <JobsList :config="config" :filters="filters" :filters-legend-title="''" :results-per-page="9" hide-view />-->
+    <DataIterator
+      :config="config"
+      :filters="filters"
+      :results-per-page="9"
+      auto-update-filters
+      hide-filter-legend
+      hide-view
+      hide-insert-btn
+      :extra-styling="extraStyling"
+    >
+      <template #default="{ items }" >
+        <JobListItem v-for="item in items.map(i => i.value)" :item="item"/>
+      </template>
+    </DataIterator>
+
 
   </div>
 
@@ -47,6 +64,12 @@ export default {
         //   colSize: 4,
         // },
       ]
+    },
+    extraStyling() {
+      return {
+        container: ['post-list'],
+        cardBody: ['post-list']
+      }
     }
   }
 }

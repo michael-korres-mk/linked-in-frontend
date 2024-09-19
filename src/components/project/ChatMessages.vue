@@ -2,7 +2,7 @@
   <VVirtualScroll
     :items="groupedMessages"
     height="400"
-    class="border-solid"
+    class="border-solid bg-white"
   >
     <template #default="{ item }">
       <div>

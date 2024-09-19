@@ -36,12 +36,13 @@
                 @update:options="fetchEntities"
               >
                 <template #default="{ items }">
-                  <v-row >
-                    <v-col v-for="item in items.map(i => i.value)" :cols="4">
-                      <UserCard :card="item" />
-                    </v-col >
-                  </v-row >
-
+                  <VContainer fluid>
+                    <v-row>
+                      <v-col v-for="item in items.map(i => i.value)" :cols="4">
+                        <UserCard :card="item" />
+                      </v-col >
+                    </v-row >
+                  </VContainer>
                 </template>
 
                 <!-- 👉 Pagination Setup -->
@@ -92,7 +93,6 @@ import {defineStore} from "pinia";
 import useGenericEntityStore from "@/stores/entity.js";
 
 export default {
-  name: "UsersGrid",
   components: {UserCard},
   setup(props) {
     const entityStore = defineStore(
