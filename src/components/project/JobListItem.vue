@@ -38,14 +38,14 @@ export default {
     }
   },
   methods:{
-    freezeCard(){
+    freeze(){
       this.requesting = true
     },
-    unfreezeCard(){
+    unfreeze(){
       this.requesting = false
     },
     async sendRequest(){
-      this.freezeCard()
+      this.freeze()
       const response = await this.connectionRequestStore.saveEntity({recipientId:this.item.id},false)
 
       if(response.id){
@@ -53,7 +53,7 @@ export default {
         this.requested = true
       }
 
-      this.unfreezeCard()
+      this.unfreeze()
     },
   }
 }

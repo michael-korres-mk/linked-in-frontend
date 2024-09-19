@@ -8,20 +8,38 @@
         <h2 class="text-info"> {{ entity.jobTitle}}</h2>
       </div>
       <div class="actions">
-        <VBtn
-          size="large"
-          color="secondary"
+
+        <BigActionBtn
+          v-if="isConnection"
+          :color="'secondary'"
+          :icon="'fa-user-group'"
+          :label="'My Network'"
           @click="() => $router.push({name: 'network-id', params: { id: entity.id }})"
-        >
-          {{ $t('My Network') }}
-        </VBtn>
-        <VBtn
-          size="large"
-          color="secondary"
+        />
+
+       <BigActionBtn
+          v-else
+          :icon="(requested)? 'fa-check' : 'fa-user-plus'"
+          :label="(requested)? 'Sent' : 'Connect'"
+          :disabled="requested"
+          :color="'secondary'"
+          @click="sendRequest"
+        />
+
+<!--        <v-progress-circular-->
+<!--          v-else-->
+<!--          indeterminate-->
+<!--          :size="22"-->
+<!--          :width="4"-->
+<!--        />-->
+
+        <BigActionBtn
+          :color="'secondary'"
+          :icon="'fa-message'"
+          :label="'Send Message'"
           @click="() => $router.push({name: 'chats-id', params: { id: entity.id }})"
-        >
-          {{ $t('Send Message') }}
-        </VBtn>
+        />
+
       </div>
 
     </div>
@@ -106,16 +124,53 @@ export default {
   data() {
     return {
       entity: {},
-      entityStore: defineStore('users', useGenericEntityStore('users'))()
+      entityStore: defineStore('users', useGenericEntityStore('users'))(),
+      requesting: false,
+      loading: false,
+      connectionRequestStore: defineStore('connection-requests', useGenericEntityStore('connection-requests'))(),
+      requested: false,
+      isConnection: false
     }
   },
   mounted() {
     this.fetchEntity()
+    this.setIsConnection()
+  },
+  computed:{
+    profileId(){
+      return this.$route.params.id
+    }
   },
   methods:{
+    freeze(){
+      this.requesting = true
+    },
+    unfreeze(){
+      this.requesting = false
+    },
+    async sendRequest(){
+      this.freeze()
+      const response = await this.connectionRequestStore.saveEntity({recipientId: this.profileId},false)
+
+      if(response.id){
+        this.requesting = false
+        this.requested = true
+      }
+
+      this.unfreeze()
+    },
     async fetchEntity() {
       const entityID = this.$route.params.id
       this.entity = await this.entityStore.getEntity(entityID)
+    },
+    async setIsConnection(){
+      const connectionRequests = await this.$store.fetchConnectionRequests({creator: this.user.id,recipient: this.profileId})
+
+      if(connectionRequests.length > 0){
+        this.requested = true
+        this.isConnection = connectionRequests[0].connectionDate != null
+      }
+
     }
   }
 }

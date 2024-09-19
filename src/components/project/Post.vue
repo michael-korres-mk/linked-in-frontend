@@ -232,22 +232,22 @@ export default {
     unfreezeComment(){
       this.sending = false
     },
-    freezeCard(){
+    freeze(){
       this.loading = true
       // setTimeout(() => (this.loading = false), 2000)
     },
-    unfreezeCard(){
+    unfreeze(){
       this.loading = false
     },
     getPostLikes(){
       return this.post.likes.filter(l => l.creationDate != null).length
     },
     async like () {
-      this.freezeCard()
+      this.freeze()
       await this.likeStore.toggleEnabled({...this.post,enabled:this.liked})
       let updatedPost = await this.entityStore.getEntity(this.post.id)
       this.$emit('itemUpdated', updatedPost);
-      this.unfreezeCard()
+      this.unfreeze()
     },
     async sendComment(){
       this.freezeComment()

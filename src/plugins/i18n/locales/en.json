@@ -430,6 +430,7 @@
   "Accept" : "Accept",
   "The Network of user: ": "The Network of user: ",
   "Users Search" : "Users Search",
-  "No jobs found" : "No jobs found"
-
+  "No jobs found" : "No jobs found",
+  "No data available": "No data available",
+  "Sent": "Sent"
 }

@@ -145,8 +145,8 @@ const actions = {
   fetchChats() {
       return this.fetchList('chats')
   },
-  fetchConnections() {
-    return this.fetchList('connection-requests',{ accepted: true})
+  fetchConnectionRequests(queryParams) {
+    return this.fetchList('connection-requests',queryParams)
   },
 
 

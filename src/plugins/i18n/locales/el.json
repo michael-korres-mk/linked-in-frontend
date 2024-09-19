@@ -434,5 +434,7 @@
   "Accept" : "Αποδοχή",
   "The Network of user: ": "To Δίκτυο του χρήστη: ",
   "Users Search" : "Αναζήτηση χρηστών",
-  "No jobs found" : "Δε βρέθηκαν αγγελίες"
+  "No jobs found" : "Δε βρέθηκαν αγγελίες",
+  "No data available" : "Δεν υπάρχουν διαθέσιμα δεδομένα",
+  "Sent": "Στάλθηκε"
 }

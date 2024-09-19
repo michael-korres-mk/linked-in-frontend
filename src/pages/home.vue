@@ -19,7 +19,6 @@ import DataIterator from "@/components/entity/DataIterator.vue";
         :config="config"
         :results-per-page="7"
         hide-view
-        hide-insert-btn
         :extra-styling="extraStyling"
       >
         <template #default="{ items,itemUpdated }" >
