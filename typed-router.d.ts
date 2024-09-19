@@ -20,11 +20,7 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     'root': RouteRecordInfo<'root', '/', Record<never, never>, Record<never, never>>,
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
-    'chats': RouteRecordInfo<'chats', '/chats', Record<never, never>, Record<never, never>>,
-    'chats-chat': RouteRecordInfo<'chats-chat', '/chats/Chat', Record<never, never>, Record<never, never>>,
-    'chats-chat-message': RouteRecordInfo<'chats-chat-message', '/chats/ChatMessage', Record<never, never>, Record<never, never>>,
-    'chats-chat-messages': RouteRecordInfo<'chats-chat-messages', '/chats/ChatMessages', Record<never, never>, Record<never, never>>,
-    'chats-chats': RouteRecordInfo<'chats-chats', '/chats/Chats', Record<never, never>, Record<never, never>>,
+    'chats-id': RouteRecordInfo<'chats-id', '/chats/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'home': RouteRecordInfo<'home', '/home', Record<never, never>, Record<never, never>>,
     'in-id': RouteRecordInfo<'in-id', '/in/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'jobs': RouteRecordInfo<'jobs', '/jobs', Record<never, never>, Record<never, never>>,

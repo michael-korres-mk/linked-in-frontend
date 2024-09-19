@@ -53,7 +53,7 @@
 
 <script>
 import { Client } from '@stomp/stompjs'
-import ChatMessage from "@/pages/chats/ChatMessage.vue";
+import ChatMessage from "@/components/project/ChatMessage.vue";
 
 export default {
   name: "ChatMessages",

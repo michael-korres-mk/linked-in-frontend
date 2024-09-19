@@ -11,14 +11,14 @@
         <VBtn
           size="large"
           color="secondary"
-          @click="() => $router.push({name: 'network-id', params: { id: entity.id },})"
+          @click="() => $router.push({name: 'network-id', params: { id: entity.id }})"
         >
           {{ $t('My Network') }}
         </VBtn>
         <VBtn
           size="large"
           color="secondary"
-          @click="() => $router.push({name: 'chats'})"
+          @click="() => $router.push({name: 'chats-id', params: { id: entity.id }})"
         >
           {{ $t('Send Message') }}
         </VBtn>

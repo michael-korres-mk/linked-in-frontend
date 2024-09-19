@@ -61,5 +61,16 @@ export default {
 
 
 <style scoped lang="scss">
-
+.list-item {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(
+      to right,
+      rgb(var(--v-theme-primary)) 50%,  /* Left half with overlay */
+      transparent 50% /* Right half transparent */
+  );
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
 </style>
+

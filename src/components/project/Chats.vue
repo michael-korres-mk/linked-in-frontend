@@ -4,8 +4,8 @@
       height="450"
       class="border-solid"
     >
-      <template #default="{ index , item }">
-        <Chat :chat="item" :index="index" @chatClicked="chatClicked" :clicked="clicked === index" />
+      <template #default="{ item }">
+        <Chat :chat="item" @chatClicked="chatClicked" :clicked="clicked === item.id" />
       </template>
 
     </VVirtualScroll>
@@ -13,7 +13,7 @@
 
 
 <script>
-import Chat from "@/pages/chats/Chat.vue";
+import Chat from "@/components/project/Chat.vue";
 
 export default {
   name: "Chats",
@@ -31,9 +31,9 @@ export default {
     }
   },
   methods:{
-    chatClicked(index){
-      this.clicked = index
-      this.$emit('chatClicked', index)
+    chatClicked(chatId){
+      this.clicked = chatId
+      this.$emit('chatClicked', chatId)
     }
   }
 }

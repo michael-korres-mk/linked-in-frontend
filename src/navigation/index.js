@@ -21,7 +21,6 @@ if (isLoggedIn) {
               icon: 'fas fa-house',
               meta: {public: true},
               to: 'home',
-              // authority: 'announcements',
           },
           {
               title: 'Δίκτυο',
@@ -30,25 +29,24 @@ if (isLoggedIn) {
                   params: { id: 0 },
               },
               icon: 'fas fa-user-group',
-              // authority: 'users',
           },
           {
               title: 'Αγγελίες',
               to: 'jobs',
               icon: 'fas fa-briefcase',
-              // authority: 'users',
           },
           {
               title: 'Συζητήσεις',
-              to: 'chats',
+              to: {
+                  name: `chats-id`,
+                  params: { id: 0 },
+              },
               icon: 'fas fa-message',
-              // authority: 'users',
           },
           {
               title: 'Ειδοποιήσεις',
               to: 'notifications',
               icon: 'fas fa-bell',
-              // authority: 'users',
           },
           {
               title: 'Ρυθμίσεις',
@@ -57,7 +55,6 @@ if (isLoggedIn) {
                   query:{ view: 1 }
               },
               icon: 'fas fa-gear',
-              // authority: 'settings',
           },
   ]
     // .filter(entry => store.userRights.includes(`${entry.authority}_view` || `${entry.authority}_edit`))

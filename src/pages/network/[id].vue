@@ -125,7 +125,7 @@ export default {
         }
       ]
     },
-    filters() {
+    filters() { // TODO: disable add for connected users ?
       return [
         {
           id: 'q',
@@ -136,6 +136,14 @@ export default {
           clearable: true,
           colSize: 12,
         },
+        {
+          id: 'exceptLoggedUser',
+          type: 'checkbox',
+          label: this.$t('User Search'),
+          initVal: true,
+          hidden:true,
+          colSize: 4,
+        }
       ]
     },
   },

@@ -23,8 +23,8 @@
 
 <script>
 import FormField from '@/components/entity/FormField.vue'
-import Chats from "@/pages/chats/Chats.vue";
-import ChatMessages from "@/pages/chats/ChatMessages.vue";
+import Chats from "@/components/project/Chats.vue";
+import ChatMessages from "@/components/project/ChatMessages.vue";
 
 export default {
   components: {
@@ -34,6 +34,11 @@ export default {
   },
   mounted(){
     this.fetchChats()
+
+    if(this.$route.params.id != '0'){
+     this.setClickedChat(this.$route.params.id)
+    }
+
     this.isLoading = false
   },
   data() {
@@ -46,33 +51,20 @@ export default {
       // entityStore: defineStore('chats', useGenericEntityStore('chats'))(),
     }
   },
-  computed: {
-    // searchField() {
-    //   return {
-    //     id: 'connectionTypeahead',
-    //     type: 'autocomplete',
-    //     placeholder: 'Αναζήτηση...',
-    //     filter: (itemTitle, query, item) => {
-    //       return item.value !== this.user.userId
-    //     },
-    //     config: {
-    //       endpoint: 'vessels/vesselcaptain-autosuggest',
-    //     }
-    //   }
-    // },
-  },
   methods: {
     async fetchChats(){
       this.chats = await this.$store.fetchChats()
     },
-    async chatClicked(index){
-      this.clicked = index
+    async chatClicked(chatId){
+      this.clicked = chatId
       this.clickedChat = this.chats[this.clicked]
     },
     async messageSent(newMessage){
       this.clickedChat.lastMessage = newMessage
-      // this.componentKey++
+    },
+    setClickedChat(recipientId) {
+      return null
     }
-  }
+  },
 }
 </script>

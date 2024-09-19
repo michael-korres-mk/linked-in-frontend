@@ -27,10 +27,6 @@ export default {
       type: {},
       required: true,
     },
-    index:{
-      type: Number,
-      required: true,
-    },
     clicked:{
       type: Boolean,
       required: true,
@@ -38,7 +34,7 @@ export default {
   },
   methods:{
     chatClicked() {
-      this.$emit('chatClicked', this.index)
+      this.$emit('chatClicked', this.chat.id)
     }
   }
 }
