@@ -1,7 +1,7 @@
 <template>
   <v-list-item
      :class="['message-information', 'display-flex', 'border-thin',{'clicked-connection': clicked}]"
-     @click="chatClicked"
+     @click="chatPicked"
   >
       <template v-slot:prepend>
         <v-avatar class="border-thin" color="grey" rounded="25" size="100">
@@ -10,8 +10,8 @@
       </template>
 
       <v-list-item-title v-if="chat.recipient.title" class="name text-info font-weight-bold">{{ chat.recipient.title }}</v-list-item-title>
-      <v-list-item-subtitle class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
-
+      <v-list-item-subtitle v-if="chat.lastMessage" class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
+      <div v-else>{{ $t('New chat')}}</div>
       <template v-slot:append>
         <div class="font-12">{{ shortDate(chat.creationTimestamp) }}</div>
       </template>
@@ -20,8 +20,8 @@
 
 <script>
 export default {
-  name: "Chat2",
-  emits:['chatClicked'],
+  name: "Chat",
+  emits:['chatPicked'],
   props: {
     chat: {
       type: {},
@@ -33,8 +33,8 @@ export default {
     }
   },
   methods:{
-    chatClicked() {
-      this.$emit('chatClicked', this.chat.id)
+    chatPicked() {
+      this.$emit('chatPicked', this.chat.id)
     }
   }
 }

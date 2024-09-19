@@ -143,12 +143,11 @@ const actions = {
    return this.axiosGet({ url: `chats/messages/${id}` })
   },
   fetchChats() {
-      return this.fetchCachedList('chats')
+      return this.fetchList('chats')
   },
-    // TODO: Check this out
-  // fetchConnectionRequests() {
-  //   return this.fetchList('connection-requests',{ accepted: true})
-  // },
+  fetchConnections() {
+    return this.fetchList('connection-requests',{ accepted: true})
+  },
 
 
 }

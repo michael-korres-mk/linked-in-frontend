@@ -42,14 +42,12 @@
       @filterUpdated="filterUpdated"
       @applyFilters="updateFilterValues"
     />
-
     <VContainer :class="[!hideLegend ? 'card-wrapper' : 'card-wrapper-nl', ...extraStyling.container]">
       <!-- 👉 Table Container Legend -->
       <legend v-if="!hideLegend" class="legend-title">
         {{ legendTitle }}
       </legend>
-
-      <div class="card-body ">
+      <div class="card-body">
         <VCard :class="['elevation-0', ...extraStyling.cardBody]" >
           <!-- 👉 Table Container Buttons -->
           <VRow :class="!hideLegend? 'mb-0 pb-0': 'd-flex justify-center mb-0 pb-0'">
@@ -88,7 +86,7 @@
                 @applyFilters="updateFilterValues"
               >
                 <template #default="{ items }">
-                    <slot :items="items" @itemUpdated="itemUpdated" />
+                  <slot :items="items" @itemUpdated="itemUpdated" />
                 </template>
 
 
@@ -127,6 +125,10 @@
                   </VRow>
                 </template>
               </VDataIterator>
+
+              <VContainer v-if="(entities.length == 0)" class="d-flex text-center text-info card-wrapper bg-primary">
+                  {{ $t('No data available')}}
+              </VContainer>
             </VCol>
           </VRow>
         </VCard>

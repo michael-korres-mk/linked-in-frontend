@@ -5,7 +5,7 @@
       class="border-solid bg-white"
     >
       <template #default="{ item }">
-        <Chat :chat="item" @chatClicked="chatClicked" :clicked="clicked === item.id" />
+        <Chat :chat="item" @chatPicked="chatPicked" :clicked="clicked == item.id" />
       </template>
 
     </VVirtualScroll>
@@ -18,22 +18,20 @@ import Chat from "@/components/project/Chat.vue";
 export default {
   name: "Chats",
   components: {Chat},
-  emits:['chatClicked'],
+  emits:['chatPicked'],
   props: {
     chats: {
       type: Array,
       required: true,
     },
-  },
-  data() {
-    return {
-      clicked: -1
-    }
+    clicked:{
+      type: Number,
+      required: true
+    },
   },
   methods:{
-    chatClicked(chatId){
-      this.clicked = chatId
-      this.$emit('chatClicked', chatId)
+    chatPicked(chatId){
+      this.$emit('chatPicked', chatId)
     }
   }
 }

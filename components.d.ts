@@ -63,7 +63,6 @@ declare module 'vue' {
     FormField: typeof import('./src/components/entity/FormField.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
     JobListItem: typeof import('./src/components/project/JobListItem.vue')['default']
-    JobsList: typeof import('./src/components/project/JobsList.vue')['default']
     Loader: typeof import('./src/components/Loader.vue')['default']
     LoginWall: typeof import('./src/components/LoginWall.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
@@ -71,7 +70,6 @@ declare module 'vue' {
     OrganizationSingle: typeof import('./src/components/entity/OrganizationSingle.vue')['default']
     PlainTable: typeof import('./src/components/entity/PlainTable.vue')['default']
     Post: typeof import('./src/components/project/Post.vue')['default']
-    PostList: typeof import('./src/components/project/PostList.vue')['default']
     PostPhotos: typeof import('./src/components/project/PostPhotos.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -85,8 +83,5 @@ declare module 'vue' {
     TiptapEditor: typeof import('./src/components/entity/TiptapEditor.vue')['default']
     UserCard: typeof import('./src/components/project/UserCard.vue')['default']
     UserListItem: typeof import('./src/components/project/UserListItem.vue')['default']
-    UsersGrid: typeof import('./src/components/project/UsersGrid.vue')['default']
-    UsersList: typeof import('./src/components/project/UsersList.vue')['default']
-    UsersTable: typeof import('./src/components/UsersTable.vue')['default']
   }
 }

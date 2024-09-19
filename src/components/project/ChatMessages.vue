@@ -10,8 +10,13 @@
         <VDivider class="text-black">{{ item.date }}</VDivider>
 
         <!-- Loop through the messages of that date -->
-        <div v-for="(message, i) in item.messages" :key="i">
-          <ChatMessage :message="message" :index="i" />
+        <div v-if="item.messages.length">
+          <div v-for="(message, i) in item.messages" :key="i">
+            <ChatMessage :message="message" :index="i" />
+          </div>
+        </div>
+        <div v-else>
+          {{ $t('There are no messages yet')}}
         </div>
       </div>
     </template>

@@ -17,15 +17,26 @@ import DataIterator from "@/components/entity/DataIterator.vue";
       <div v-if="$route.params.id != '0'">
           <div class="card-wrapper" style="margin: 1.5em;">
             <h2 class="text-center text-info card-body">{{$t('The Network of user: ') + networkUser.title}}</h2>
-<!--            <UsersGrid-->
-<!--              :config="connectionsConfig"-->
-<!--              :results-per-page="9"-->
-<!--              :filters="connectionsfilters"-->
-<!--              auto-update-filters-->
-<!--              hide-view-->
-<!--              hide-legend-->
-<!--              hide-filters-->
-<!--            />-->
+            <DataIterator
+              :config="connectionsConfig"
+              :results-per-page="9"
+              :filters="connectionsfilters"
+              auto-update-filters
+              hide-view
+              hide-legend
+              hide-filters
+              hide-insert-btn
+            >
+              <template #default="{ items }">
+                <VContainer>
+                  <v-row>
+                    <v-col v-for="item in items.map(i => i.value)" :cols="4">
+                      <UserCard :card="item" />
+                    </v-col>
+                  </v-row >
+                </VContainer>
+              </template>
+            </DataIterator>
           </div>
       </div>
     <div v-else class="card-body text-center">
@@ -57,7 +68,7 @@ import DataIterator from "@/components/entity/DataIterator.vue";
                   <v-row>
                     <v-col v-for="item in items.map(i => i.value)" :cols="4">
                       <UserCard :card="item" />
-                    </v-col >
+                    </v-col>
                   </v-row >
                 </VContainer>
               </template>
@@ -66,7 +77,6 @@ import DataIterator from "@/components/entity/DataIterator.vue";
           </v-tabs-window-item>
           <v-tabs-window-item class="card-body" value="tab-2">
             <h2 class="text-center text-info">{{ $t('Search') }}</h2>
-
             <DataIterator
               :config="config"
               :filters="filters"

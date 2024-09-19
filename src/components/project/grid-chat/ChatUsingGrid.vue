@@ -2,7 +2,7 @@
   <VRow
       :key="chat.lastMessage.creationTimestamp"
       :class="['message-information', 'display-flex', 'border-thin',{'clicked-connection': clicked}]"
-      @click="chatClicked"
+      @click="chatPicked"
   >
     <VCol :cols="4">
       <div>
@@ -26,7 +26,7 @@
 <script>
 export default {
   name: "Chat",
-  emits:['chatClicked'],
+  emits:['chatPicked'],
   props: {
     chat: {
       type: {},
@@ -42,8 +42,8 @@ export default {
     }
   },
   methods:{
-    chatClicked() {
-      this.$emit('chatClicked', this.index)
+    chatPicked() {
+      this.$emit('chatPicked', this.index)
     }
   }
 }
