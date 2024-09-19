@@ -31,7 +31,7 @@ declare module 'vue-router/auto-routes' {
     'jobs-id': RouteRecordInfo<'jobs-id', '/jobs/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-wall': RouteRecordInfo<'login-wall', '/login-wall', Record<never, never>, Record<never, never>>,
-    'network': RouteRecordInfo<'network', '/network', Record<never, never>, Record<never, never>>,
+    'network-id': RouteRecordInfo<'network-id', '/network/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'notifications': RouteRecordInfo<'notifications', '/notifications', Record<never, never>, Record<never, never>>,
     'personal-info': RouteRecordInfo<'personal-info', '/personal-info', Record<never, never>, Record<never, never>>,
     'posts-id': RouteRecordInfo<'posts-id', '/posts/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,

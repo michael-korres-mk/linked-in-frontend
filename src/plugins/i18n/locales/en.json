@@ -427,5 +427,6 @@
   "Download XML": "Download XML",
   "Download JSON": "Download JSON",
   "No chat picked": "No chat picked",
-  "Accept" : "Accept"
+  "Accept" : "Accept",
+  "The Network of user: ": "The Network of user: "
 }

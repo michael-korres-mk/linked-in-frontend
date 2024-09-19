@@ -11,7 +11,7 @@
         <VBtn
           size="large"
           color="secondary"
-          @click="() => $router.push({name: 'network'})"
+          @click="() => $router.push({name: 'network-id', params: { id: entity.id },})"
         >
           {{ $t('My Network') }}
         </VBtn>

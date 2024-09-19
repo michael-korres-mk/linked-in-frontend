@@ -1,6 +1,19 @@
 <template>
 
-    <v-container fluid>
+    <TableFilters
+      v-if="filters.length"
+      ref="filters"
+      :filters-legend-title="filtersTitle"
+      :filters="filters"
+      :hide-filter-legend="hideFilterLegend"
+      :hide-filters="hideFilters"
+      :auto-update-filters="autoUpdateFilters"
+      @initFilters="initFilterValues"
+      @filterUpdated="filterUpdated"
+      @applyFilters="updateFilterValues"
+    />
+
+    <v-container  fluid>
     <!-- 👉 Table Container Legend -->
       <legend v-if="!hideLegend" class="legend-title">
         {{ legendTitle }}
@@ -25,8 +38,7 @@
                 <template #default="{ items }">
                   <v-row >
                     <v-col v-for="item in items.map(i => i.value)" :cols="4">
-                      <UserCard :card="item" @connectionRequested="fetchConnectionRequests" :user-requests="userRequests" >
-                  </UserCard>
+                      <UserCard :card="item" />
                     </v-col >
                   </v-row >
 
@@ -254,6 +266,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideFilters: {
+      type: Boolean,
+      default: false,
+    },
     autoUpdateFilters: {
       type: Boolean,
       default: false,
@@ -288,6 +304,9 @@ export default {
 
       return this.entities
     },
+    filtersTitle() {
+      return this.filtersLegendTitle || `Αναζήτηση ${this.$t(this.config.title.geniki)}`
+    },
     exportFields() {
       const jsonFields = {}
       for (const obj of this.columns) {
@@ -307,7 +326,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchConnectionRequests()
+    // this.fetchConnectionRequests()
 
     const rights = this.$store.userRights
 
@@ -445,6 +464,16 @@ export default {
     setEntityData(entityData) {
       this.fetchItem(entityData)
       this.editDialogOpen = true
+    },
+    filterUpdated(fieldId, newVal) {
+      this.$emit('filterUpdated', fieldId, newVal)
+    },
+    initFilterValues(selFilters) {
+      this.filterVals = selFilters
+    },
+    updateFilterValues(selFilters) {
+      this.filterVals = selFilters
+      this.refetchData()
     },
   },
 }

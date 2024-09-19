@@ -431,5 +431,6 @@
   "Download XML": "Λήψη XML",
   "Download JSON": "Λήψη JSON",
   "No chat picked": "Δεν έχει επιλεγεί συνομιλία",
-  "Accept" : "Αποδοχή"
+  "Accept" : "Αποδοχή",
+  "The Network of user: ": "To Δίκτυο του χρήστη: "
 }

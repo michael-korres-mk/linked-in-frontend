@@ -630,9 +630,6 @@ export default {
       this.filterVals = selFilters
     },
     updateFilterValues(selFilters) {
-
-      console.log(selFilters)
-
       this.filterVals = selFilters
       this.refetchData()
     },

@@ -70,7 +70,6 @@ export default {
       this.clickedChat = this.chats[this.clicked]
     },
     async messageSent(newMessage){
-      console.log(newMessage)
       this.clickedChat.lastMessage = newMessage
       // this.componentKey++
     }

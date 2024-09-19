@@ -25,7 +25,10 @@ if (isLoggedIn) {
           },
           {
               title: 'Δίκτυο',
-              to: 'network',
+              to: {
+                  name: `network-id`,
+                  params: { id: 0 },
+              },
               icon: 'fas fa-user-group',
               // authority: 'users',
           },

@@ -36,7 +36,7 @@ const breadcrumbTitles = new Map([
     //   meta: {
     //     admin: true,
     //   },
-    //   component: () => import('../views/admin/index.vue'),
+    //   component: () => import('../views/admin/[id].vue'),
     // },
     //
     // // <-----Admin Announcements----->
@@ -180,7 +180,7 @@ const breadcrumbTitles = new Map([
     // {
     //   path: '/guardian',
     //   name: 'guardian-dashboard',
-    //   component: () => import('../views/guardian/index.vue'),
+    //   component: () => import('../views/guardian/[id].vue'),
     // },
     //
     // // <-----Guardian Announcements----->
