@@ -22,8 +22,8 @@ import DataIterator from "@/components/entity/DataIterator.vue";
         hide-insert-btn
         :extra-styling="extraStyling"
       >
-        <template #default="{ items }" >
-          <Post v-for="item in items.map(i => i.value)" :post="item" />
+        <template #default="{ items,itemUpdated }" >
+          <Post v-for="item in items.map(i => i.value)" :post="item" @itemUpdated="itemUpdated"/>
         </template>
       </DataIterator>
 

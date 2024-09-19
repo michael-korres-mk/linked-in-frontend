@@ -86,7 +86,7 @@
                 @applyFilters="updateFilterValues"
               >
                 <template #default="{ items }">
-                  <slot :items="items" @itemUpdated="itemUpdated" />
+                  <slot :items="items" :itemUpdated="itemUpdated"  />
                 </template>
 
 

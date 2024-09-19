@@ -246,7 +246,7 @@ export default {
       this.freezeCard()
       await this.likeStore.toggleEnabled({...this.post,enabled:this.liked})
       let updatedPost = await this.entityStore.getEntity(this.post.id)
-      this.$emit('update-post', updatedPost);
+      this.$emit('itemUpdated', updatedPost);
       this.unfreezeCard()
     },
     async sendComment(){
