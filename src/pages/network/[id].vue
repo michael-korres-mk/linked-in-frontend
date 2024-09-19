@@ -54,7 +54,14 @@ import UsersList from "@/components/project/UsersList.vue";
           </v-tabs-window-item>
           <v-tabs-window-item class="card-body" value="tab-2">
             <h2 class="text-center text-info">{{ $t('Search') }}</h2>
-            <UsersList :config="config" :filters="filters" :results-per-page="9" hide-view/>
+            <UsersList
+              :config="config"
+              :filters="filters"
+              :results-per-page="9"
+              auto-update-filters
+              hide-filter-legend
+              hide-view
+            />
           </v-tabs-window-item>
         </v-tabs-window>
       </v-card>
@@ -69,7 +76,7 @@ import {defineStore} from "pinia";
 export default {
   data() {
     return {
-      tab: 'tab-1',
+      tab: 'tab-2',
       userStore: defineStore('users', useGenericEntityStore('users'))(),
       networkUser: {}
     }
@@ -123,8 +130,11 @@ export default {
         {
           id: 'q',
           type: 'text',
-          label: this.$t('User Search'),
-          colSize: 4,
+          label: this.$t('Users Search'),
+          placeholder: this.$t('Search') + '...',
+          icon: 'tabler-search',
+          clearable: true,
+          colSize: 12,
         },
       ]
     },
