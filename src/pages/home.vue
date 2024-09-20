@@ -1,5 +1,5 @@
 <script setup>
-import PostList from "@/components/project/PostList.vue";
+import DataIterator from "@/components/entity/DataIterator.vue";
 
 // definePage({
 //   meta: {
@@ -15,13 +15,17 @@ import PostList from "@/components/project/PostList.vue";
   <div class="card-wrapper bg-global-primary">
     <div class="card-body text-center">
 
-      <PostList
+      <DataIterator
         :config="config"
         :results-per-page="7"
         hide-view
-      />
+        :extra-styling="extraStyling"
+      >
+        <template #default="{ items,itemUpdated }" >
+          <Post v-for="item in items.map(i => i.value)" :post="item" @itemUpdated="itemUpdated"/>
+        </template>
+      </DataIterator>
 
-<!--        :filters="filters"-->
     </div>
   </div>
 </template>
@@ -40,6 +44,12 @@ export default {
         },
       }
     },
+    extraStyling() {
+      return {
+        container: ['post-list'],
+        cardBody: ['post-list']
+      }
+    }
   }
 }
 </script>

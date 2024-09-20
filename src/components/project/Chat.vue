@@ -1,7 +1,7 @@
 <template>
   <v-list-item
      :class="['message-information', 'display-flex', 'border-thin',{'clicked-connection': clicked}]"
-     @click="chatClicked"
+     @click="chatPicked"
   >
       <template v-slot:prepend>
         <v-avatar class="border-thin" color="grey" rounded="25" size="100">
@@ -9,26 +9,22 @@
         </v-avatar>
       </template>
 
-      <v-list-item-title v-if="chat.recipient.title" class="name text-info font-weight-bold">{{ chat.recipient.title }}</v-list-item-title>
-      <v-list-item-subtitle class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
-
+      <v-list-item-title class="name text-info font-weight-bold">{{ chatTitle }}</v-list-item-title>
+      <v-list-item-subtitle v-if="chat.lastMessage" class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
+      <div v-else>{{ $t('New chat')}}</div>
       <template v-slot:append>
-        <div class="font-12">{{ shortDate(chat.creationTimestamp) }}</div>
+        <div v-if="chat.lastMessage" class="font-12">{{ shortDate(chat.lastMessage.creationTimestamp) }}</div>
       </template>
     </v-list-item>
 </template>
 
 <script>
 export default {
-  name: "Chat2",
-  emits:['chatClicked'],
+  name: "Chat",
+  emits:['chatPicked'],
   props: {
     chat: {
       type: {},
-      required: true,
-    },
-    index:{
-      type: Number,
       required: true,
     },
     clicked:{
@@ -36,9 +32,14 @@ export default {
       required: true,
     }
   },
+  computed:{
+    chatTitle(){
+      return (this.chat.creator.id == this.user.id)? this.chat.recipient.title : this.chat.creator.title
+    }
+  },
   methods:{
-    chatClicked() {
-      this.$emit('chatClicked', this.index)
+    chatPicked() {
+      this.$emit('chatPicked', this.chat.id)
     }
   }
 }

@@ -133,21 +133,19 @@ const actions = {
   rights(subsystem) {
     return this.fetchCachedList('roles/rights', { subsystem })
   },
-  fetchChatContacts() {
-    return this.fetchCachedList('users/connections')
-  },
-  fetchRecentChats() {
-    return this.fetchCachedList('chats/recent')
-  },
+  // fetchRecentChats() {
+  //   return this.fetchCachedList('chats/recent')
+  // },
   fetchChatMessages(id) {
    return this.axiosGet({ url: `chats/messages/${id}` })
   },
-  fetchChats() {
-      return this.fetchCachedList('chats')
+  fetchChats(queryParams) {
+      return this.fetchList('chats',queryParams)
   },
-  fetchUserRequests() {
-    return this.fetchList('users/connection-requests')
+  fetchConnectionRequests(queryParams) {
+    return this.fetchList('connection-requests',queryParams)
   },
+
 
 }
 

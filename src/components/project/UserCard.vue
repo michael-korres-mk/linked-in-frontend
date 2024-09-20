@@ -5,19 +5,20 @@
     rounded="50"
   >
 
-    <RouterLink :to="`in/${card.id}`" >
+    <RouterLink :to="`/in/${cardData.id}`" >
     <div class="image-container">
       <div class="image-overlay"></div> <!-- Background effect -->
-
+      <div class="image-overlay-bottom"></div> <!-- Background effect -->
+      image-overlay-bottom
       <!-- Avatar and text sit on top of the container -->
       <div class="content-overlay">
         <v-avatar :style="{ marginTop: '80px' }" color="grey" rounded="25" size="160">
           <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
         </v-avatar>
 
-        <v-card-title class="text-info">{{ card.title }}</v-card-title>
-        <v-card-subtitle class="text-primary">{{ card.jobTitle }}</v-card-subtitle>
-        <v-card-subtitle class="text-primary">{{ card.company }}</v-card-subtitle>
+        <v-card-title class="text-info">{{ cardData.title }}</v-card-title>
+        <v-card-subtitle class="text-primary">{{ cardData.jobTitle }}</v-card-subtitle>
+        <v-card-subtitle class="text-primary">{{ cardData.company }}</v-card-subtitle>
       </div>
     </div>
     </RouterLink>
@@ -51,16 +52,16 @@ export default {
       type: Object,
       required: true
     },
-    userRequests: {
-      type: Array,
-      required: true,
-    }
+
   },
   computed:{
-    requested() {
-      return this.userRequests.some(request => request.recipient.id === this.card.id); // && request.acceptanceDate == null
-    },
-  },
+      networkId(){
+        return (this.$route.params.id == '0')? this.user.id : this.$route.params.id
+      },
+      cardData() {
+        return (this.card.creator.id == this.networkId)? this.card.recipient : this.card.creator
+      }
+  }
 }
 </script>
 
@@ -86,6 +87,16 @@ export default {
   right: 0;
   bottom: 50%;
   background: rgb(var(--v-theme-primary)); /* Background effect (color overlay) */
+  z-index: 1;
+}
+
+.image-overlay-bottom {
+  position: absolute;
+  top: 50%; /* Starts from the bottom half */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white; /* White background for the bottom half */
   z-index: 1;
 }
 

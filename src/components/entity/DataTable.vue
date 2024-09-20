@@ -664,6 +664,11 @@ export default {
       this.$emit('itemFetched', item)
     },
     extraActionShouldRender(action, item) {
+
+      if (typeof action.renderCondition === 'function') {
+        return action.renderCondition(item)
+      }
+
       // If no authority validation is given or the validation passes continue
       return (
         // eslint-disable-next-line no-prototype-builtins
@@ -671,8 +676,7 @@ export default {
           action.authorityValidation) &&
 
         // If no render condition is given or the key matches the desired value continue
-        (!action.renderCondition ||
-          item[action.renderCondition.key] === action.renderCondition.value) &&
+        (!action.renderCondition || item[action.renderCondition.key] === action.renderCondition.value) &&
         (!action.propertyExists || item[action.propertyExists.key]) &&
         (!action.propertyNotExists || !item[action.propertyNotExists.key])
       )

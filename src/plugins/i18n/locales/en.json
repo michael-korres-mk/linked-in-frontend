@@ -427,5 +427,13 @@
   "Download XML": "Download XML",
   "Download JSON": "Download JSON",
   "No chat picked": "No chat picked",
-  "Accept" : "Accept"
+  "Accept" : "Accept",
+  "The Network of user: ": "The Network of user: ",
+  "Users Search" : "Users Search",
+  "No jobs found" : "No jobs found",
+  "No data available": "No data available",
+  "Sent": "Sent",
+  "There are no available chats yet" : "There are no available chats yet",
+  "New chat": "New chat",
+  "Decline":"Decline"
 }

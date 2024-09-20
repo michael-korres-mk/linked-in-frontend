@@ -1,32 +1,76 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <VContainer fluid>
-    <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
+  <VContainer>
+    <ADialog
+      :open="deleteDialog"
+      :width="700"
+      :cancel-callback="closeDeleteModal"
+      :success-callback="handleDeleteClick"
+      title-bg="bg-danger"
+      title="Επιβεβαίωση Διαγραφής"
+      success-bg-color="white"
+      success-title="Διαγραφή"
+      success-icon="fa-trash-can"
+      cancel-icon="xmark"
+      hide-icon
+      persistent
+    >
+      <div class="mt-10">
+        <VAlert
+          type="error"
+          variant="outlined"
+          prominent
+        >
+          <p class="font-20 mt-4">
+            ΕΙΣΤΕ ΣΙΓΟΥΡΟΙ ΟΤΙ ΘΕΛΕΤΕ ΝΑ ΠΡΟΧΩΡΗΣΕΤΕ ΣΕ
+            <strong>ΔΙΑΓΡΑΦH;</strong>
+            <br />
+            Μετά απο αυτήν την ενέργεια δεν θα είναι εφικτή η επαναφορά.
+          </p>
+        </VAlert>
+      </div>
+    </ADialog>
+    <TableFilters
+      v-if="filters.length"
+      ref="filters"
+      :filters-legend-title="filtersLegendTitle"
+      :filters="filters"
+      :hide-filters="hideFilters"
+      :hide-filter-legend="hideFilterLegend"
+      :auto-update-filters="autoUpdateFilters"
+      @initFilters="initFilterValues"
+      @filterUpdated="filterUpdated"
+      @applyFilters="updateFilterValues"
+    />
+    <VContainer :class="[!hideLegend ? 'card-wrapper' : 'card-wrapper-nl', ...extraStyling.container]">
       <!-- 👉 Table Container Legend -->
       <legend v-if="!hideLegend" class="legend-title">
         {{ legendTitle }}
       </legend>
       <div class="card-body">
-        <VCard class="elevation-0">
-
-          <TableFilters
-            v-if="filters.length"
-            ref="filters"
-            :filters-legend-title="filtersLegendTitle"
-            :filters="filters"
-            :hide-filter-legend="hideFilterLegend"
-            :auto-update-filters="autoUpdateFilters"
-            @initFilters="initFilterValues"
-            @filterUpdated="filterUpdated"
-            @applyFilters="updateFilterValues"
-          />
-
-
+        <VCard :class="['elevation-0', ...extraStyling.cardBody]" >
+          <!-- 👉 Table Container Buttons -->
+          <VRow :class="!hideLegend? 'mb-0 pb-0': 'd-flex justify-center mb-0 pb-0'">
+            <VCol cols="12" class="d-flex text-end justify-end">
+              <!-- 👉 Extra Btn Slot -->
+              <slot name="extraHeaderContent" />
+              <!-- 👉 Add Btn -->
+              <VBtn
+                v-if="allowInsert && !hideInsertBtn"
+                color="primary"
+                variant="outlined"
+                @click="handleAddClick"
+              >
+                {{config.title.createBtn ? $t(config.title.createBtn) : $t('Add New') + ' ' + $t(config.title.geniki)}}
+                <template #append><FontAwesomeIcon :icon="'file-circle-plus'" class="ms-2 color-orange"/></template>
+              </VBtn>
+            </VCol>
+          </VRow>
           <!-- 👉 Table Container Card -->
           <VRow class="mt-0 pt-0">
             <VCol>
               <VDataIterator
-                v-if="tableReady && filteredEntities.length > 0"
+                v-if="tableReady"
                 :items-per-page="perPage"
                 :items-length="totalRows"
                 :items="filteredEntities"
@@ -37,10 +81,14 @@
                 dense
                 @update:sortBy="sortByChange"
                 @update:options="fetchEntities"
+                @initFilters="initFilterValues"
+                @filterUpdated="filterUpdated"
+                @applyFilters="updateFilterValues"
               >
                 <template #default="{ items }">
-                  <UserListItem v-for="item in items.map(i => i.value)" :item="item"/>
+                  <slot :items="items" :itemUpdated="itemUpdated"  />
                 </template>
+
 
                 <!-- 👉 Pagination Setup -->
                 <template #footer>
@@ -77,16 +125,15 @@
                   </VRow>
                 </template>
               </VDataIterator>
-              <div
-                v-else
-              >
-                {{ $t('No users found')}}
-              </div>
+
+              <VContainer v-if="(entities.length == 0)" class="d-flex text-center text-info card-wrapper bg-primary">
+                  {{ $t('No data available')}}
+              </VContainer>
             </VCol>
           </VRow>
         </VCard>
       </div>
-    </div>
+    </VContainer>
   </VContainer>
 </template>
 
@@ -95,7 +142,6 @@ import useGenericEntityStore from '@/stores/entity.js'
 import { defineStore } from 'pinia'
 import ADialog from '../Dialog.vue'
 import ActionBtn from '../entity/ActionBtn.vue'
-import UserListItem from "@/components/project/UserListItem.vue";
 
 /**
  * The generic EntityList component for lists.
@@ -103,7 +149,6 @@ import UserListItem from "@/components/project/UserListItem.vue";
  */
 export default {
   components: {
-    UserListItem,
     ActionBtn,
     ADialog,
   },
@@ -141,7 +186,7 @@ export default {
     },
     legendTitle: {
       type: String,
-      default: '',
+      default: 'Αποτελέσματα Αναζήτησης',
     },
     singleEdit: {
       type: Boolean,
@@ -168,6 +213,10 @@ export default {
       default: true,
     },
     hideInsertBtn: {
+      type: Boolean,
+      default: false,
+    },
+    hideFilters: {
       type: Boolean,
       default: false,
     },
@@ -255,6 +304,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    extraStyling: {
+      type: Object,
+      default: {
+        container: [''],
+        cardBody: ['']
+      }
+    }
   },
   emits: [
     'entitiesFetched',
@@ -265,7 +321,10 @@ export default {
     'extraItemFetched',
   ],
   setup(props) {
-    const entityStore = defineStore(props.config.endpoint, useGenericEntityStore(props.config.endpoint),)()
+    const entityStore = defineStore(
+      props.config.endpoint,
+      useGenericEntityStore(props.config.endpoint),
+    )()
 
     return {
       entityStore,
@@ -292,6 +351,7 @@ export default {
       disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,
+      filterVals: {},
       entityHeaderTitleField: {},
     }
   },
@@ -335,9 +395,6 @@ export default {
     },
   },
   mounted() {
-
-    this.fetchEntities()
-
     const rights = this.$store.userRights
 
     this.allowInsert = true
@@ -485,6 +542,11 @@ export default {
         : ''
     },
     extraActionShouldRender(action, item) {
+
+      if (typeof action.renderCondition === 'function') {
+        return action.renderCondition(item)
+      }
+
       return (
         (!action.hasOwnProperty('authorityValidation') ||
           action.authorityValidation) &&
@@ -614,9 +676,9 @@ export default {
         return prev ? prev[curr] : null
       }, obj)
     },
-    handleUpdateUser(updatedUser){
-      const i = this.entities.findIndex(user => user.id === updatedUser.id)
-      this.entities[i] = updatedUser
+    itemUpdated(updatedItem){
+      const i = this.entities.findIndex(item => item.id === updatedItem.id)
+      this.entities[i] = updatedItem
     },
     filterUpdated(fieldId, newVal) {
       this.$emit('filterUpdated', fieldId, newVal)
@@ -625,9 +687,6 @@ export default {
       this.filterVals = selFilters
     },
     updateFilterValues(selFilters) {
-
-      console.log(selFilters)
-
       this.filterVals = selFilters
       this.refetchData()
     },
@@ -635,30 +694,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.list-item {
-  position: relative;
-  width: 100%;
-  background: linear-gradient(
-      to right,
-      rgb(var(--v-theme-primary)) 50%,  /* Left half with overlay */
-      transparent 50% /* Right half transparent */
-  );
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+<style>
+.post-list{
+  background-color: #EEE!important;
 }
-
-.profile-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px;
-}
-
-.profile-picture {
-  border-radius: 50%;
-  width: 150px;
-  height: 150px;
-}
-
 </style>

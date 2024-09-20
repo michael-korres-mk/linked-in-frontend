@@ -2,10 +2,10 @@
     <VVirtualScroll
       :items="chats"
       height="450"
-      class="border-solid"
+      class="border-solid bg-white"
     >
-      <template #default="{ index , item }">
-        <Chat :chat="item" :index="index" @chatClicked="chatClicked" :clicked="clicked === index" />
+      <template #default="{ item }">
+        <Chat :chat="item" @chatPicked="chatPicked" :clicked="clicked == item.id" />
       </template>
 
     </VVirtualScroll>
@@ -13,27 +13,25 @@
 
 
 <script>
-import Chat from "@/pages/chats/Chat.vue";
+import Chat from "@/components/project/Chat.vue";
 
 export default {
   name: "Chats",
   components: {Chat},
-  emits:['chatClicked'],
+  emits:['chatPicked'],
   props: {
     chats: {
       type: Array,
       required: true,
     },
-  },
-  data() {
-    return {
-      clicked: -1
-    }
+    clicked:{
+      type: Number,
+      required: true
+    },
   },
   methods:{
-    chatClicked(index){
-      this.clicked = index
-      this.$emit('chatClicked', index)
+    chatPicked(chatId){
+      this.$emit('chatPicked', chatId)
     }
   }
 }

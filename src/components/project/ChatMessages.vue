@@ -2,7 +2,7 @@
   <VVirtualScroll
     :items="groupedMessages"
     height="400"
-    class="border-solid"
+    class="border-solid bg-white"
   >
     <template #default="{ item }">
       <div>
@@ -10,8 +10,13 @@
         <VDivider class="text-black">{{ item.date }}</VDivider>
 
         <!-- Loop through the messages of that date -->
-        <div v-for="(message, i) in item.messages" :key="i">
-          <ChatMessage :message="message" :index="i" />
+        <div v-if="item.messages.length">
+          <div v-for="(message, i) in item.messages" :key="i">
+            <ChatMessage :message="message" :index="i" />
+          </div>
+        </div>
+        <div v-else>
+          {{ $t('There are no messages yet')}}
         </div>
       </div>
     </template>
@@ -53,7 +58,7 @@
 
 <script>
 import { Client } from '@stomp/stompjs'
-import ChatMessage from "@/pages/chats/ChatMessage.vue";
+import ChatMessage from "@/components/project/ChatMessage.vue";
 
 export default {
   name: "ChatMessages",
@@ -76,7 +81,7 @@ export default {
   },
   computed: {
     recipientId() {
-      return this.chat.recipient.id
+      return (this.chat.creator.id == this.user.id)? this.chat.recipient.id : this.chat.creator.id
     },
     token() {
       return this.$store.userData.token

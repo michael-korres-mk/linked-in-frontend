@@ -431,5 +431,14 @@
   "Download XML": "Λήψη XML",
   "Download JSON": "Λήψη JSON",
   "No chat picked": "Δεν έχει επιλεγεί συνομιλία",
-  "Accept" : "Αποδοχή"
+  "Accept" : "Αποδοχή",
+  "The Network of user: ": "To Δίκτυο του χρήστη: ",
+  "Users Search" : "Αναζήτηση χρηστών",
+  "No jobs found" : "Δε βρέθηκαν αγγελίες",
+  "No data available" : "Δεν υπάρχουν διαθέσιμα δεδομένα",
+  "Sent": "Στάλθηκε",
+  "There are no available chats yet" : "Δεν υπάρχουν διαθέσιμες συνομιλίες",
+  "New chat": "Νέα συνομιλία",
+  "Decline": "Απόρριψη"
+
 }
