@@ -1,6 +1,6 @@
 <template>
   <VContainer :style="{marginBottom:'50px'}" fluid>
-    <VCard :loading="requesting" :disabled="requesting" class="list-item">
+    <VCard class="list-item">
       <VRow>
         <VCol>
           <v-avatar :style="{ marginLeft: '50px' }" color="grey" rounded="25" size="160">

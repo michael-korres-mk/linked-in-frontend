@@ -1,61 +1,64 @@
 <template>
-  <VVirtualScroll
-    :items="groupedMessages"
-    height="30vw"
-    class="border-solid bg-white"
-  >
-    <template #default="{ item }">
-      <div>
-        <!-- Display Date -->
-        <VDivider class="text-black">{{ item.date }}</VDivider>
+  <div v-if="groupedMessages.length > 0">
+    <VVirtualScroll
+      :items="groupedMessages"
+      height="30vw"
+      class="border-solid bg-white"
+    >
+      <template #default="{ item }">
+        <div>
+          <!-- Display Date -->
+          <VDivider class="text-black">{{ item.date }}</VDivider>
 
-        <!-- Loop through the messages of that date -->
-        <div v-if="item.messages.length">
-          <div v-for="(message, i) in item.messages" :key="i">
-            <ChatMessage :message="message" :index="i" />
+          <!-- Loop through the messages of that date -->
+          <div>
+            <div v-for="(message, i) in item.messages" :key="i">
+              <ChatMessage :message="message" :index="i" />
+            </div>
           </div>
         </div>
-        <div v-else>
-          {{ $t('There are no messages yet')}}
-        </div>
-      </div>
-    </template>
-
-  </VVirtualScroll>
-  <VTextarea
-      :loading="loading"
-      :disabled="sending"
-      v-model="messageText"
-      hide-details
-      tile
-      density="compact"
-      variant="outlined"
-      row-height="5"
-      rows="2"
-      class="border-thin mt-2"
-      @keydown="(e) => (e.key === 'Enter')? ((e.shiftKey || (messageText.replace(/\s+/g, '') === ''))? '' : sendMessage()) : () => {} "
-    >
-
-      <template #append-inner>
-        <VBtn
-          v-if="!sending"
-          variant="plain"
-          :ripple="false"
-          :readonly="messageText === ''"
-          @mouseover="isHovered = true"
-          @mouseleave="isHovered = false"
-          @click="sendMessage"
-        >
-          <FontAwesomeIcon :icon="(!isHovered || messageText === '')?'far fa-paper-plane' : 'fas fa-paper-plane'"/>
-        </VBtn>
-        <v-progress-circular
-          v-else
-          indeterminate
-          :size="22"
-          :width="4"
-        />
       </template>
-    </VTextarea>
+
+    </VVirtualScroll>
+  </div>
+  <h3 v-else style="padding-top: 30px;height:30vw;border-style: solid; border-color: rgb(var(--v-theme-primary));" class="text-info">
+    {{ $t('There are no messages yet')}}
+  </h3>
+  <VTextarea
+    :loading="loading"
+    :disabled="sending"
+    v-model="messageText"
+    hide-details
+    tile
+    density="compact"
+    variant="outlined"
+    row-height="5"
+    rows="2"
+    style="border-color: rgb(var(--v-theme-primary));"
+    class="border-thin mt-2"
+    @keydown="(e) => (e.key === 'Enter')? ((e.shiftKey || (messageText.replace(/\s+/g, '') === ''))? '' : sendMessage()) : () => {} "
+  >
+
+    <template #append-inner>
+      <VBtn
+        v-if="!sending"
+        variant="plain"
+        :ripple="false"
+        :readonly="messageText === ''"
+        @mouseover="isHovered = true"
+        @mouseleave="isHovered = false"
+        @click="sendMessage"
+      >
+        <FontAwesomeIcon :icon="(!isHovered || messageText === '')?'far fa-paper-plane' : 'fas fa-paper-plane'"/>
+      </VBtn>
+      <v-progress-circular
+        v-else
+        indeterminate
+        :size="22"
+        :width="4"
+      />
+    </template>
+  </VTextarea>
 </template>
 
 <script>

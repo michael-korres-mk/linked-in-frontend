@@ -2,7 +2,7 @@
     <VVirtualScroll
       :items="chats"
       height="100%"
-      class="border-solid bg-white"
+      style="border-style: solid; border-color: rgb(var(--v-theme-primary)); background-color: #FFF;"
     >
       <template #default="{ item }">
         <Chat :chat="item" @chatPicked="chatPicked" :clicked="clicked == item.id" />

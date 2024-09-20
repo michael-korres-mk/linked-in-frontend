@@ -1,7 +1,7 @@
 <template>
   <VContainer :style="{marginBottom:'50px'}" fluid>
     <RouterLink :to="`/in/${item.id}`" >
-      <VCard :loading="requesting" :disabled="requesting" class="list-item">
+      <VCard class="list-item">
       <VRow>
         <VCol>
             <div>
