@@ -1,7 +1,7 @@
 <template>
   <VVirtualScroll
     :items="groupedMessages"
-    height="400"
+    height="30vw"
     class="border-solid bg-white"
   >
     <template #default="{ item }">
@@ -22,38 +22,40 @@
     </template>
 
   </VVirtualScroll>
-  <v-text-field
-    :loading="loading"
-    :disabled="sending"
-    v-model="messageText"
-    density="compact"
-    variant="outlined"
-    hide-details
-    single-line
-    tile
-    class="border-thin mt-2"
-  >
+  <VTextarea
+      :loading="loading"
+      :disabled="sending"
+      v-model="messageText"
+      hide-details
+      tile
+      density="compact"
+      variant="outlined"
+      row-height="5"
+      rows="2"
+      class="border-thin mt-2"
+      @keydown="(e) => (e.key === 'Enter')? ((e.shiftKey || (messageText.replace(/\s+/g, '') === ''))? '' : sendMessage()) : () => {} "
+    >
 
-    <template #append-inner>
-      <VBtn
-        v-if="!sending"
-        variant="plain"
-        :ripple="false"
-        :readonly="messageText === ''"
-        @mouseover="isHovered = true"
-        @mouseleave="isHovered = false"
-        @click="sendMessage"
-      >
-        <FontAwesomeIcon :icon="(!isHovered || messageText === '')?'far fa-paper-plane' : 'fas fa-paper-plane'"/>
-      </VBtn>
-      <v-progress-circular
-        v-else
-        indeterminate
-        :size="22"
-        :width="4"
-      />
-    </template>
-  </v-text-field>
+      <template #append-inner>
+        <VBtn
+          v-if="!sending"
+          variant="plain"
+          :ripple="false"
+          :readonly="messageText === ''"
+          @mouseover="isHovered = true"
+          @mouseleave="isHovered = false"
+          @click="sendMessage"
+        >
+          <FontAwesomeIcon :icon="(!isHovered || messageText === '')?'far fa-paper-plane' : 'fas fa-paper-plane'"/>
+        </VBtn>
+        <v-progress-circular
+          v-else
+          indeterminate
+          :size="22"
+          :width="4"
+        />
+      </template>
+    </VTextarea>
 </template>
 
 <script>

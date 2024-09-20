@@ -7,7 +7,7 @@
       </v-avatar>
       <span> <strong>{{ message.sender.title }}</strong> <FontAwesomeIcon icon="fa-circle" style="width:3px" /> {{ shortTime(message.createdDate) }} </span>
     </v-list-item-title>
-    <v-list-item-subtitle class="text-black">{{ message.text }}</v-list-item-subtitle>
+    <v-list-item-subtitle class="text-black"><div class="message-text">{{ message.text }}</div></v-list-item-subtitle>
 
   </v-list-item>
 </template>
@@ -28,7 +28,18 @@ export default {
     },
   },
   computed: {
+    formattedText() {
+      return this.messageText.replace(/\n/g, '<br>');
+    },
     isSender() {return !this.message.sender || this.user.id === this.message.sender.id},
   },
 }
 </script>
+
+<style scoped>
+
+.message-text{
+  white-space: pre-line!important;
+}
+
+</style>

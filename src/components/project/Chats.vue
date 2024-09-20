@@ -1,7 +1,7 @@
 <template>
     <VVirtualScroll
       :items="chats"
-      height="450"
+      height="100%"
       class="border-solid bg-white"
     >
       <template #default="{ item }">
