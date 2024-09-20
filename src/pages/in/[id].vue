@@ -7,41 +7,62 @@
         <h1 class="text-white"> {{ entity.title }}</h1>
         <h2 class="text-info"> {{ entity.jobTitle}}</h2>
       </div>
-      <div class="actions">
+      <div v-if="!myProfile" class="actions">
+        <div v-if="connectionRequest">
+          <div v-if="connected">
+            <!-- 👉 My Network -->
+            <BigActionBtn
+              :color="'secondary'"
+              :icon="'fa-user-group'"
+              :label="'My Network'"
+              @click="() => $router.push({name: 'network-id', params: { id: entity.id }})"
+            />
+          </div>
+          <div v-else-if="isSender">
+            <!-- 👉 Decline -->
+            <BigActionBtn
+                :color="'secondary'"
+                :icon="'fa-xmark'"
+                :label="'Decline'"
+                @click="decline"
+              />
 
-        <BigActionBtn
-          v-if="isConnection"
-          :color="'secondary'"
-          :icon="'fa-user-group'"
-          :label="'My Network'"
-          @click="() => $router.push({name: 'network-id', params: { id: entity.id }})"
-        />
+            <!-- 👉 Accept -->
+            <BigActionBtn
+                :color="'secondary'"
+                :icon="'fa-check'"
+                :label="'Accept'"
+                @click="accept"
+              />
+          </div>
+          <div v-else>
+              <!-- 👉 Sent -->
+              <BigActionBtn
+                :icon="'fa-check'"
+                :label="'Sent'"
+                :color="'secondary'"
+                disabled
+              />
+          </div>
+        </div>
+        <div v-else>
+          <!-- 👉 Connect -->
+          <BigActionBtn
+            :icon="'fa-user-plus'"
+            :label="'Connect'"
+            :color="'secondary'"
+            @click="sendRequest"
+          />
+        </div>
 
-       <BigActionBtn
-          v-else
-          :icon="(requested)? 'fa-check' : 'fa-user-plus'"
-          :label="(requested)? 'Sent' : 'Connect'"
-          :disabled="requested"
-          :color="'secondary'"
-          @click="sendRequest"
-        />
-
-<!--        <v-progress-circular-->
-<!--          v-else-->
-<!--          indeterminate-->
-<!--          :size="22"-->
-<!--          :width="4"-->
-<!--        />-->
-
+        <!-- 👉 Send Message -->
         <BigActionBtn
           :color="'secondary'"
           :icon="'fa-message'"
           :label="'Send Message'"
           @click="() => $router.push({name: 'chats-id', params: { id: entity.id }})"
         />
-
       </div>
-
     </div>
   </header>
 
@@ -129,16 +150,23 @@ export default {
       loading: false,
       connectionRequestStore: defineStore('connection-requests', useGenericEntityStore('connection-requests'))(),
       requested: false,
-      isConnection: false
+      connected: false,
+      connectionRequest: null,
     }
   },
   mounted() {
     this.fetchEntity()
-    this.setIsConnection()
+    this.setConnectionRequest()
   },
   computed:{
     profileId(){
       return this.$route.params.id
+    },
+    myProfile(){
+      return this.$route.params.id == this.user.id
+    },
+    isSender(){
+      return this.profileId == this.connectionRequest?.creator.id
     }
   },
   methods:{
@@ -153,6 +181,7 @@ export default {
       const response = await this.connectionRequestStore.saveEntity({recipientId: this.profileId},false)
 
       if(response.id){
+        this.connectionRequest = response
         this.requesting = false
         this.requested = true
       }
@@ -163,14 +192,23 @@ export default {
       const entityID = this.$route.params.id
       this.entity = await this.entityStore.getEntity(entityID)
     },
-    async setIsConnection(){
+    async setConnectionRequest(){
       const connectionRequests = await this.$store.fetchConnectionRequests({creator: this.user.id,recipient: this.profileId})
 
       if(connectionRequests.length > 0){
         this.requested = true
-        this.isConnection = connectionRequests[0].connectionDate != null
+        this.connectionRequest = connectionRequests[0]
+        this.connected = this.connectionRequest?.connectionDate != null
       }
 
+    },
+    async accept(){
+      await this.connectionRequestStore.saveEntity({id:this.connectionRequest.id},true)
+      this.connected = true
+    },
+    async decline(){
+      await this.connectionRequestStore.deleteEntity(this.connectionRequest.id)
+      this.connectionRequest = null
     }
   }
 }
