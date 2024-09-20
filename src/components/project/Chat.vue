@@ -9,11 +9,11 @@
         </v-avatar>
       </template>
 
-      <v-list-item-title v-if="chat.recipient.title" class="name text-info font-weight-bold">{{ chat.recipient.title }}</v-list-item-title>
+      <v-list-item-title class="name text-info font-weight-bold">{{ chatTitle }}</v-list-item-title>
       <v-list-item-subtitle v-if="chat.lastMessage" class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
       <div v-else>{{ $t('New chat')}}</div>
       <template v-slot:append>
-        <div class="font-12">{{ shortDate(chat.creationTimestamp) }}</div>
+        <div v-if="chat.lastMessage" class="font-12">{{ shortDate(chat.lastMessage.creationTimestamp) }}</div>
       </template>
     </v-list-item>
 </template>
@@ -30,6 +30,11 @@ export default {
     clicked:{
       type: Boolean,
       required: true,
+    }
+  },
+  computed:{
+    chatTitle(){
+      return (this.chat.creator.id == this.user.id)? this.chat.recipient.title : this.chat.creator.title
     }
   },
   methods:{

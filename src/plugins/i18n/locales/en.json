@@ -432,5 +432,8 @@
   "Users Search" : "Users Search",
   "No jobs found" : "No jobs found",
   "No data available": "No data available",
-  "Sent": "Sent"
+  "Sent": "Sent",
+  "There are no available chats yet" : "There are no available chats yet",
+  "New chat": "New chat",
+  "Decline":"Decline"
 }

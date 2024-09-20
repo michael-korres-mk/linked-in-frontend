@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     async fetchChats(){
-      this.chats = await this.$store.fetchChats()
+      this.chats = await this.$store.fetchChats({ creator:this.user.id })
     },
     async chatPicked(chatId){
       this.activeChat = this.chats.find(c => c.id == chatId);

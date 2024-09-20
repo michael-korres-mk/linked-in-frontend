@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     recipientId() {
-      return this.chat.recipient.id
+      return (this.chat.creator.id == this.user.id)? this.chat.recipient.id : this.chat.creator.id
     },
     token() {
       return this.$store.userData.token

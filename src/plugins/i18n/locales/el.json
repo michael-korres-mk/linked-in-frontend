@@ -436,5 +436,9 @@
   "Users Search" : "Αναζήτηση χρηστών",
   "No jobs found" : "Δε βρέθηκαν αγγελίες",
   "No data available" : "Δεν υπάρχουν διαθέσιμα δεδομένα",
-  "Sent": "Στάλθηκε"
+  "Sent": "Στάλθηκε",
+  "There are no available chats yet" : "Δεν υπάρχουν διαθέσιμες συνομιλίες",
+  "New chat": "Νέα συνομιλία",
+  "Decline": "Απόρριψη"
+
 }
