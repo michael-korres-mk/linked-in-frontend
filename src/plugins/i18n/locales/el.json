@@ -393,7 +393,7 @@
   "Home Page": "Αρχική",
   "User Management": "Διαχείριση Χρηστών",
   "See more" : "Περισσότερα",
-  "Personal Info": "Προσωπικές Πληροφορίες",
+  "Personal Info": "Προσωπικά Στοιχεία",
   "Username": "Ψευδώνυμο Χρήστη",
   "Password": "Κωδικός Πρόσβασης",
   "Confirm Password": "Επιβεβαίωση Κωδικού Πρόσβασης",
@@ -440,5 +440,13 @@
   "There are no available chats yet" : "Δεν υπάρχουν διαθέσιμες συνομιλίες",
   "New chat": "Νέα συνομιλία",
   "Decline": "Απόρριψη",
-  "There are no messages yet": "Δεν υπάρχουν μηνύματα"
+  "There are no messages yet": "Δεν υπάρχουν μηνύματα",
+  "Job Title": "Τίτλος Εργασίας",
+  "Job Description": "Περιγραφή Εργασίας",
+  "Company" : "Εταιρεία",
+  "Education Title": "Τίτλος Εκπαίδευσης",
+  "Education Description": "Περιγραφή Εκπαίδευσης",
+  "Skill Title": "Τίτλος Δεξιότητας",
+  "Skill Description": "Περιγραφή Δεξιότητας"
+
 }

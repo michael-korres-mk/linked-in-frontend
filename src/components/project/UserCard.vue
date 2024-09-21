@@ -5,7 +5,7 @@
     rounded="50"
   >
 
-    <RouterLink :to="`/in/${cardData.id}`" >
+    <RouterLink :to="`/in/${cardData.id}?view=1`" >
     <div class="image-container">
       <div class="image-overlay"></div> <!-- Background effect -->
       <div class="image-overlay-bottom"></div> <!-- Background effect -->

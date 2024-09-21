@@ -436,5 +436,12 @@
   "There are no available chats yet" : "There are no available chats yet",
   "New chat": "New chat",
   "Decline":"Decline",
-  "There are no messages yet": "There are no messages yet"
+  "There are no messages yet": "There are no messages yet",
+  "Job Title": "Job Title",
+  "Job Description": "Job Description",
+  "Company" : "Company",
+  "Education Title": "Education Title",
+  "Education Description": "Education Description",
+  "Skill Title": "Skill Title",
+  "Skill Description": "Skill Description"
 }

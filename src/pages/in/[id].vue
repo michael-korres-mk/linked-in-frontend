@@ -3,7 +3,9 @@
   <header>
     <div class="profile-header">
       <div class="profile-info">
-        <img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" alt="Profile Picture" class="profile-picture">
+        <v-avatar color="grey" rounded="25" size="160">
+          <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+        </v-avatar>
         <h1 class="text-white"> {{ entity.title }}</h1>
         <h2 class="text-info"> {{ entity.jobTitle}}</h2>
       </div>
@@ -66,21 +68,8 @@
     </div>
   </header>
 
-  <section class="about">
-    <h2 class="text-info">
-      {{ $t('About Me') }}
-    </h2>
-    {{entity.aboutMe}}
-  </section>
 
-  <section class="experience">
-    <h2 class="text-info">
-      {{ $t('Experience') }}
-    </h2>
-
-    {{entity.workExperience}}
-
-<!--    <div class="job">-->
+  <!--    <div class="job">-->
 <!--      <h4>Front-End Developer | Company Name</h4>-->
 <!--      <p><em>Month/Year – Present</em></p>-->
 <!--      <ul>-->
@@ -99,13 +88,12 @@
 <!--        <li>Utilized Vue Router to handle multi-page navigation seamlessly</li>-->
 <!--      </ul>-->
 <!--    </div>-->
-  </section>
 
-  <section class="skills">
-    <h2 class="text-info">
-      {{ $t('Skills') }}
-    </h2>
-    {{entity.skills}}
+<!--  <section class="skills">-->
+<!--    <h2 class="text-info">-->
+<!--      {{ $t('Skills') }}-->
+<!--    </h2>-->
+<!--    {{entity.skills}}-->
     <!--    <ul class="skills-list">-->
 <!--      <li>Vue.js</li>-->
 <!--      <li>Vuex</li>-->
@@ -114,37 +102,43 @@
 <!--      <li>HTML5 / CSS3</li>-->
 <!--      <li>TailwindCSS / Bootstrap</li>-->
 <!--    </ul>-->
-  </section>
 
-  <section class="projects">
-    <h2 class="text-info">
-      {{ $t('Projects') }}
-    </h2>
-    {{entity.projects}}
-<!--    <div class="project">-->
-<!--      <h4>E-commerce Dashboard (Vue.js, Vuex, Firebase)</h4>-->
-<!--      <p>Developed a full-stack e-commerce dashboard for managing products, orders, and customers.</p>-->
-<!--    </div>-->
-<!--    <div class="project">-->
-<!--      <h4>Social Media Platform (Vue.js, Node.js, GraphQL)</h4>-->
-<!--      <p>Built a social media platform with user authentication, real-time messaging, and media sharing.</p>-->
-<!--    </div>-->
-  </section>
+  <div :key="componentKey">
+    <EntitySingle
+      :config="config"
+      :sections="sections"
+      :secondary-tables="secondaryTables"
+      :entity="entity"
+      hide-title
+      :return-to-list="false"
+      hide-return-button
+      authority="users"
+      @entityUpdated="setEntity"
+      @editModeSet="editModeSet"
+      @entitySaved="entitySaved"
+    />
+  </div>
 
-  <footer>
-    <p>&copy; 2024 {{entity.title}}. All rights reserved.</p>
-  </footer>
 </template>
 
 <script>
 import {defineStore} from "pinia";
 import useGenericEntityStore from "@/stores/entity.js";
+import EntitySingle from "@/components/entity/EntitySingle.vue";
+import editMixins from "@/mixins/entityedit.js"
 
 export default {
   name: "[id]",
+  mixins: [editMixins],
+  components: {EntitySingle},
   data() {
     return {
-      entity: {},
+      entity: {
+        workExperiences:[],
+        educations:[],
+        skills:[],
+      },
+      componentKey : 0,
       entityStore: defineStore('users', useGenericEntityStore('users'))(),
       requesting: false,
       loading: false,
@@ -155,10 +149,189 @@ export default {
     }
   },
   mounted() {
-    this.fetchEntity()
     this.setConnectionRequest()
   },
   computed:{
+    config() {
+      return {
+        endpoint: 'users/profile',
+        route: 'in',
+        returnRoute: '/in-id',
+        routeParam: this.profileId,
+        title: {
+          geniki: 'Χρήστη',
+        },
+      }
+    },
+    sections() {
+      return [
+        {
+          fields: this.aboutMe,
+          title: this.$t('About Me'),
+        },
+      ]
+    },
+    secondaryTables(){
+      return [
+          {
+            fields: this.workExperienceFields,
+            title: this.$t('Experience'),
+            // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
+            hiddenColumns: ['description'],
+            property: 'workExperiences',
+          },
+          {
+            fields: this.educationFields,
+            title: this.$t('Education'),
+            // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
+            hiddenColumns: ['description'],
+            property: 'educations',
+          },
+          {
+            fields: this.skillFields,
+            title: this.$t('Skills'),
+            hiddenColumns: ['description'],
+            property: 'skills',
+          },
+      ]
+    },
+    aboutMe() {
+      return [
+        {
+          id: 'aboutMe',
+          type: 'textarea',
+          disabled: this.viewMode,
+          colSize: 12,
+        }
+      ]
+    },
+    workExperienceFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Job Title'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 12,
+        },
+        {
+          id: 'description',
+          type: 'text',
+          label: this.$t('Job Description'),
+          colSize: 12,
+        },
+        {
+          id: 'workplaceType',
+          type: 'select',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'employmentType',
+          type: 'select',
+          label: this.$t('Employment Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'startDate',
+          type: 'date',
+          label: this.$t('Start'),
+          colSize: 6,
+        },
+        {
+          id: 'endDate',
+          type: 'date',
+          label: this.$t('To'),
+          colSize: 6,
+        },
+
+      ]
+    },
+    educationFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Education Title'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 12,
+        },
+        {
+          id: 'description',
+          type: 'text',
+          label: this.$t('Education Description'),
+          colSize: 12,
+        },
+        {
+          id: 'workplaceType',
+          type: 'select',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'employmentType',
+          type: 'select',
+          label: this.$t('Employment Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'startDate',
+          type: 'date',
+          label: this.$t('Start'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'endDate',
+          type: 'date',
+          label: this.$t('To'),
+          readonly: true,
+          colSize: 6,
+        },
+
+      ]
+    },
+    skillFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Skill Title'),
+          required: true,
+          colSize: 12,
+        }
+      ]
+    },
     profileId(){
       return this.$route.params.id
     },
@@ -188,17 +361,16 @@ export default {
 
       this.unfreeze()
     },
-    async fetchEntity() {
-      const entityID = this.$route.params.id
-      this.entity = await this.entityStore.getEntity(entityID)
-    },
     async setConnectionRequest(){
-      const connectionRequests = await this.$store.fetchConnectionRequests({creator: this.user.id,recipient: this.profileId})
+      if(!this.myProfile){
 
-      if(connectionRequests.length > 0){
-        this.requested = true
-        this.connectionRequest = connectionRequests[0]
-        this.connected = this.connectionRequest?.connectionDate != null
+        const connectionRequests = await this.$store.fetchConnectionRequests({creator: this.user.id,recipient: this.profileId})
+
+        if(connectionRequests.length > 0){
+          this.requested = true
+          this.connectionRequest = connectionRequests[0]
+          this.connected = this.connectionRequest?.connectionDate != null
+        }
       }
 
     },
@@ -209,7 +381,12 @@ export default {
     async decline(){
       await this.connectionRequestStore.deleteEntity(this.connectionRequest.id)
       this.connectionRequest = null
-    }
+    },
+    entitySaved(entity) {
+      this.entity = entity
+      this.componentKey++
+    },
+
   }
 }
 </script>

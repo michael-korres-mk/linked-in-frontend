@@ -1,6 +1,6 @@
 <template>
   <VContainer :style="{marginBottom:'50px'}" fluid>
-    <RouterLink :to="`/in/${item.id}`" >
+    <RouterLink :to="`/in/${item.id}?view=1`" >
       <VCard class="list-item">
       <VRow>
         <VCol>

@@ -49,6 +49,14 @@ if (isLoggedIn) {
               icon: 'fas fa-bell',
           },
           {
+              title: 'Προσωπικά Στοιχεία',
+              to: {
+                  name:'personal-info',
+                  query:{ view: 1 }
+              },
+              icon: 'fas fa-address-card',
+          },
+          {
               title: 'Ρυθμίσεις',
               to: {
                   name:'profile-settings',
