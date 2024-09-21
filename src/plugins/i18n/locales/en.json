@@ -444,5 +444,9 @@
   "Education Description": "Education Description",
   "Skill Title": "Skill Title",
   "Skill Description": "Skill Description",
-  "Public/Private Info": "Public/Private Info"
+  "Public/Private Info": "Public/Private Info",
+  "New Password": "New Password",
+  "Confirm Password": "Confirm Password",
+  "Confirm New Password": "Confirm New Password",
+  "Password": "Password"
 }

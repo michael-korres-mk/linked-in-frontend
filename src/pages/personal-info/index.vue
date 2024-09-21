@@ -51,7 +51,6 @@ export default {
         authorities: [],
         roles: [],
       },
-      title: this.$t('Users'),
       editMode: !this.singleEdit,
       componentKey: 0,
     }

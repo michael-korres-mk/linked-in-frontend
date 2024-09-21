@@ -1,22 +1,35 @@
 <script setup>
-import EntitySingle from '@/components/entity/EntitySingle.vue'
-import entityedit from '@/mixins/entityedit.js'
+import EntitySingle from '../../components/entity/EntitySingle.vue'
+import editMixins from '../../mixins/entityedit'
+
+definePage({
+  meta: {
+    authority: 'users',
+  },
+})
 </script>
 
 <template>
-  <h1 class="text-center text-info mb-0">{{ title }}</h1>
+  <h1 class="text-center text-info mb-0">
+    {{ title}}
+  </h1>
   <VContainer fluid>
     <VRow>
       <VCol>
         <div class="card-wrapper">
-          <legend class="legend-title text-center">{{ title }}</legend>
           <div class="card-body">
             <EntitySingle
+              :key="componentKey"
               :config="config"
-              :entity="entity"
               :form-fields="formFields"
+              :entity="entity"
               hide-title
+              :return-to-list="false"
+              hide-return-button
+              authority="users"
+              @entityUpdated="setEntity"
               @editModeSet="editModeSet"
+              @entitySaved="entitySaved"
             />
           </div>
         </div>
@@ -26,16 +39,22 @@ import entityedit from '@/mixins/entityedit.js'
 </template>
 
 <script>
+import useJwt from "@/plugins/jwt/useJwt.js";
+
 export default {
-  mixins: [entityedit],
+  mixins: [editMixins],
   data() {
     return {
-      editMode: false,
       entity: {
+        authorities: [],
         roles: [],
       },
-      roleOptions: [],
+      editMode: !this.singleEdit,
+      componentKey: 0,
     }
+  },
+  async mounted() {
+    this.entity = await this.$store.axiosGet({ url: 'users/settings/' + this.user.id })
   },
   computed: {
     title(){
@@ -43,15 +62,13 @@ export default {
     },
     config() {
       return {
-        endpoint: 'users',
-        route: 'users',
+        endpoint: 'users/settings',
         returnRoute: (this.$store.isAdmin)? 'users' : 'home',
         title: {
           geniki: 'Χρήστη',
         },
       }
     },
-
     formFields() {
       return [
         {
@@ -60,40 +77,42 @@ export default {
           label: this.$t('Email'),
           required: true,
           rules: ['email'],
-          colSize: this.colSize,
+          colSize: 12,
         },
         {
           id: 'password',
           type: 'text',
-          label: this.$t('Password'),
+          label: (this.editMode)? this.$t('New Password') : this.$t('Password'),
           required: true,
-          colSize: this.colSize,
+          colSize: 12,
         },
         {
           id: 'confirmPassword',
           type: 'text',
-          label: this.$t('Confirm Password'),
+          label: (this.editMode)? this.$t('Confirm New Password') :this.$t('Confirm Password'),
           required: true,
           hidden: !this.editMode,
-          colSize: this.colSize,
-        },
-      ]
-    },
-    colSize() {
-      return 12
-    },
-
-    sections() {
-      return [
-        {
-          fields: this.formFields,
-          title: 'Στοιχεία Χρήστη',
+          colSize: 12,
         },
       ]
     },
   },
-  async mounted() {
-    this.entity = await this.$store.axiosGet({ url: 'users/profile' })
+
+  methods: {
+    async entitySaved(entity) {
+      this.entity = entity
+
+      localStorage.setItem('userData', JSON.stringify({...this.user,token:entity.token}));
+      useJwt.setToken(entity.token)
+
+      this.componentKey++
+    },
+    loginError(errorMessage) {
+      this.errorToast({
+        title: 'Αδυναμία Σύνδεσης',
+        text: errorMessage,
+      });
+    },
   },
 }
 </script>

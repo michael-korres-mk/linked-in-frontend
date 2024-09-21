@@ -396,7 +396,9 @@
   "Personal Info": "Προσωπικά Στοιχεία",
   "Username": "Ψευδώνυμο Χρήστη",
   "Password": "Κωδικός Πρόσβασης",
+  "New Password": "Νέος Κωδικός Πρόσβασης",
   "Confirm Password": "Επιβεβαίωση Κωδικού Πρόσβασης",
+  "Confirm New Password": "Επιβεβαίωση Νέου Κωδικού Πρόσβασης",
   "Work Experience": "Προϋπηρεσία",
   "Education" : "Εκπαίδευση",
   "Skills" : "Δεξιότητες",
@@ -448,6 +450,5 @@
   "Education Description": "Περιγραφή Εκπαίδευσης",
   "Skill Title": "Τίτλος Δεξιότητας",
   "Skill Description": "Περιγραφή Δεξιότητας",
-  "Public / Private Info" : "Δημόσιες / Ιδιωτικές Πληροφορίες",
-
+  "Public / Private Info" : "Δημόσιες / Ιδιωτικές Πληροφορίες"
 }
