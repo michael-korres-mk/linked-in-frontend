@@ -112,6 +112,7 @@
       hide-title
       :return-to-list="false"
       hide-return-button
+      :hide-edit-button="!myProfile"
       authority="users"
       @entityUpdated="setEntity"
       @editModeSet="editModeSet"
@@ -169,6 +170,11 @@ export default {
           fields: this.aboutMe,
           title: this.$t('About Me'),
         },
+        {
+          fields: this.settings,
+          title: this.$t('Public / Private Info'),
+          hidden: !this.editMode && !this.myProfile
+        },
       ]
     },
     secondaryTables(){
@@ -179,6 +185,7 @@ export default {
             // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
             hiddenColumns: ['description'],
             property: 'workExperiences',
+            hidden: !this.entity.workExperiencesEnabled && !this.editMode && !this.myProfile && !this.connected
           },
           {
             fields: this.educationFields,
@@ -186,12 +193,14 @@ export default {
             // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
             hiddenColumns: ['description'],
             property: 'educations',
+            hidden: !this.entity.educationsEnabled && !this.editMode && !this.myProfile && !this.connected
           },
           {
             fields: this.skillFields,
             title: this.$t('Skills'),
             hiddenColumns: ['description'],
             property: 'skills',
+            hidden: !this.entity.skillsEnabled && !this.editMode && !this.myProfile && !this.connected
           },
       ]
     },
@@ -200,8 +209,32 @@ export default {
         {
           id: 'aboutMe',
           type: 'textarea',
-          disabled: this.viewMode,
           colSize: 12,
+        }
+      ]
+    },
+    settings(){
+      return [
+        {
+          id: 'workExperiencesEnabled',
+          type: 'checkbox',
+          label: this.$t('Work Experience'),
+          disabled: this.viewMode,
+          colSize: 4,
+        },
+        {
+          id: 'educationsEnabled',
+          type: 'checkbox',
+          label: this.$t('Education'),
+          disabled: this.viewMode,
+          colSize: 4,
+        },
+        {
+          id: 'skillsEnabled',
+          type: 'checkbox',
+          label: this.$t('Skills'),
+          disabled: this.viewMode,
+          colSize: 4,
         }
       ]
     },
