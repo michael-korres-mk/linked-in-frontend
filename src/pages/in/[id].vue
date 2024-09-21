@@ -69,42 +69,8 @@
   </header>
 
 
-  <!--    <div class="job">-->
-<!--      <h4>Front-End Developer | Company Name</h4>-->
-<!--      <p><em>Month/Year – Present</em></p>-->
-<!--      <ul>-->
-<!--        <li>Led front-end development for several high-traffic single-page applications using Vue.js</li>-->
-<!--        <li>Integrated Vuex for state management, improving application efficiency by 30%</li>-->
-<!--        <li>Collaborated with back-end teams to integrate RESTful APIs</li>-->
-<!--      </ul>-->
-<!--    </div>-->
-
-<!--    <div class="job">-->
-<!--      <h4>Junior Developer | Another Company</h4>-->
-<!--      <p><em>Month/Year – Month/Year</em></p>-->
-<!--      <ul>-->
-<!--        <li>Developed components using Vue.js for a large-scale enterprise app</li>-->
-<!--        <li>Migrated legacy systems from Angular to Vue.js, reducing load time by 40%</li>-->
-<!--        <li>Utilized Vue Router to handle multi-page navigation seamlessly</li>-->
-<!--      </ul>-->
-<!--    </div>-->
-
-<!--  <section class="skills">-->
-<!--    <h2 class="text-info">-->
-<!--      {{ $t('Skills') }}-->
-<!--    </h2>-->
-<!--    {{entity.skills}}-->
-    <!--    <ul class="skills-list">-->
-<!--      <li>Vue.js</li>-->
-<!--      <li>Vuex</li>-->
-<!--      <li>Nuxt.js</li>-->
-<!--      <li>JavaScript (ES6+)</li>-->
-<!--      <li>HTML5 / CSS3</li>-->
-<!--      <li>TailwindCSS / Bootstrap</li>-->
-<!--    </ul>-->
-
-  <div :key="componentKey">
     <EntitySingle
+      :key="componentKey"
       :config="config"
       :sections="sections"
       :secondary-tables="secondaryTables"
@@ -118,7 +84,6 @@
       @editModeSet="editModeSet"
       @entitySaved="entitySaved"
     />
-  </div>
 
 </template>
 

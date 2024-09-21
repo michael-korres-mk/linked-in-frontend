@@ -1,5 +1,12 @@
 <script setup>
-import EntitySingle from '@/components/entity/EntitySingle.vue'
+import EntitySingle from '../../components/entity/EntitySingle.vue'
+import editMixins from '../../mixins/entityedit'
+
+definePage({
+  meta: {
+    authority: 'users',
+  },
+})
 </script>
 
 <template>
@@ -10,13 +17,20 @@ import EntitySingle from '@/components/entity/EntitySingle.vue'
     <VRow>
       <VCol>
         <div class="card-wrapper">
-          <legend class="legend-title text-center">{{ title }}</legend>
           <div class="card-body">
             <EntitySingle
+              :key="componentKey"
               :config="config"
+              :sections="sections"
+              :secondary-tables="secondaryTables"
               :entity="entity"
-              :form-fields="formFields"
               hide-title
+              :return-to-list="false"
+              hide-return-button
+              authority="users"
+              @entityUpdated="setEntity"
+              @editModeSet="editModeSet"
+              @entitySaved="entitySaved"
             />
           </div>
         </div>
@@ -27,12 +41,19 @@ import EntitySingle from '@/components/entity/EntitySingle.vue'
 
 <script>
 export default {
+  mixins: [editMixins],
+  async mounted() {
+    this.entity = await this.$store.axiosGet({ url: 'users/profile/' + this.user.id })
+  },
   data() {
     return {
       entity: {
+        authorities: [],
         roles: [],
       },
-      roleOptions: [],
+      title: this.$t('Users'),
+      editMode: !this.singleEdit,
+      componentKey: 0,
     }
   },
   computed: {
@@ -41,47 +62,79 @@ export default {
     },
     config() {
       return {
-        endpoint: 'users',
+        endpoint: 'users/profile',
         route: 'users',
-        returnRoute: (this.$store.isAdmin)? 'users' : 'home',
         title: {
           geniki: 'Χρήστη',
         },
       }
     },
-
+    sections() {
+      return [
+        {
+          fields: this.formFields,
+          title: 'Στοιχεία Χρήστη',
+        },
+        {
+          fields: this.aboutMe,
+          title: this.$t('About Me'),
+        },
+        {
+          fields: this.settings,
+          title: this.$t('Public / Private Info'),},
+      ]
+    },
+    secondaryTables(){
+      return [
+        {
+          fields: this.workExperienceFields,
+          title: this.$t('Experience'),
+          // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
+          hiddenColumns: ['description'],
+          property: 'workExperiences',},
+        {
+          fields: this.educationFields,
+          title: this.$t('Education'),
+          // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
+          hiddenColumns: ['description'],
+          property: 'educations',},
+        {
+          fields: this.skillFields,
+          title: this.$t('Skills'),
+          hiddenColumns: ['description'],
+          property: 'skills',},
+      ]
+    },
     formFields() {
       return [
+        {
+          id: 'id',
+          type: 'text',
+          label: this.$t('User Code'),
+          readonly: true,
+          colSize: 3,
+        },
         {
           id: 'firstName',
           type: 'text',
           label: this.$t('User FirstName'),
           required: true,
-          colSize: this.colSize,
+          colSize: 3,
         },
         {
           id: 'lastName',
           type: 'text',
           label: this.$t('User LastName'),
           required: true,
-          colSize: this.colSize,
+          colSize: 3,
         },
         {
           id: 'email',
           type: 'text',
           label: this.$t('Email'),
-          required: true,
           rules: ['email'],
-          readOnly: true,
-          colSize: this.colSize,
-        },
-        {
-          id: 'username',
-          type: 'text',
-          label: this.$t('Username'),
-          rules: ['username'],
-          disabled: true,
-          colSize: this.colSize,
+          required: true,
+          colSize: 3,
         },
         {
           id: 'mobile',
@@ -89,44 +142,194 @@ export default {
           label: this.$t('Telephone'),
           rules: ['phone'],
           required: true,
-          colSize: this.colSize,
-        },
-        // TODO: Add enabled/disabled (public/private)
-        {
-          id: 'workExperience',
-          type: 'tiptap',
-          label: this.$t('Work Experience'),
-          colSize: 12,
+          colSize: 3,
         },
         {
-          id: 'education',
-          type: 'tiptap',
-          label: this.$t('Education'),
-          colSize: 12,
-        },
-        {
-          id: 'skills',
-          type: 'tiptap',
-          label: this.$t('Skills'),
-          colSize: 12,
+          id: 'enabled',
+          type: 'checkbox',
+          label: this.$t('Status'),
+          optionLabel: this.$t('enabled'),
+          colSize: 3,
         },
       ]
     },
-    colSize() {
-      return 6
-    },
-
-    sections() {
+    aboutMe() {
       return [
         {
-          fields: this.formFields,
-          title: 'Στοιχεία Χρήστη',
-        },
+          id: 'aboutMe',
+          type: 'textarea',
+          colSize: 12,
+        }
       ]
     },
+    settings(){
+      return [
+        {
+          id: 'workExperiencesEnabled',
+          type: 'checkbox',
+          label: this.$t('Work Experience'),
+          disabled: this.viewMode,
+          colSize: 4,
+        },
+        {
+          id: 'educationsEnabled',
+          type: 'checkbox',
+          label: this.$t('Education'),
+          disabled: this.viewMode,
+          colSize: 4,
+        },
+        {
+          id: 'skillsEnabled',
+          type: 'checkbox',
+          label: this.$t('Skills'),
+          disabled: this.viewMode,
+          colSize: 4,
+        }
+      ]
+    },
+    workExperienceFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Job Title'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 12,
+        },
+        {
+          id: 'description',
+          type: 'text',
+          label: this.$t('Job Description'),
+          colSize: 12,
+        },
+        {
+          id: 'workplaceType',
+          type: 'select',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'employmentType',
+          type: 'select',
+          label: this.$t('Employment Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'startDate',
+          type: 'date',
+          label: this.$t('Start'),
+          colSize: 6,
+        },
+        {
+          id: 'endDate',
+          type: 'date',
+          label: this.$t('To'),
+          colSize: 6,
+        },
+
+      ]
+    },
+    educationFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Education Title'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 12,
+        },
+        {
+          id: 'description',
+          type: 'text',
+          label: this.$t('Education Description'),
+          colSize: 12,
+        },
+        {
+          id: 'workplaceType',
+          type: 'select',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'employmentType',
+          type: 'select',
+          label: this.$t('Employment Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'startDate',
+          type: 'date',
+          label: this.$t('Start'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'endDate',
+          type: 'date',
+          label: this.$t('To'),
+          readonly: true,
+          colSize: 6,
+        },
+
+      ]
+    },
+    skillFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Skill Title'),
+          required: true,
+          colSize: 12,
+        }
+      ]
+    },
+    profileId(){
+      return this.$route.params.id
+    },
+    myProfile(){
+      return this.$route.params.id == this.user.id
+    },
+    isSender(){
+      return this.profileId == this.connectionRequest?.creator.id
+    }
   },
-  async mounted() {
-    this.entity = await this.$store.axiosGet({ url: 'users/profile' })
+
+  methods: {
+    entitySaved(entity) {
+      this.entity = entity
+      this.componentKey++
+    },
   },
 }
 </script>

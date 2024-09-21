@@ -10,23 +10,34 @@ definePage({
 </script>
 
 <template>
-  <EntitySingle
-    :key="componentKey"
-    :config="config"
-    :sections="sections"
-    :entity="entity"
-    authority="users"
-    @entityUpdated="entityHasBeenUpdated"
-    @editModeSet="editModeSet"
-    @propUpdated="afterPropUpdate"
-  >
-<!--    <CardList-->
-<!--      v-if="!editMode"-->
-<!--      legend-title="User Rights"-->
-<!--      no-data-title="Κανένα καταχωρημένο δικαίωμα στους ανατεθειμένους ρόλους"-->
-<!--      :data-object="categorizedRights"-->
-<!--    />-->
-  </EntitySingle>
+  <h1 class="text-center text-info mb-0">
+    {{ title}}
+  </h1>
+  <VContainer fluid>
+    <VRow>
+      <VCol>
+        <div class="card-wrapper">
+          <div class="card-body">
+            <EntitySingle
+              :key="componentKey"
+              :config="config"
+              :sections="sections"
+              :secondary-tables="secondaryTables"
+              :entity="entity"
+              hide-title
+              :hide-edit-button="!myProfile"
+              :return-to-list="false"
+              hide-return-button
+              authority="users"
+              @entityUpdated="setEntity"
+              @editModeSet="editModeSet"
+              @entitySaved="entitySaved"
+            />
+          </div>
+        </div>
+      </VCol>
+    </VRow>
+  </VContainer>
 </template>
 
 <script>
@@ -38,8 +49,7 @@ export default {
         authorities: [],
         roles: [],
       },
-      organizationOptions: [],
-      roleOptions: [],
+      title: this.$t('Users'),
       editMode: !this.singleEdit,
       componentKey: 0,
     }
@@ -59,6 +69,42 @@ export default {
         {
           fields: this.formFields,
           title: 'Στοιχεία Χρήστη',
+        },
+        {
+          fields: this.aboutMe,
+          title: this.$t('About Me'),
+        },
+        {
+          fields: this.settings,
+          title: this.$t('Public / Private Info'),
+          hidden: !this.editMode && !this.myProfile
+        },
+      ]
+    },
+    secondaryTables(){
+      return [
+        {
+          fields: this.workExperienceFields,
+          title: this.$t('Experience'),
+          // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
+          hiddenColumns: ['description'],
+          property: 'workExperiences',
+          hidden: !this.entity.workExperiencesEnabled && !this.editMode && !this.myProfile && !this.connected
+        },
+        {
+          fields: this.educationFields,
+          title: this.$t('Education'),
+          // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
+          hiddenColumns: ['description'],
+          property: 'educations',
+          hidden: !this.entity.educationsEnabled && !this.editMode && !this.myProfile && !this.connected
+        },
+        {
+          fields: this.skillFields,
+          title: this.$t('Skills'),
+          hiddenColumns: ['description'],
+          property: 'skills',
+          hidden: !this.entity.skillsEnabled && !this.editMode && !this.myProfile && !this.connected
         },
       ]
     },
@@ -109,55 +155,184 @@ export default {
           optionLabel: this.$t('enabled'),
           colSize: 3,
         },
-        // {
-        //   id: 'roles',
-        //   type: 'select',
-        //   object: true,
-        //   options: this.roleOptions,
-        //   multiple: true,
-        //   label: this.$t('Roles'),
-        //   colsize: 6,
-        //   readonly: !this.editMode,
-        // },
       ]
     },
-    // notAssignedRoles() {
-    //   if (!this.entity.roles || this.entity.roles.length == 0) {
-    //     return this.roleOptions
-    //   }
-    //
-    //   console.log(this.entity.roles)
-    //
-    //   const assignedRoleIds = this.entity.roles?.map(r => r.role.id)
-    //
-    //   return this.roleOptions.filter(r => !assignedRoleIds.includes(r.id))
-    // },
-    // categorizedRights() {
-    //   return this.entity.authorities.reduce((acc, right) => {
-    //     (acc[right.group.title] = acc[right.group.title] || []).push(
-    //       right.title,
-    //     )
-    //
-    //     return acc
-    //   }, {})
-    // },
-  },
-  async mounted() {
-    this.setParentField()
-  },
-  methods: {
-    entityHasBeenUpdated(entity) {
-      this.setEntity(entity)
-      // this.fetchRoles()
+    aboutMe() {
+      return [
+        {
+          id: 'aboutMe',
+          type: 'textarea',
+          colSize: 12,
+        }
+      ]
     },
-    // async fetchRoles() {
-    //   this.roleOptions = await this.$store.roles()
-    // },
-    afterPropUpdate(fieldObj) {
-      if (fieldObj.id === 'organization') {
-        // this.fetchRoles()
-        this.entity.roles.splice(0, this.entity.roles.length)
-      }
+    settings(){
+      return [
+        {
+          id: 'workExperiencesEnabled',
+          type: 'checkbox',
+          label: this.$t('Work Experience'),
+          disabled: this.viewMode,
+          colSize: 4,
+        },
+        {
+          id: 'educationsEnabled',
+          type: 'checkbox',
+          label: this.$t('Education'),
+          disabled: this.viewMode,
+          colSize: 4,
+        },
+        {
+          id: 'skillsEnabled',
+          type: 'checkbox',
+          label: this.$t('Skills'),
+          disabled: this.viewMode,
+          colSize: 4,
+        }
+      ]
+    },
+    workExperienceFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Job Title'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 12,
+        },
+        {
+          id: 'description',
+          type: 'text',
+          label: this.$t('Job Description'),
+          colSize: 12,
+        },
+        {
+          id: 'workplaceType',
+          type: 'select',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'employmentType',
+          type: 'select',
+          label: this.$t('Employment Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'startDate',
+          type: 'date',
+          label: this.$t('Start'),
+          colSize: 6,
+        },
+        {
+          id: 'endDate',
+          type: 'date',
+          label: this.$t('To'),
+          colSize: 6,
+        },
+
+      ]
+    },
+    educationFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Education Title'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 12,
+        },
+        {
+          id: 'description',
+          type: 'text',
+          label: this.$t('Education Description'),
+          colSize: 12,
+        },
+        {
+          id: 'workplaceType',
+          type: 'select',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Workplace Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'employmentType',
+          type: 'select',
+          label: this.$t('Employment Type'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'startDate',
+          type: 'date',
+          label: this.$t('Start'),
+          readonly: true,
+          colSize: 6,
+        },
+        {
+          id: 'endDate',
+          type: 'date',
+          label: this.$t('To'),
+          readonly: true,
+          colSize: 6,
+        },
+
+      ]
+    },
+    skillFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Skill Title'),
+          required: true,
+          colSize: 12,
+        }
+      ]
+    },
+    profileId(){
+      return this.$route.params.id
+    },
+    myProfile(){
+      return this.$route.params.id == this.user.id
+    },
+    isSender(){
+      return this.profileId == this.connectionRequest?.creator.id
+    }
+  },
+
+  methods: {
+    entitySaved(entity) {
+      this.entity = entity
+      this.componentKey++
     },
   },
 }

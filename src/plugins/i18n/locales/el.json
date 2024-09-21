@@ -322,7 +322,7 @@
   "Alert": "Συναγερμός",
   "Charts & Maps": "Διαγράμματα & Χάρτες",
   "Not Authorized - 401": "Μη εξουσιοδοτημένο - 401",
-  "Users": "Users",
+  "Users": "Χρήστες",
   "Market": "Αγορά",
   "AFM": "ΑΦΜ",
   "Full Name": "Full Name",
@@ -448,5 +448,6 @@
   "Education Description": "Περιγραφή Εκπαίδευσης",
   "Skill Title": "Τίτλος Δεξιότητας",
   "Skill Description": "Περιγραφή Δεξιότητας",
-  "Public / Private Info" : "Δημόσιες / Ιδιωτικές Πληροφορίες"
+  "Public / Private Info" : "Δημόσιες / Ιδιωτικές Πληροφορίες",
+
 }
