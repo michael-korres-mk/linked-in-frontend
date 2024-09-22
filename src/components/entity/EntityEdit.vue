@@ -332,7 +332,6 @@ export default {
       )
       this.$store.clearCache()
     },
-    // TODO: Study this
     processEntitySave(response, msgTitle, msgText) {
       this.$emit('entitySaved', response)
       this.successToast({

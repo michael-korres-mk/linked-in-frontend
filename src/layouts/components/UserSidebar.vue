@@ -9,7 +9,7 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li><RouterLink :to="`/in/${this.user.id}`" >{{ $t('My Profile') }}</RouterLink></li>
+      <li><RouterLink :to="`/in/${this.user.id}?view=1`" >{{ $t('My Profile') }}</RouterLink></li>
       <v-divider color="#ccc" />
       <li><RouterLink :to="'/network'" >{{ $t('My Network') }}</RouterLink></li>
     </ul>

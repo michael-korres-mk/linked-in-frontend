@@ -44,7 +44,7 @@
         <div
           v-for="section in sections"
           :key="section.title"
-          class="card-wrapper mb-10"
+          :class="(section.hidden ? 'd-none' : 'card-wrapper mb-10')"
         >
           <!-- Element <legend> needs to be wrapped by a <fieldset> element -->
           <legend class="legend-title">
@@ -94,26 +94,30 @@
             <div
               v-for="table in secondaryTables"
               :key="table.title"
-              class="card-wrapper"
+              :class="(table.hidden ? 'd-none' : 'card-wrapper')"
             >
-              <legend class="legend-title text-center">
-                {{ table.title }}
-              </legend>
-              <div class="card-body">
-                <SecondaryTable
-                  v-if="loaded"
-                  :init-items="entity[table.property]"
-                  :form-fields="table.fields"
-                  :extra-columns="table.extraColumns"
-                  :formatted-columns="table.formattedColumns"
-                  :hidden-columns="table.hiddenColumns"
-                  :default-item="table.defaultItem"
-                  :hide-delete-button="table.hideDeleteButton"
-                  :hide-add-button="table.hideAddButton"
-                  :allow-edit="editMode"
-                  @fieldUpdated="updateEntityProp"
-                />
+              <div>
+
+                <legend class="legend-title text-center">
+                  {{ table.title }}
+                </legend>
+                <div class="card-body">
+                  <SecondaryTable
+                    v-if="loaded"
+                    :init-items="entity[table.property]"
+                    :form-fields="table.fields"
+                    :extra-columns="table.extraColumns"
+                    :formatted-columns="table.formattedColumns"
+                    :hidden-columns="table.hiddenColumns"
+                    :default-item="table.defaultItem"
+                    :hide-delete-button="table.hideDeleteButton"
+                    :hide-add-button="table.hideAddButton"
+                    :allow-edit="editMode"
+                    @fieldUpdated="updateEntityProp"
+                  />
+                </div>
               </div>
+
             </div>
           </div>
         </div>

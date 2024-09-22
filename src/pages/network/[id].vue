@@ -151,7 +151,7 @@ export default {
         }
       ]
     },
-    filters() { // TODO: disable add for connected users ?
+    filters() {
       return [
         {
           id: 'q',

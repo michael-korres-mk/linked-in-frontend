@@ -15,20 +15,6 @@
           <VRow class="d-flex flex-row-reverse my-3">
             <div class="grid grid-cols-2 gap-6 justify-items-end">
               <div>
-                <!--
-                  <VBtn
-                  color="primary"
-                  variant="outlined"
-                  >
-                  Προσθήκη
-                  <template #append>
-                  <FontAwesomeIcon
-                  :icon="['fas', 'file-circle-plus']"
-                  class="ms-2 color-orange"
-                  /> 
-                  </template>
-                  </VBtn> 
-                -->
                 <VBtn
                   v-if="allowEdit && !hideAddButton"
                   v-bind="props"
