@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
   <VContainer>
-    <ADialog
+    <Dialog
       :open="deleteDialog"
       :width="700"
       :cancel-callback="closeDeleteModal"
@@ -29,7 +29,7 @@
           </p>
         </VAlert>
       </div>
-    </ADialog>
+    </Dialog>
     <TableFilters
       v-if="filters.length"
       ref="filters"
@@ -86,7 +86,12 @@
                 @applyFilters="updateFilterValues"
               >
                 <template #default="{ items }">
-                  <slot :items="items" :itemUpdated="itemUpdated"  />
+                  <slot :items="items"
+                    :itemUpdated="itemUpdated"
+                    :refetchData="refetchData"
+                    :setEntityData="setEntityData"
+                    :updateDeleteModalId="updateDeleteModalId"
+                  />
                 </template>
 
 
@@ -140,7 +145,7 @@
 <script>
 import useGenericEntityStore from '@/stores/entity.js'
 import { defineStore } from 'pinia'
-import ADialog from '../Dialog.vue'
+import Dialog from '../Dialog.vue'
 import ActionBtn from '../entity/ActionBtn.vue'
 
 /**
@@ -150,7 +155,7 @@ import ActionBtn from '../entity/ActionBtn.vue'
 export default {
   components: {
     ActionBtn,
-    ADialog,
+    Dialog,
   },
   props: {
     filtersLegendTitle: {
@@ -348,7 +353,6 @@ export default {
       removedItems: [],
       tableReady: false,
       loading: true,
-      disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,
       filterVals: {},
@@ -449,7 +453,6 @@ export default {
     },
     refetchData() {
       this.fetchEntities()
-      this.disableActions = false
     },
     pageChange(newPage) {
       this.currentPage = newPage
@@ -501,97 +504,6 @@ export default {
 
       return ''
     },
-    getItemLink(itemId, view = true, singleEdit=1) {
-      if (singleEdit) {
-
-        const obj = {
-          name: `${this.config.route}-id`,
-          params: { id: itemId },
-        }
-
-        if (view) {
-          obj.query = { view: 1 }
-        }
-        if (this.parentEntity) {
-          obj.query = {
-            ...obj.query,
-            parent: this.parentEntity.field,
-            parentid: this.parentEntity.id,
-            parentroute: this.parentEntity.route,
-          }
-        }
-
-        return obj
-      }
-
-      return ''
-    },
-    getViewLink(itemId) {
-      return this.getItemLink(itemId)
-    },
-    getEditLink(itemId) {
-      return this.getItemLink(itemId, false, this.singleEdit)
-    },
-    getCopyLink(itemId) {
-      return this.singleEdit
-        ? {
-          name: `${this.config.route}-id`,
-          params: { id: itemId },
-          query: { id: itemId, duplicate: 1 },
-        }
-        : ''
-    },
-    extraActionShouldRender(action, item) {
-
-      if (typeof action.renderCondition === 'function') {
-        return action.renderCondition(item)
-      }
-
-      return (
-        (!action.hasOwnProperty('authorityValidation') ||
-          action.authorityValidation) &&
-        (!action.renderCondition ||
-          item[action.renderCondition.key] === action.renderCondition.value) &&
-        (!action.propertyExists || item[action.propertyExists]) &&
-        (!action.propertyNotExists || !item[action.propertyNotExists])
-      )
-    },
-    viewShouldRender(item) {
-      return (
-        !this.hideView &&
-        (!this.config.viewCondition ||
-          item[this.config.viewCondition.key] ===
-          this.config.viewCondition.value)
-      )
-    },
-    editShouldRender(item) {
-      return (
-        this.allowEdit &&
-        !this.hideEdit &&
-        (!this.config.editRenderCondition ||
-          item[this.config.editRenderCondition.key] ===
-          this.config.editRenderCondition.value) &&
-        (!this.config.editPropertyExists ||
-          item[this.config.editPropertyExists]) &&
-        (!this.config.editPropertyNotExists ||
-          !item[this.config.editPropertyNotExists])
-      )
-    },
-    deleteShouldRender(item) {
-      return (
-        this.allowDelete &&
-        !this.hideDelete &&
-        (!this.config.hasOwnProperty('deleteValidation') ||
-          this.config.deleteValidation) &&
-        (!this.config.deleteRenderCondition ||
-          item[this.config.deleteRenderCondition.key] ===
-          this.config.deleteRenderCondition.value) &&
-        (!this.config.deletePropertyExists ||
-          item[this.config.deletePropertyExists]) &&
-        (!this.config.deletePropertyNotExists ||
-          !item[this.config.deletePropertyNotExists])
-      )
-    },
     fetchItem(item) {
       this.$emit('itemFetched', item)
     },
@@ -605,29 +517,6 @@ export default {
 
       if (!this.singleEdit || this.dialogCreate) {
         this.setEntityData(JSON.parse(JSON.stringify(this.blankEntity)))
-      }
-    },
-    handleViewClick(entityData) {
-
-      this.$router.push(this.getViewLink(entityData.id))
-
-      if (this.storeTarget != '') {
-        this.$store['selected' + this.storeTarget] = entityData
-      }
-    },
-    handleEntityClick(entityData, duplicate = false) {
-      if(duplicate){
-        this.$router.push(this.getCopyLink(entityData.id))
-      }
-      else{
-        this.$router.push(this.getEditLink(entityData.id))
-      }
-
-      if (!this.singleEdit) {
-        if (duplicate) {
-          delete entityData.id
-        }
-        this.setEntityData(entityData)
       }
     },
     handleDeleteClick() {
@@ -646,35 +535,6 @@ export default {
           })
         })
       this.closeDeleteModal()
-    },
-    async handleExtraActionClick(item, action) {
-      try{
-        if (action.endpoint) {
-          await this.entityStore.extraAction(
-            `${action.endpoint}/${item.id}`,
-          )
-          this.refetchData()
-        }
-        else if (action.callback) {
-          if (typeof action.callback === 'function') {
-            action.callback(item)
-          } else {
-            this[action.callback](item, action)
-          }
-        }
-      } catch (error) {
-        this.handleSaveError(error)
-      }
-    },
-    async toggleEnableDisable(item) {
-      this.disableActions = true
-      await this.entityStore.toggleEnabled(item)
-      this.refetchData()
-    },
-    getValueByPath(obj, path) {
-      return path.split('.').reduce((prev, curr) => {
-        return prev ? prev[curr] : null
-      }, obj)
     },
     itemUpdated(updatedItem){
       const i = this.entities.findIndex(item => item.id === updatedItem.id)

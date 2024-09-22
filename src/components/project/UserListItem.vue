@@ -6,7 +6,8 @@
         <VCol>
             <div>
               <v-avatar :style="{ marginLeft: '50px' }" color="grey" rounded="25" size="160">
-                <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+                <VImg v-if="profileImage" :src="profileImage" :height="'100%'" cover/>
+                <FontAwesomeIcon v-else :icon="'fas fa-circle-user'" color="white" size="10x"/>
               </v-avatar>
             </div>
 
@@ -34,6 +35,19 @@ export default {
       required: true
     }
   },
+  data(){
+    return {
+      profileImage: null,
+    }
+  },
+  mounted() {
+    this.setProfileImage()
+  },
+  methods:{
+    async setProfileImage(){
+      this.profileImage = (this.item.profilePhoto)? await this.imgShow(this.item.profilePhoto) : null
+    },
+  }
 }
 </script>
 

@@ -5,11 +5,11 @@
   >
       <template v-slot:prepend>
         <v-avatar class="border-thin" color="grey" rounded="25" size="100">
-          <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+          <VImg v-if="profileImage" :src="profileImage" :height="'100%'" cover/>
+          <FontAwesomeIcon v-else :icon="'fas fa-circle-user'" color="#1f4e79" size="10x"/>
         </v-avatar>
       </template>
-
-      <v-list-item-title class="name text-info font-weight-bold">{{ chatTitle }}</v-list-item-title>
+      <v-list-item-title class="name text-info font-weight-bold">{{ chatUserData.title }}</v-list-item-title>
       <v-list-item-subtitle v-if="chat.lastMessage" class="message-description cut font-roboto-condensed font-italic">{{ chat.lastMessage.text }}</v-list-item-subtitle>
       <div v-else>{{ $t('New chat')}}</div>
       <template v-slot:append>
@@ -32,15 +32,31 @@ export default {
       required: true,
     }
   },
+  data(){
+    return {
+      profileImage: null,
+    }
+  },
+  watch: {
+    chat() {
+      this.setProfileImage()
+    },
+  },
+  mounted() {
+    this.setProfileImage()
+  },
   computed:{
-    chatTitle(){
-      return (this.chat.creator.id == this.user.id)? this.chat.recipient.title : this.chat.creator.title
+    chatUserData(){
+      return (this.chat.creator.id == this.user.id)? this.chat.recipient : this.chat.creator
     }
   },
   methods:{
     chatPicked() {
       this.$emit('chatPicked', this.chat.id)
-    }
+    },
+    async setProfileImage(){
+      this.profileImage = (this.chatUserData.profilePhoto)? await this.imgShow(this.chatUserData.profilePhoto) : null
+    },
   }
 }
 </script>

@@ -322,11 +322,7 @@ export default {
 
     logoutUser() {
         this.clearPrivateData()
-
-        this.$router.push({
-            name: 'login-wall',
-        })
-
+        window.location.href = '/login-wall'
     },
 
 //       logoutUser() {
@@ -388,5 +384,47 @@ export default {
         this[options] = []
       }
     },
+      getValueByPath(obj, path) {
+          return path.split('.').reduce((prev, curr) => {
+              return prev ? prev[curr] : null
+          }, obj)
+      },
+      async convertToBase64(file) {
+          return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+
+              reader.readAsDataURL(file);
+
+              reader.onload = () => {
+                  resolve(reader.result);
+              };
+
+              reader.onerror = (error) => {
+                  reject(error);
+              };
+          });
+      },
+      async imgShow(file) {
+
+          const photoObj = await this.$store.fetchFile(file.id)
+          return await this.convertToBase64(photoObj.data).then(base64 => base64).catch(error => {
+              console.error('Error:', error);
+          })
+      },
+      getElementType(file){
+          switch (file.fileType) {
+              case 'MP4':
+                  return 'video'
+              case 'MP3':
+              case 'WAV':
+                  return 'audio'
+              case 'PNG':
+                  return 'img'
+              default:
+                  return 'div'
+
+          }
+
+      }
   },
 }

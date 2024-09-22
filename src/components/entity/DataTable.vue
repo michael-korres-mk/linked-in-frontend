@@ -1,5 +1,14 @@
 <template>
-  <div>
+  <VContainer fluid>
+    <Dialog
+      v-if="tableReady"
+      :open="editDialogOpen"
+      :title="dialogTitle"
+      :cancel-callback=" () => ((editDialogOpen = false), $emit('editModeSet', false))"
+      hide-actions
+    >
+      <slot name="editmodal" />
+    </Dialog>
     <TableFilters
       v-if="filters.length"
       ref="filters"
@@ -39,7 +48,6 @@
         </VAlert>
       </div>
     </Dialog>
-
     <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
       <div v-if="!hideLegend">
         <legend class="legend-title">
@@ -133,47 +141,16 @@
               <template #item.actions="{ item }">
                 <div class="w-160px">
                   <div class="d-flex justify-center">
-                    <!-- View btn -->
-                    <RouterLink
-                      v-if="viewShouldRender(item)"
-                      :to="getViewLink(item.id)"
-                      @click="handleViewClick(item)"
-                    >
-                      <ActionBtn
-                        :icon="detailsViewIcon"
-                        :label="detailsViewTitle"
-                        color="primary"
-                      />
-                    </RouterLink>
-                    <!-- Edit Btn -->
-                    <RouterLink
-                      v-if="editShouldRender(item)"
-                      :to="getEditLink(item.id)"
-                      @click="handleEntityClick(item)"
-                    >
-                      <ActionBtn
-                        icon="fa-pencil"
-                        label="Edit"
-                        color="amber"
-                      />
-                    </RouterLink>
-                    <template v-for="extraAction in extraActions">
-                      <ActionBtn
-                        v-if="extraActionShouldRender(extraAction, item)"
-                        :key="extraAction.icon"
-                        :icon="extraAction.icon"
-                        :label="extraAction.title"
-                        :color="extraAction.color ?? 'primary'"
-                        @click="handleExtraActionClick(item, extraAction)"
-                      />
-                    </template>
-                    <!-- Delete Btn -->
-                    <ActionBtn
-                      v-if="deleteShouldRender(item)"
-                      :label="'Delete'"
-                      icon="fa-trash"
-                      color="danger"
-                      @click="updateDeleteModalId(item.id)"
+                    <Actions
+                      :item="item"
+                      :config="config"
+                      :extra-actions="extraActions"
+                      hide-edit
+                      hide-view
+                      hide-delete
+                      :refetch-data="refetchData"
+                      :set-entity-data="setEntityData"
+                      :updateDeleteModalId="updateDeleteModalId"
                     />
                   </div>
                 </div>
@@ -236,7 +213,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </VContainer>
 </template>
 
 <script>
@@ -431,6 +408,7 @@ export default {
   },
   data() {
     return {
+      editDialogOpen: false,
       isDisabled: false,
       dialog: false,
       isEntityHandlerSidebarActive: false,
@@ -447,7 +425,6 @@ export default {
       removedItems: [],
       tableReady: false,
       loading: 'primary',
-      disableActions: false,
       deleteDialog: false,
       infoWindowPos: null,
       infoWinOpen: false,
@@ -457,6 +434,13 @@ export default {
     }
   },
   computed: {
+    dialogTitle() {
+      return this.isEntityDuplicate
+        ? this.$t('Duplicate') + ' ' + this.$t(this.config.title.geniki)
+        : this.$route.params.id == 0
+          ? this.$t('Add New') + ' ' + this.$t(this.config.title.geniki)
+          : this.$t('Edit') + ' ' + this.$t(this.config.title.geniki)
+    },
     selectedItems: {
       get() {
         return this.selections
@@ -576,7 +560,6 @@ export default {
     },
     refetchData() {
       this.fetchEntities()
-      this.disableActions = false
     },
     pageChange(newPage) {
       this.currentPage = newPage
@@ -586,7 +569,6 @@ export default {
         this.sortBy = sortArr[0]
       }
     },
-
     fetchEntities() {
       return this.getEntities(this.getQueryParams())
     },
@@ -635,25 +617,12 @@ export default {
 
       return ''
     },
-    getViewLink(itemId) {
-      return this.getItemLink(itemId)
-    },
     getCreateLink() {
       if (this.config.insertRoute) {
         return this.config.insertRoute
       }
 
       return { name: `${this.config.route}-edit` }
-    },
-    getEditLink(itemId) {
-      return this.singleEdit
-        ? { name: `${this.config.route}-edit`, params: { id: itemId } }
-        : '#'
-    },
-    getExtraActionLink(extraAction, itemId) {
-      return extraAction.href
-        ? { name: extraAction.href, params: { id: itemId } }
-        : null
     },
     getCopyLink(itemId) {
       return this.singleEdit
@@ -662,48 +631,6 @@ export default {
     },
     fetchItem(item) {
       this.$emit('itemFetched', item)
-    },
-    extraActionShouldRender(action, item) {
-
-      if (typeof action.renderCondition === 'function') {
-        return action.renderCondition(item)
-      }
-
-      // If no authority validation is given or the validation passes continue
-      return (
-        // eslint-disable-next-line no-prototype-builtins
-        (!action.hasOwnProperty('authorityValidation') ||
-          action.authorityValidation) &&
-
-        // If no render condition is given or the key matches the desired value continue
-        (!action.renderCondition || item[action.renderCondition.key] === action.renderCondition.value) &&
-        (!action.propertyExists || item[action.propertyExists.key]) &&
-        (!action.propertyNotExists || !item[action.propertyNotExists.key])
-      )
-    },
-    viewShouldRender(item) {
-      return (
-        this.detailsView &&
-        (!this.config.viewCondition ||
-          item[this.config.viewCondition.key] ===
-            this.config.viewCondition.value)
-      )
-    },
-    editShouldRender(item) {
-      return (
-        !this.hideEdit &&
-        (!this.config.editCondition ||
-          item[this.config.editCondition.key] ===
-            this.config.editCondition.value)
-      )
-    },
-    deleteShouldRender(item) {
-      return (
-        !this.hideDelete &&
-        (!this.config.deleteCondition ||
-          item[this.config.deleteCondition.key] ===
-            this.config.deleteCondition.value)
-      )
     },
     filterUpdated(fieldId, newVal) {
       this.$emit('filterUpdated', fieldId, newVal)
@@ -719,30 +646,17 @@ export default {
         this.refetchData()
       }
     },
-    handleEntitySave() {
-      this.isEntityHandlerSidebarActive = false
-      this.refetchData()
-      this.$store.clearCache()
-    },
     setEntityData(entityData) {
       this.entity = entityData
       this.fetchItem(this.entity)
       this.isEntityHandlerSidebarActive = true
     },
     handleAddClick() {
-      if (!this.singleEdit) {
-        this.setEntityData({})
-      }
-    },
-    handleViewClick(entityData) {
-      if (this.storeTarget != '') {
-        this.$store['selected' + this.storeTarget] = entityData
-      }
-    },
-    handleEntityClick(entityData) {
-      if (!this.singleEdit) {
-        this.isEntityDuplicate = false
-        this.setEntityData(entityData)
+
+      this.$router.push(this.getCreateLink());
+
+      if (!this.singleEdit || this.dialogCreate) {
+        this.setEntityData(JSON.parse(JSON.stringify(this.blankEntity)))
       }
     },
     handleDeleteClick() {

@@ -17,6 +17,7 @@ export default {
       v-for="(comment, index) in comments" :key="index"
       :dot-color="comment.color"
       size="x-small"
+      style="height: 60px!important;"
     >
       <Comment :comment="comment" />
       <VDivider v-if="index < comments.length - 1"/>

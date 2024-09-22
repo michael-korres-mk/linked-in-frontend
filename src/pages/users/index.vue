@@ -21,8 +21,6 @@ import editmixins from "@/mixins/entityedit.js"
       details-view
       hide-insert-btn
       @itemSelected="handleSelectedChange"
-      @filterUpdated="handleFilterUpdated"
-      @applyFilters="handleFilterUpdated"
     >
       <template #extra-button>
         <BigActionBtn
@@ -89,8 +87,6 @@ import editmixins from "@/mixins/entityedit.js"
       </div>
 
     </div>
-
-
 </template>
 
 <script>
@@ -242,14 +238,6 @@ export default {
       },
       isSelectable(item){
         return !this.users.some(selection => selection.id === item.id)
-      },
-      handleFilterUpdated(fieldId, val) {
-        // if (fieldId === 'above') {
-        //   this.filterAboveEmpty = val === null
-        // }
-        // if (fieldId === 'ess') {
-        //   this.essFilter = val
-        // }
       },
       async downloadUsers(xml){
 

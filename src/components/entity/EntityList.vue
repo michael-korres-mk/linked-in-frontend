@@ -1,17 +1,15 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
   <VContainer fluid>
-    <ADialog
+    <Dialog
       v-if="tableReady"
       :open="editDialogOpen"
       :title="dialogTitle"
-      :cancel-callback="
-        () => ((editDialogOpen = false), $emit('editModeSet', false))
-      "
+      :cancel-callback=" () => ((editDialogOpen = false), $emit('editModeSet', false))"
       hide-actions
     >
       <slot name="editmodal" />
-    </ADialog>
+    </Dialog>
     <TableFilters
       v-if="filters.length"
       ref="filters"
@@ -24,7 +22,7 @@
       @filterUpdated="filterUpdated"
       @applyFilters="updateFilterValues"
     />
-    <ADialog
+    <Dialog
       :open="deleteDialog"
       :width="700"
       :cancel-callback="closeDeleteModal"
@@ -52,8 +50,7 @@
           </p>
         </VAlert>
       </div>
-    </ADialog>
-
+    </Dialog>
     <div :class="!hideLegend ? 'card-wrapper' : 'card-wrapper-nl'">
       <!-- 👉 Table Container Legend -->
       <legend v-if="!hideLegend" class="legend-title">
@@ -132,64 +129,17 @@
                 <template #item.actions="{ item }">
                   <div class="w-130px">
                     <div class="d-flex justify-end">
-                      <!-- 👉 View btn -->
-                      <ActionBtn
-                        v-if="viewShouldRender(item)"
-                        :icon="detailsViewIcon"
-                        :label="detailsViewTitle"
-                        @click="handleViewClick(item)"
+                      <Actions
+                        :item="item"
+                        :config="config"
+                        :extra-actions="extraActions"
+                        :hide-edit="hideEdit"
+                        :hide-view="hideView"
+                        :hide-delete="hideDelete"
+                        :refetch-data="refetchData"
+                        :set-entity-data="setEntityData"
+                        :updateDeleteModalId="updateDeleteModalId"
                       />
-
-                      <!-- 👉 Edit Btn -->
-                      <ActionBtn
-                        v-if="editShouldRender(item)"
-                        :icon="config.edit?.icon || 'fa-edit'"
-                        :label="config.edit?.label || 'Edit'"
-                        :color="config.edit?.color || 'warning'"
-                        @click="handleEntityClick(item)"
-                      />
-
-                      <!-- 👉 Toggle enabled Btn -->
-                      <ActionBtn
-                        v-if="!hideEnabled && editShouldRender(item)"
-                        :icon="item.enabled ? 'fa-toggle-on' : 'fa-toggle-off'"
-                        variant="text"
-                        :label="item.enabled ? 'Disable' : 'Enable'"
-                        :disabled="disableActions"
-                        @click="toggleEnableDisable(item)"
-                      />
-
-                      <!-- 👉 Delete Btn -->
-                      <ActionBtn
-                        v-if="deleteShouldRender(item)"
-                        icon="trash-can"
-                        label="Delete"
-                        color="error"
-                        class="text-black"
-                        @click="updateDeleteModalId(item.id)"
-                      />
-
-                      <!-- 👉 Duplicate Btn -->
-                      <ActionBtn
-                        v-if="allowDuplicate && editShouldRender(item)"
-                        icon="fa-copy"
-                        label="Duplicate"
-                        color="purple"
-                        @click="handleEntityClick(item, true)"
-                      />
-
-                      <!-- 👉 ExtraAction Btn -->
-                      <template v-for="extraAction in extraActions">
-                        <ActionBtn
-                          v-if="extraActionShouldRender(extraAction, item)"
-                          :key="extraAction.icon"
-                          :color="extraAction.color ?? 'primary'"
-                          :icon="(extraAction.dynamicIcon && item[extraAction.iconProp]) ? extraAction.dynamicIcon : extraAction.icon"
-                          :label="extraAction.title"
-                          :href="extraAction.href ? (extraAction.path || '') + getValueByPath(item, extraAction.href) + (extraAction.extraparam ? '_' + getValueByPath(item, extraAction.extraparam) : '') + (extraAction.suffix || '') : null"
-                          @click="handleExtraActionClick(item, extraAction)"
-                        />
-                      </template>
                     </div>
                   </div>
                 </template>
@@ -239,9 +189,10 @@
 <script>
 import useGenericEntityStore from '@/stores/entity'
 import { defineStore } from 'pinia'
-import ADialog from '../Dialog.vue'
+import Dialog from '../Dialog.vue'
 import ActionBtn from './ActionBtn.vue'
 import TableFilters from './TableFilters.vue'
+import Actions from "@/components/project/Actions.vue";
 
 /**
  * The generic EntityList component for lists.
@@ -249,9 +200,10 @@ import TableFilters from './TableFilters.vue'
  */
 export default {
   components: {
+    Actions,
     ActionBtn,
     TableFilters,
-    ADialog,
+    Dialog,
   },
   props: {
     filtersLegendTitle: {
@@ -316,14 +268,6 @@ export default {
     hideInsertBtn: {
       type: Boolean,
       default: false,
-    },
-    detailsViewIcon: {
-      type: String,
-      default: 'fa-desktop',
-    },
-    detailsViewTitle: {
-      type: String,
-      default: 'Details',
     },
     filters: {
       type: Array,
@@ -443,7 +387,6 @@ export default {
       removedItems: [],
       tableReady: false,
       loading: true,
-      disableActions: false,
       deleteDialog: false,
       deleteModalId: 0,
       filterVals: {},
@@ -459,7 +402,6 @@ export default {
         this.$emit('itemSelected', val)
       },
     },
-
     tableColumns() {
       const cols = this.columns.map(field => ({
         ...field,
@@ -583,7 +525,6 @@ export default {
     },
     refetchData() {
       this.fetchEntities()
-      this.disableActions = false
     },
     pageChange(newPage) {
       this.currentPage = newPage
@@ -665,9 +606,6 @@ export default {
 
       return ''
     },
-    getViewLink(itemId) {
-      return this.getItemLink(itemId)
-    },
     getEditLink(itemId) {
       return this.getItemLink(itemId, false, this.singleEdit)
     },
@@ -680,57 +618,59 @@ export default {
         }
         : ''
     },
-    extraActionShouldRender(action, item) {
+    // extraActionShouldRender(action, item) {
+    //
+    //   if (typeof action.renderCondition === 'function') {
+    //     return action.renderCondition(item)
+    //   }
+    //
+    //   return (
+    //     (!action.hasOwnProperty('authorityValidation') ||
+    //         action.authorityValidation) &&
+    //       (!action.renderCondition ||
+    //         item[action.renderCondition.key] === action.renderCondition.value) &&
+    //       (!action.propertyExists || item[action.propertyExists]) &&
+    //       (!action.propertyNotExists || !item[action.propertyNotExists])
+    //   )
+    // },
+    // viewShouldRender(item) {
+    //   return (
+    //     !this.hideView &&
+    //     (!this.config.viewCondition ||
+    //       item[this.config.viewCondition.key] ===
+    //         this.config.viewCondition.value)
+    //   )
+    // },
+    // editShouldRender(item) {
+    //   return (
+    //     this.allowEdit &&
+    //     !this.hideEdit &&
+    //     (!this.config.editRenderCondition ||
+    //       item[this.config.editRenderCondition.key] ===
+    //         this.config.editRenderCondition.value) &&
+    //     (!this.config.editPropertyExists ||
+    //       item[this.config.editPropertyExists]) &&
+    //     (!this.config.editPropertyNotExists ||
+    //       !item[this.config.editPropertyNotExists])
+    //   )
+    // },
+    // deleteShouldRender(item) {
+    //   return (
+    //     this.allowDelete &&
+    //       !this.hideDelete &&
+    //       (!this.config.hasOwnProperty('deleteValidation') ||
+    //         this.config.deleteValidation) &&
+    //       (!this.config.deleteRenderCondition ||
+    //         item[this.config.deleteRenderCondition.key] ===
+    //         this.config.deleteRenderCondition.value) &&
+    //       (!this.config.deletePropertyExists ||
+    //         item[this.config.deletePropertyExists]) &&
+    //       (!this.config.deletePropertyNotExists ||
+    //         !item[this.config.deletePropertyNotExists])
+    //   )
+    // },
 
-      if (typeof action.renderCondition === 'function') {
-        return action.renderCondition(item)
-      }
-
-      return (
-        (!action.hasOwnProperty('authorityValidation') ||
-            action.authorityValidation) &&
-          (!action.renderCondition ||
-            item[action.renderCondition.key] === action.renderCondition.value) &&
-          (!action.propertyExists || item[action.propertyExists]) &&
-          (!action.propertyNotExists || !item[action.propertyNotExists])
-      )
-    },
-    viewShouldRender(item) {
-      return (
-        !this.hideView &&
-        (!this.config.viewCondition ||
-          item[this.config.viewCondition.key] ===
-            this.config.viewCondition.value)
-      )
-    },
-    editShouldRender(item) {
-      return (
-        this.allowEdit &&
-        !this.hideEdit &&
-        (!this.config.editRenderCondition ||
-          item[this.config.editRenderCondition.key] ===
-            this.config.editRenderCondition.value) &&
-        (!this.config.editPropertyExists ||
-          item[this.config.editPropertyExists]) &&
-        (!this.config.editPropertyNotExists ||
-          !item[this.config.editPropertyNotExists])
-      )
-    },
-    deleteShouldRender(item) {
-      return (
-        this.allowDelete &&
-          !this.hideDelete &&
-          (!this.config.hasOwnProperty('deleteValidation') ||
-            this.config.deleteValidation) &&
-          (!this.config.deleteRenderCondition ||
-            item[this.config.deleteRenderCondition.key] ===
-            this.config.deleteRenderCondition.value) &&
-          (!this.config.deletePropertyExists ||
-            item[this.config.deletePropertyExists]) &&
-          (!this.config.deletePropertyNotExists ||
-            !item[this.config.deletePropertyNotExists])
-      )
-    },
+    // filters
     filterUpdated(fieldId, newVal) {
       this.$emit('filterUpdated', fieldId, newVal)
     },
@@ -744,6 +684,8 @@ export default {
     clearFilter(filter) {
       this.$refs.filters.filterVals[filter] = null
     },
+    // - filters
+
     closeModal(refetch) {
       this.editDialogOpen = false
       this.isEntityDuplicate = false
@@ -757,11 +699,6 @@ export default {
     fetchExtraItem(item) {
       this.$emit('extraItemFetched', item)
     },
-    handleEntitySave() {
-      this.editDialogOpen = false
-      this.refetchData()
-      this.$store.clearCache()
-    },
     setEntityData(entityData) {
       this.fetchItem(entityData)
       this.editDialogOpen = true
@@ -772,14 +709,6 @@ export default {
 
       if (!this.singleEdit || this.dialogCreate) {
         this.setEntityData(JSON.parse(JSON.stringify(this.blankEntity)))
-      }
-    },
-    handleViewClick(entityData) {
-
-      this.$router.push(this.getViewLink(entityData.id))
-
-      if (this.storeTarget != '') {
-        this.$store['selected' + this.storeTarget] = entityData
       }
     },
     handleEntityClick(entityData, duplicate = false) {
@@ -813,35 +742,6 @@ export default {
           })
         })
       this.closeDeleteModal()
-    },
-    async handleExtraActionClick(item, action) {
-      try{
-        if (action.endpoint) {
-          await this.entityStore.extraAction(
-            `${action.endpoint}/${item.id}`,
-          )
-          this.refetchData()
-        }
-        else if (action.callback) {
-          if (typeof action.callback === 'function') {
-            action.callback(item)
-          } else {
-            this[action.callback](item, action)
-          }
-        }
-      } catch (error) {
-        this.handleSaveError(error)
-      }
-    },
-    async toggleEnableDisable(item) {
-      this.disableActions = true
-      await this.entityStore.toggleEnabled(item)
-      this.refetchData()
-    },
-    getValueByPath(obj, path) {      
-      return path.split('.').reduce((prev, curr) => {
-        return prev ? prev[curr] : null
-      }, obj)
     },
   },
 }

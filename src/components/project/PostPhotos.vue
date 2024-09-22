@@ -1,6 +1,48 @@
+<template>
+  <div v-if="post.photos.length > 0">
+    <div>{{ post.description }}</div>
+    <v-divider />
+    <v-carousel
+      color="#1f4e79"
+      hide-delimiter-background
+      :hide-delimiters="post.photos.length === 1"
+      :show-arrows="post.photos.length > 1"
+      show-arrows="hover"
+    >
+
+      <v-carousel-item
+        v-for="(photo, index) in post.photos"
+        :key="photo.file.id"
+        cover
+      >
+        <VImg v-if="getElementType(photo.file) === 'img'" :src="base64Files[index]" :height="'100%'" />
+        <video v-else-if="getElementType(photo.file) === 'video'" :src="base64Files[index]" :height="'100%'" controls autoplay muted loop />
+        <div v-else-if="getElementType(photo.file) === 'audio'" class="card-body d-flex bg-red h-100">
+          <audio id="player" :src="base64Files[index]" autoplay muted controls/>
+<!--          <div>-->
+<!--            <VBtn @click="() => document.getElementById('player').play()">Play</VBtn>-->
+<!--            <VBtn @click="() => document.getElementById('player').pause()">Pause</VBtn>-->
+<!--            <VBtn @click="() => document.getElementById('player').volume += 0.1">Vol +</VBtn>-->
+<!--            <VBtn @click="() => document.getElementById('player').volume -= 0.1">Vol -</VBtn>-->
+<!--          </div>-->
+        </div>
+
+      </v-carousel-item>
+    </v-carousel>
+  </div>
+  <div v-else class="no-photo-post">
+    {{ post.description }}
+  </div>
+</template>
+
 <script>
 export default {
   name: "PostPhotos",
+  data(){
+    return {
+      base64Files: []
+    }
+  },
   props: {
     post:{
       type: Object,
@@ -15,70 +57,22 @@ export default {
       default: '500'
     }
   },
+  mounted() {
+    this.preloadFiles(); // Call the preload function when the component is mounted
+  },
   methods:{
-    async convertToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
-
-        reader.onload = () => {
-          resolve(reader.result);
-        };
-
-        reader.onerror = (error) => {
-          reject(error);
-        };
-      });
-    },
-    async imgShow(photo) {
-
-      const photoObj = await this.$store.fetchFile(photo.file.id)
-      const b64 = await this.convertToBase64(photoObj.data).then(base64 => {
-        return base64
-      }).catch(error => {
-        console.error('Error:', error);
-      });
-
-      const imageSlot = document.getElementById(photo.id);
-      const image = document.createElement("img");
-      image.id = "id";
-      image.width = this.imgWidth
-      image.height = this.imgHeight
-      image.src = b64
-      imageSlot.appendChild(image);
-
+    async preloadFiles() {
+      // Preload images and store the base64 strings in the base64Files array
+      for (let i = 0; i < this.post.photos.length; i++) {
+        const photo = this.post.photos[i];
+        const base64 = await this.imgShow(photo.file);
+        this.base64Files.push(base64); // Cache base64 string
+      }
     },
   }
 }
 </script>
 
-<template>
-  <div v-if="post.photos.length > 0">
-    <div>{{ post.description }}</div>
-    <v-divider />
-    <v-carousel
-      color="#1f4e79"
-      hide-delimiter-background
-      :hide-delimiters="post.photos.length === 1"
-      :show-arrows="post.photos.length > 1"
-      show-arrows="hover"
-    >
-
-      <v-carousel-item
-        v-for="photo in post.photos"
-        :key="photo"
-        :src="imgShow(photo)"
-        cover
-      >
-        <div :id="photo.id"/>
-      </v-carousel-item>
-    </v-carousel>
-  </div>
-  <div v-else class="no-photo-post">
-    {{ post.description }}
-  </div>
-</template>
 
 <style>
 
