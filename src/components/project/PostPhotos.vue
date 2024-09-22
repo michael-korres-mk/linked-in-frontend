@@ -65,7 +65,7 @@ export default {
       // Preload images and store the base64 strings in the base64Files array
       for (let i = 0; i < this.post.photos.length; i++) {
         const photo = this.post.photos[i];
-        const base64 = await this.imgShow(photo);
+        const base64 = await this.imgShow(photo.file);
         this.base64Files.push(base64); // Cache base64 string
       }
     },

@@ -2,7 +2,8 @@
   <aside class="sidebar card-wrapper card-body">
     <div class="profile-section">
       <v-avatar color="grey" rounded="25" size="160">
-        <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+        <VImg v-if="profileImage" :src="profileImage" :height="'100%'" cover/>
+        <FontAwesomeIcon v-else :icon="'fas fa-circle-user'" color="white" size="10x"/>
       </v-avatar>
       <h3 class="text-white">{{ user.username }}</h3>
       <h4 class="text-info">{{ 'ola ola' }}</h4>
@@ -24,6 +25,19 @@
 <script>
 export default {
   name: "UserSidebar",
+  data(){
+    return {
+      profileImage: null,
+    }
+  },
+  mounted() {
+    this.setProfileImage()
+  },
+  methods:{
+    async setProfileImage(){
+      this.profileImage = await this.imgShow(this.user.profilePhoto) ?? null
+    },
+  }
 };
 </script>
 

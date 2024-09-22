@@ -51,8 +51,7 @@
           <VContainer fluid>
             <VRow>
               <VCol>
-                <div class="text-subtitle-1">Add a comment</div>
-
+                <div class="text-subtitle-1">{{$t('Add a comment')}}</div>
                 <v-text-field
                   :loading="loading"
                   :disabled="sending"
@@ -61,6 +60,7 @@
                   variant="solo"
                   hide-details
                   single-line
+                  @keydown="(e) => (e.key === 'Enter')? ((e.shiftKey || (commentText.replace(/\s+/g, '') === ''))? '' : sendComment()) : () => {} "
                 >
 
                   <template #append-inner>
@@ -113,7 +113,9 @@
           </div>
       </span>
 
+
     </VCardActions>
+    <CommentsTimeline :comments="post.comments.slice(0, 3)" style="background-color: #ddd" />
   </VCard>
 </template>
 <script>

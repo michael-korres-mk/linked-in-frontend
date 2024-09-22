@@ -114,6 +114,14 @@ export default {
           colSize: 3,
         },
         {
+          id: 'profilePhoto',
+          type: 'file',
+          filetype: ['image/*'],
+          label: this.$t('File'),
+          required: true,
+          colSize: 9
+        },
+        {
           id: 'firstName',
           type: 'text',
           label: this.$t('User FirstName'),
@@ -132,6 +140,7 @@ export default {
           type: 'text',
           label: this.$t('Email'),
           rules: ['email'],
+          readonly: true,
           required: true,
           colSize: 3,
         },
@@ -141,13 +150,6 @@ export default {
           label: this.$t('Telephone'),
           rules: ['phone'],
           required: true,
-          colSize: 3,
-        },
-        {
-          id: 'enabled',
-          type: 'checkbox',
-          label: this.$t('Status'),
-          optionLabel: this.$t('enabled'),
           colSize: 3,
         },
       ]
@@ -327,6 +329,7 @@ export default {
   methods: {
     entitySaved(entity) {
       this.entity = entity
+      localStorage.setItem('userData', JSON.stringify(entity));
       this.componentKey++
     },
   },

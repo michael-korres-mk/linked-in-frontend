@@ -12,11 +12,12 @@
       image-overlay-bottom
       <!-- Avatar and text sit on top of the container -->
       <div class="content-overlay">
-        <v-avatar :style="{ marginTop: '80px' }" color="grey" rounded="25" size="160">
-          <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+        <v-avatar :style="{ marginTop: '30px' }" color="grey" rounded="25" size="160">
+          <VImg v-if="profileImage" :src="profileImage" :height="'100%'" cover/>
+          <FontAwesomeIcon v-else :icon="'fas fa-circle-user'" color="white" size="10x"/>
         </v-avatar>
 
-        <v-card-title class="text-info">{{ cardData.title }}</v-card-title>
+        <v-card-title :style="{ marginTop: '40px' }" class="text-info">{{ cardData.title }}</v-card-title>
         <v-card-subtitle class="text-primary">{{ cardData.jobTitle }}</v-card-subtitle>
         <v-card-subtitle class="text-primary">{{ cardData.company }}</v-card-subtitle>
       </div>
@@ -45,14 +46,35 @@
 </template>
 
 <script>
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
 export default {
   name: "UserCard",
+  components: {FontAwesomeIcon},
   props: {
     card: {
       type: Object,
       required: true
     },
 
+  },
+  data(){
+    return {
+      profileImage: null,
+    }
+  },
+  watch: {
+    card() {
+      this.setProfileImage()
+    },
+  },
+  mounted() {
+    this.setProfileImage()
+  },
+  methods:{
+    async setProfileImage(){
+      this.profileImage = (this.cardData.profilePhoto)? await this.imgShow(this.cardData.profilePhoto) : null
+    },
   },
   computed:{
       networkId(){

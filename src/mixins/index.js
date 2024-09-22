@@ -404,9 +404,9 @@ export default {
               };
           });
       },
-      async imgShow(photo) {
+      async imgShow(file) {
 
-          const photoObj = await this.$store.fetchFile(photo.file.id)
+          const photoObj = await this.$store.fetchFile(file.id)
           return await this.convertToBase64(photoObj.data).then(base64 => base64).catch(error => {
               console.error('Error:', error);
           })

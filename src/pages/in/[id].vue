@@ -1,10 +1,10 @@
 <template>
-
   <header>
     <div class="profile-header">
       <div class="profile-info">
         <v-avatar color="grey" rounded="25" size="160">
-          <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg" cover />
+          <VImg v-if="profileImage" :src="profileImage" :height="'100%'" cover/>
+          <FontAwesomeIcon v-else :icon="'fas fa-circle-user'" color="white" size="10x"/>
         </v-avatar>
         <h1 class="text-white"> {{ entity.title }}</h1>
         <h2 class="text-info"> {{ entity.jobTitle}}</h2>
@@ -68,8 +68,7 @@
     </div>
   </header>
 
-
-    <EntitySingle
+  <EntitySingle
       :key="componentKey"
       :config="config"
       :sections="sections"
@@ -83,6 +82,7 @@
       @entityUpdated="setEntity"
       @editModeSet="editModeSet"
       @entitySaved="entitySaved"
+      @entity-fetched="setProfileImage"
     />
 
 </template>
@@ -104,6 +104,7 @@ export default {
         educations:[],
         skills:[],
       },
+      profileImage: null,
       componentKey : 0,
       entityStore: defineStore('users', useGenericEntityStore('users'))(),
       requesting: false,
@@ -384,7 +385,9 @@ export default {
       this.entity = entity
       this.componentKey++
     },
-
+    async setProfileImage(){
+      this.profileImage = await this.imgShow(this.entity.profilePhoto) ?? null
+    },
   }
 }
 </script>
