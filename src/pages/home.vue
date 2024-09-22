@@ -21,8 +21,18 @@ import DataIterator from "@/components/entity/DataIterator.vue";
         hide-view
         :extra-styling="extraStyling"
       >
-        <template #default="{ items,itemUpdated }" >
-          <Post v-for="item in items.map(i => i.value)" :post="item" @itemUpdated="itemUpdated"/>
+        <template #default="{ items,itemUpdated,refetchData,setEntityData,updateDeleteModalId }" >
+          <Post v-for="item in items.map(i => i.value)" :post="item" @itemUpdated="itemUpdated">
+            <template #actions>
+              <Actions
+                :item="item"
+                :config="config"
+                :refetch-data="refetchData"
+                :set-entity-data="setEntityData"
+                :updateDeleteModalId="updateDeleteModalId"
+              />
+            </template>
+          </Post>
         </template>
       </DataIterator>
 

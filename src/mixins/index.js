@@ -388,5 +388,10 @@ export default {
         this[options] = []
       }
     },
+      getValueByPath(obj, path) {
+          return path.split('.').reduce((prev, curr) => {
+              return prev ? prev[curr] : null
+          }, obj)
+      },
   },
 }

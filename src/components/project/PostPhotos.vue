@@ -1,3 +1,30 @@
+<template>
+  <div v-if="post.photos.length > 0">
+    <div>{{ post.description }}</div>
+    <v-divider />
+    <v-carousel
+      color="#1f4e79"
+      hide-delimiter-background
+      :hide-delimiters="post.photos.length === 1"
+      :show-arrows="post.photos.length > 1"
+      show-arrows="hover"
+    >
+
+      <v-carousel-item
+        v-for="photo in post.photos"
+        :key="photo"
+        :src="imgShow(photo)"
+        cover
+      >
+        <div :id="photo.id"/>
+      </v-carousel-item>
+    </v-carousel>
+  </div>
+  <div v-else class="no-photo-post">
+    {{ post.description }}
+  </div>
+</template>
+
 <script>
 export default {
   name: "PostPhotos",
@@ -53,32 +80,6 @@ export default {
 }
 </script>
 
-<template>
-  <div v-if="post.photos.length > 0">
-    <div>{{ post.description }}</div>
-    <v-divider />
-    <v-carousel
-      color="#1f4e79"
-      hide-delimiter-background
-      :hide-delimiters="post.photos.length === 1"
-      :show-arrows="post.photos.length > 1"
-      show-arrows="hover"
-    >
-
-      <v-carousel-item
-        v-for="photo in post.photos"
-        :key="photo"
-        :src="imgShow(photo)"
-        cover
-      >
-        <div :id="photo.id"/>
-      </v-carousel-item>
-    </v-carousel>
-  </div>
-  <div v-else class="no-photo-post">
-    {{ post.description }}
-  </div>
-</template>
 
 <style>
 

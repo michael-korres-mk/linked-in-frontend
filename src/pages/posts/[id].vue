@@ -60,32 +60,24 @@ export default {
     formFields() {
       return [
         {
-          id: 'id',
-          type: 'text',
-          label: this.$t('Post Code'),
-          readonly: true,
-          colSize: 4,
-          hidden: this.editMode,
-        },
-        {
           id: 'title',
           type: 'text',
           label: this.$t('Title'),
-          colSize: 8,
-        },
-        {
-          id: 'description',
-          type: 'text',
-          label: this.$t('Description'),
           colSize: 12,
         },
         {
-          id: 'enabled',
-          type: 'checkbox',
-          label: this.$t('Status'),
-          optionLabel: this.$t('enabled'),
-          colSize: 3,
+          id: 'description',
+          type: 'textarea',
+          label: this.$t('Description'),
+          colSize: 12,
         },
+        // {
+        //   id: 'enabled',
+        //   type: 'checkbox',
+        //   label: this.$t('Status'),
+        //   optionLabel: this.$t('enabled'),
+        //   colSize: 3,
+        // },
       ]
     },
     secondaryTables() {
@@ -102,7 +94,7 @@ export default {
               id: 'file',
               type: 'file',
               filetype: 'png',
-              label: this.$t('Photo'),
+              label: this.$t('File'),
               rules: ['filesize'],
               filesize: 30,
               required: true,
@@ -111,7 +103,6 @@ export default {
             {
               id: 'ordering',
               type: 'number',
-              label: this.$t('Ordering'),
               rules: ['minvalue'],
               minvalue: 1,
               required: true,

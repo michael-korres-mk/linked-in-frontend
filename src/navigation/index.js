@@ -9,9 +9,20 @@ if (isLoggedIn) {
       [
           {
               title: 'Χρήστες',
-              to: 'users',
+              to: {
+                  name:'users',
+                  query:{ view: 1 }
+              },
               icon: 'fas fa-users',
               authority: 'users',
+          },
+          {
+              title: 'Ρυθμίσεις',
+              to: {
+                  name:'profile-settings',
+                  query:{ view: 1 }
+              },
+              icon: 'fas fa-gear',
           },
       ]
       :
