@@ -20,9 +20,9 @@ export const setupGuards = router => {
     const authority = to.meta.authority
     if (
       !(
-        isLoggedIn &&
-        authority &&
-        store.userRights.includes(`${authority}_view`)
+        isLoggedIn
+        // && authority &&
+        // store.userRights.includes(`${authority}_view`)
       )
     ) {
       return isLoggedIn

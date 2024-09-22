@@ -322,11 +322,7 @@ export default {
 
     logoutUser() {
         this.clearPrivateData()
-
-        this.$router.push({
-            name: 'login-wall',
-        })
-
+        window.location.href = '/login-wall'
     },
 
 //       logoutUser() {
