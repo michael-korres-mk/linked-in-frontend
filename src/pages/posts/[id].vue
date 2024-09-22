@@ -93,7 +93,7 @@ export default {
             {
               id: 'file',
               type: 'file',
-              filetype: 'png',
+              filetype: ['image/*','audio/*','video/*'],
               label: this.$t('File'),
               rules: ['filesize'],
               filesize: 30,

@@ -389,5 +389,42 @@ export default {
               return prev ? prev[curr] : null
           }, obj)
       },
+      async convertToBase64(file) {
+          return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+
+              reader.readAsDataURL(file);
+
+              reader.onload = () => {
+                  resolve(reader.result);
+              };
+
+              reader.onerror = (error) => {
+                  reject(error);
+              };
+          });
+      },
+      async imgShow(photo) {
+
+          const photoObj = await this.$store.fetchFile(photo.file.id)
+          return await this.convertToBase64(photoObj.data).then(base64 => base64).catch(error => {
+              console.error('Error:', error);
+          })
+      },
+      getElementType(file){
+          switch (file.fileType) {
+              case 'MP4':
+                  return 'video'
+              case 'MP3':
+              case 'WAV':
+                  return 'audio'
+              case 'PNG':
+                  return 'img'
+              default:
+                  return 'div'
+
+          }
+
+      }
   },
 }

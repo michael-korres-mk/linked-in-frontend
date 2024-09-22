@@ -504,83 +504,6 @@ export default {
 
       return ''
     },
-    getItemLink(itemId, view = true, singleEdit=1) {
-      if (singleEdit) {
-
-        const obj = {
-          name: `${this.config.route}-id`,
-          params: { id: itemId },
-        }
-
-        if (view) {
-          obj.query = { view: 1 }
-        }
-        if (this.parentEntity) {
-          obj.query = {
-            ...obj.query,
-            parent: this.parentEntity.field,
-            parentid: this.parentEntity.id,
-            parentroute: this.parentEntity.route,
-          }
-        }
-
-        return obj
-      }
-
-      return ''
-    },
-
-    extraActionShouldRender(action, item) {
-
-      if (typeof action.renderCondition === 'function') {
-        return action.renderCondition(item)
-      }
-
-      return (
-        (!action.hasOwnProperty('authorityValidation') ||
-          action.authorityValidation) &&
-        (!action.renderCondition ||
-          item[action.renderCondition.key] === action.renderCondition.value) &&
-        (!action.propertyExists || item[action.propertyExists]) &&
-        (!action.propertyNotExists || !item[action.propertyNotExists])
-      )
-    },
-    viewShouldRender(item) {
-      return (
-        !this.hideView &&
-        (!this.config.viewCondition ||
-          item[this.config.viewCondition.key] ===
-          this.config.viewCondition.value)
-      )
-    },
-    editShouldRender(item) {
-      return (
-        this.allowEdit &&
-        !this.hideEdit &&
-        (!this.config.editRenderCondition ||
-          item[this.config.editRenderCondition.key] ===
-          this.config.editRenderCondition.value) &&
-        (!this.config.editPropertyExists ||
-          item[this.config.editPropertyExists]) &&
-        (!this.config.editPropertyNotExists ||
-          !item[this.config.editPropertyNotExists])
-      )
-    },
-    deleteShouldRender(item) {
-      return (
-        this.allowDelete &&
-        !this.hideDelete &&
-        (!this.config.hasOwnProperty('deleteValidation') ||
-          this.config.deleteValidation) &&
-        (!this.config.deleteRenderCondition ||
-          item[this.config.deleteRenderCondition.key] ===
-          this.config.deleteRenderCondition.value) &&
-        (!this.config.deletePropertyExists ||
-          item[this.config.deletePropertyExists]) &&
-        (!this.config.deletePropertyNotExists ||
-          !item[this.config.deletePropertyNotExists])
-      )
-    },
     fetchItem(item) {
       this.$emit('itemFetched', item)
     },
@@ -596,7 +519,6 @@ export default {
         this.setEntityData(JSON.parse(JSON.stringify(this.blankEntity)))
       }
     },
-
     handleDeleteClick() {
       const id = this.deleteModalId
 
@@ -613,25 +535,6 @@ export default {
           })
         })
       this.closeDeleteModal()
-    },
-    async handleExtraActionClick(item, action) {
-      try{
-        if (action.endpoint) {
-          await this.entityStore.extraAction(
-            `${action.endpoint}/${item.id}`,
-          )
-          this.refetchData()
-        }
-        else if (action.callback) {
-          if (typeof action.callback === 'function') {
-            action.callback(item)
-          } else {
-            this[action.callback](item, action)
-          }
-        }
-      } catch (error) {
-        this.handleSaveError(error)
-      }
     },
     itemUpdated(updatedItem){
       const i = this.entities.findIndex(item => item.id === updatedItem.id)
