@@ -47,7 +47,8 @@
         v-show="wizardSteps == 0 || wizardSteps == tabIndex + 1"
         :disabled="disableActions || !(valid && allowSave)"
         type="submit"
-        class="btn-darkblue px-5 ms-2"
+        :class="'btn-darkblue px-5 ms-2'"
+        :color="editButtonColor"
         variant="flat"
         rounded="md"
         size="large"
@@ -58,22 +59,23 @@
         />
         {{ config.btn ? config.btn.title : 'Αποθήκευση' }}
       </VBtn>
-      <template v-for="extraAction in extraActions">
+      <template v-for="action in extraActions">
         <VBtn
-          v-if="extraActionShouldRender(extraAction)"
-          :key="extraAction.title"
-          :disabled="disableActions"
-          class="ms-3"
-          :color="extraAction.color ?? 'primary'"
-          :class="extraAction.class ? extraAction.class : 'btn-blue'"
-          @click="handleExtraActionClick(extraAction)"
+          v-if="extraActionShouldRender(action)"
+          :key="action.title"
+          :disabled="disableActions || action.disabled"
+          class="ms-3 px-5"
+          size="large"
+          :color="action.color ?? 'primary'"
+          :class="action.class ? action.class : 'btn-blue'"
+          @click="handleExtraActionClick(action)"
         >
           <FontAwesomeIcon
-            :icon="extraAction.icon"
+            :icon="action.icon"
             size="lg"
             class="pe-5"
           />
-          {{ extraAction.title }}
+          {{ action.title }}
         </VBtn>
       </template>
     </div>
@@ -203,6 +205,10 @@ export default {
       type: String,
       default: '',
     },
+    editButtonColor: {
+      type: String,
+      default: '',
+    }
   },
   emits: [
     'entityFetched',
@@ -302,9 +308,9 @@ export default {
       )
 
       if (data.id) {
-        this.saveEntity(true, data)
+        await this.saveEntity(true, data)
       } else {
-        this.saveEntity(false, data)
+        await this.saveEntity(false, data)
       }
     },
     async saveEntity(update, data) {
@@ -429,11 +435,21 @@ export default {
       this.$emit('tabIndexUpdated', this.tabIndex + incVal)
     },
     async handleExtraActionClick(action) {
+      if (action.callback && typeof action.callback === 'function') {
+        action.callback()
+
+        return
+      }
+
+      if (action.callback) {
+        this[action.callback](action.callbackParams)
+      }
+
       if (action.endpoint) {
         this.disableActions = true
         try {
           const response = await axios.get(
-            `${action.endpoint}/${this.entity.id}`,
+            `${this.config.endpoint}/${action.endpoint}/${this.entity.id}`,
           )
 
           this.processEntitySave(
@@ -444,10 +460,14 @@ export default {
           if (action.callback) {
             action.callback()
           }
-        } catch (error) {
-          this.handleSaveError(error)
+        } catch (e) {
+          this.errorMsg = e.response?.data?.message || e.message
         }
+
         this.disableActions = false
+        if (action.callback) {
+          this[action.callback]()
+        }
       }
     },
     setEditMode(mode) {

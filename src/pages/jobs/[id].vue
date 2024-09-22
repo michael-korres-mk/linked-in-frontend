@@ -1,6 +1,6 @@
 <template>
   <h1 class="text-center text-info">
-    {{ entity.title }}
+    {{ $t('Jobs') }}
   </h1>
   <div class="card-wrapper bg-global-primary">
     <div class="card-body text-primary d-flex align-items-center">
@@ -29,7 +29,7 @@
               <EntityEditSection
                 :entity="applicationEntity"
                 :form-fields="applicationFormFields"
-                @fieldUpdated="updateEntity"
+                @fieldUpdated="updateApplicationEntity"
               />
             </VForm>
           </div>
@@ -41,32 +41,36 @@
         :config="config"
         :sections="sections"
         :entity="entity"
+        :secondary-tables="(currentJobIsMine)?secondaryTables:null"
         authority="jobs"
         hide-title
-        hide-return-button
-        hide-edit-button
-        hide-cancel-button
-        hide-submit-button
+        :hide-edit-button="!currentJobIsMine"
+        editButtonColor="secondary"
+        @entityUpdated="setEntity"
         @editModeSet="editModeSet"
-      />
-      <div class="d-flex flex-row align-items-center ga-5">
-        <BigActionBtn
-          size="x-large"
-          :icon="'fa-circle-chevron-left'"
-          :label="'Back'"
-          :color="(applied)? 'secondary' : 'secondary'"
-          @click="() => this.$router.push({name: 'jobs'})"
-        />
-        <BigActionBtn
-          size="x-large"
-          :icon="(applied)? 'fa-check' : 'fa-paper-plane'"
-          :disabled="applied"
-          :label="(applied)? 'Applied' : 'Apply'"
-          :color="'secondary'"
-          @click="apply"
-        />
-      </div>
+        @entitySaved="entitySaved"
+      >
+        <div class="d-flex flex-row align-items-right ga-5">
+          <BigActionBtn
+            v-if="viewMode && !currentJobIsMine && !newJob"
+            size="x-large"
+            :icon="(applied)? 'fa-check' : 'fa-paper-plane'"
+            :disabled="applied"
+            :label="(applied)? 'Applied' : 'Apply'"
+            :color="'info'"
+            @click="apply"
+          />
 
+<!--          <BigActionBtn-->
+<!--            v-if="viewMode"-->
+<!--            size="x-large"-->
+<!--            :icon="'fa-circle-chevron-left'"-->
+<!--            :label="'Back'"-->
+<!--            :color="(applied)? 'secondary' : 'secondary'"-->
+<!--            @click="() => this.$router.push({name: 'jobs'})"-->
+<!--          />-->
+        </div>
+      </EntitySingle>
     </div>
   </div>
 </template>
@@ -90,11 +94,10 @@ export default {
       applied: false,
       entityStore: defineStore('jobs', useGenericEntityStore('jobs'))(),
       applicationsStore: defineStore('job-applications', useGenericEntityStore('job-applications'))(),
-      editMode: !this.singleEdit,
       componentKey: 0,
       maxWidth: '800px',
       formTitle: 'Υποβολή αίτησης',
-      modalLegendTitle: 'Στοιχεία Επικοινωνίας'
+      modalLegendTitle: 'Στοιχεία Επικοινωνίας',
     }
   },
   computed: {
@@ -182,45 +185,63 @@ export default {
           id: 'title',
           type: 'text',
           label: this.$t('Title'),
-          readonly: true,
+          disabled: true,
           colSize: 12,
         },
         {
           id: 'description',
           type: 'tiptap',
           label: this.$t('Description'),
-          readonly: true,
+          disabled: true,
           colSize: 12,
         },
         {
           id: 'workplaceType',
           type: 'select',
           label: this.$t('Workplace Type'),
-          readonly: true,
+          disabled: true,
           colSize: 6,
         },
         {
           id: 'employmentType',
           type: 'select',
           label: this.$t('Employment Type'),
-          readonly: true,
+          disabled: true,
           colSize: 6,
         },
       ]
     },
+    secondaryTables(){
+      return [
+        {
+          fields: [
+            {
+              id: 'creator.title',
+              type: 'text',
+              label: this.$t('Applicant'),
+            },
+          ],
+          title: this.$t('JobApplications'),
+          property: 'jobApplications',
+        }
+      ]
+    },
+    currentJobIsMine(){
+      return this.entity?.creator?.id == this.user.id
+    },
+    newJob(){
+      return this.$route.params.id == '0'
+    }
   },
   mounted() {
-    this.fetchJob()
+    this.setJobs()
   },
   methods: {
-    async fetchJob(){
-      this.entity = await this.entityStore.getEntity(this.$route.params.id)
-    },
-    updateEntity(fieldObj) {
+    updateApplicationEntity(fieldObj) {
       this.applicationEntity[fieldObj.id] = fieldObj.value
     },
     async submitEntity(){
-      const response = await this.applicationsStore.saveEntity({...this.applicationEntity, jobId: this.$route.params.id},false)
+      const response = await this.applicationsStore.saveEntity({...this.applicationEntity, job: {id: this.$route.params.id}},false)
       if(response.id){
         this.valid = false
         this.applied = true
@@ -229,12 +250,19 @@ export default {
     },
     apply () {
       this.dialog = true
-
     },
     close() {
       this.dialog = false
     },
+    async setJobs() {
+      const myJobApplications = await this.$store.fetchJobApplications({creator: this.user.id})
+
+      if (myJobApplications.length > 0) {
+        this.applied = myJobApplications.filter(ja => ja.job.id == this.$route.params.id).length > 0
+      }
+    }
   },
+
 }
 </script>
 
