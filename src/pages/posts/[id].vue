@@ -40,8 +40,7 @@ export default {
     config() {
       return {
         endpoint: 'posts',
-        route: 'posts',
-        returnRoute: 'home',
+        route: 'home',
         title: {
           single: 'Post',
           plural: 'Posts',
