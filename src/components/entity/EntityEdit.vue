@@ -6,113 +6,108 @@
     @submit.prevent="submitForm"
   >
     <slot />
-    <div
-      v-if="editMode"
-      class="d-flex justify-center my-6"
-    >
-      <VBtn
-        v-if="wizardSteps > 0"
-        v-show="tabIndex < wizardSteps - 1"
-        :disabled="nextStepCallback()"
-        type="button"
-        @click="updateTabIndex(1)"
-      >
-        {{ tempSave ? 'Αποθήκευση & Συνέχεια' : 'Συνέχεια' }}
-      </VBtn>
-
+    <div class="entity-edit-buttons">
       <!-- Cancel Button -->
       <VBtn
         v-if="!hideCancelButton"
         color="secondary"
         variant="flat"
         rounded="md"
-        size="large"
-        @click="setEditMode(false)"
+        @click="editMode ? setEditMode(false) : routeToList()"
       >
-        <FontAwesomeIcon
-          icon="close"
-          class="font-size-20 me-5"
-        />
+        <template #prepend>
+          <FontAwesomeIcon :icon="editMode ? 'close' : 'arrow-left'" />
+        </template>
+        <span class="responsive-text">
         {{
-          !singleEdit
-            ? 'Κλείσιμο'
-            : $route.params.id == 0
-              ? 'Επιστροφή'
-              : 'Ακύρωση'
-        }}
+            !singleEdit
+              ? 'Κλείσιμο'
+              : $route.params.id == 0 || !editMode
+                ? 'Επιστροφή'
+                : 'Ακύρωση'
+          }}
+        </span>
       </VBtn>
-
       <VBtn
-        v-if="canEdit && !hideSubmitButton"
-        v-show="wizardSteps == 0 || wizardSteps == tabIndex + 1"
+        v-if="wizardSteps > 0"
+        v-show="tabIndex > 1"
+        variant="flat"
+        :disabled="prevStepCallback()"
+        rounded="md"
+        type="button"
+        :class="prevStepCallback() ? 'disabled' : ''"
+        @click="updateTabIndex(-1)"
+      >
+        <template #prepend>
+          <FontAwesomeIcon icon="fa-circle-chevron-left" />
+        </template>
+        <span class="responsive-text">Προηγούμενο</span>
+      </VBtn>
+      <VBtn
+        v-if="wizardSteps > 0"
+        v-show="tabIndex < wizardSteps"
+        :disabled="nextStepCallback()"
+        variant="flat"
+        rounded="md"
+        type="button"
+        :class="nextStepCallback() ? 'disabled' : ''"
+        @click="updateTabIndex(1)"
+      >
+        <template #prepend>
+          <FontAwesomeIcon icon="fa-circle-chevron-right" />
+        </template>
+        <span class="responsive-text">{{
+            tempSave ? 'Αποθήκευση & Συνέχεια' : $t('Next')
+          }}</span>
+      </VBtn>
+      <VBtn
+        v-if="editMode && canEdit"
+        v-show="
+          wizardSteps == 0 ||
+          wizardSteps == tabIndex ||
+          config.btn?.onAllSteps
+        "
         :disabled="disableActions || !(valid && allowSave)"
         type="submit"
-        :class="'btn-darkblue px-5 ms-2'"
-        :color="editButtonColor"
         variant="flat"
         rounded="md"
-        size="large"
       >
-        <FontAwesomeIcon
-          icon="save"
-          class="font-size-20 me-5"
-        />
-        {{ config.btn ? config.btn.title : 'Αποθήκευση' }}
+        <template #prepend>
+          <FontAwesomeIcon icon="save" />
+        </template>
+        <span class="responsive-text">{{ config.btn?.title ?? 'Αποθήκευση' }}</span>
       </VBtn>
-      <template v-for="action in extraActions">
+      <template v-for="extraAction in extraActions">
+        {{wizardSteps}}
         <VBtn
-          v-if="extraActionShouldRender(action)"
-          :key="action.title"
-          :disabled="disableActions || action.disabled"
-          class="ms-3 px-5"
-          size="large"
-          :color="action.color ?? 'primary'"
-          :class="action.class ? action.class : 'btn-blue'"
-          @click="handleExtraActionClick(action)"
+          v-if="extraActionShouldRender(extraAction)"
+          v-show="
+            wizardSteps == 0 ||
+            tabIndex == (extraAction.tabIndex ?? wizardSteps)
+          "
+          :color="extraAction.color"
+          :key="extraAction.title"
+          :disabled="disableActions || extraAction.disabled"
+          :class="extraAction.class ?? ''"
+          @click="handleExtraActionClick(extraAction)"
         >
-          <FontAwesomeIcon
-            :icon="action.icon"
-            size="lg"
-            class="pe-5"
-          />
-          {{ action.title }}
+          <template #prepend>
+            <FontAwesomeIcon :icon="extraAction.icon" />
+          </template>
+          <span class="responsive-text">{{ extraAction.title }}</span>
         </VBtn>
       </template>
-    </div>
 
-    <div
-      v-else-if="singleEdit"
-      class="d-flex justify-center my-6"
-    >
-      <!-- Return Button -->
       <VBtn
-        v-if="!hideReturnButton"
-        class="px-5"
-        color="secondary"
+        v-if="canEdit && !editMode && singleEdit"
         variant="flat"
         rounded="md"
-        size="large"
-        @click="routeToList"
-      >
-        <FontAwesomeIcon
-          :icon="['fas', 'circle-chevron-left']"
-          class="font-size-20 me-5"
-        />
-        Επιστροφή
-      </VBtn>
-      <VBtn
-        v-if="canEdit && !hideEditButton"
-        class="px-5 mx-2"
-        variant="flat"
-        rounded="md"
-        size="large"
         @click="setEditMode(true)"
       >
-        <FontAwesomeIcon
-          :icon="['fas', 'pen-to-square']"
-          class="font-size-20 me-5"
-        />
-        {{ $t('Edit') }}
+        <template #prepend>
+          <FontAwesomeIcon :icon="['fas', 'pen-to-square']" />
+        </template>
+        <span class="responsive-text">{{ $t('Edit') }}</span>
       </VBtn>
     </div>
   </VForm>
@@ -149,6 +144,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    canEdit: {
+      type: Boolean,
+      default: true,
+    },
     wizardSteps: {
       type: Number,
       default: 0,
@@ -157,19 +156,7 @@ export default {
       type: Number,
       default: 0,
     },
-    hideReturnButton: {
-      type: Boolean,
-      default: false,
-    },
-    hideEditButton: {
-      type: Boolean,
-      default: false,
-    },
     hideCancelButton: {
-      type: Boolean,
-      default: false,
-    },
-    hideSubmitButton: {
       type: Boolean,
       default: false,
     },
@@ -180,6 +167,10 @@ export default {
     noValidation: {
       type: Boolean,
       default: false,
+    },
+    prevStepCallback: {
+      type: Function,
+      default: () => false,
     },
     nextStepCallback: {
       type: Function,
@@ -201,21 +192,12 @@ export default {
       type: Boolean,
       default: true,
     },
-    authority: {
-      type: String,
-      default: '',
-    },
-    editButtonColor: {
-      type: String,
-      default: '',
-    }
   },
   emits: [
     'entityFetched',
     'entitySubmitted',
     'entitySaved',
     'editModeSet',
-    'updateTabIndex',
     'tabIndexUpdated',
   ],
   setup(props) {
@@ -241,11 +223,6 @@ export default {
     },
     allowSave() {
       return !this.editMode || (this.editEntity && this.entityChanged)
-    },
-    canEdit() {
-      // TODO revert when authorities are implemented
-      // return !this.authority.length || this.$store.userRights.includes(`${this.authority}_edit`)
-      return true
     },
   },
   async mounted() {
@@ -308,17 +285,21 @@ export default {
       )
 
       if (data.id) {
-        await this.saveEntity(true, data)
+        this.saveEntity(true, data)
       } else {
-        await this.saveEntity(false, data)
+        this.saveEntity(false, data)
       }
     },
-    async saveEntity(update, data) {
+    async saveEntity(update, data, suffix = '') {
       this.$emit('entitySubmitted', data)
       if (this.serverSubmit) {
         this.disableActions = true
         try {
-          const response = await this.entityStore.saveEntity(data, update)
+          const response = await this.entityStore.saveEntity(
+            data,
+            update,
+            suffix,
+          )
 
           this.handleEntitySave(response)
           this.disableActions = false
@@ -345,11 +326,9 @@ export default {
         text: msgText,
       })
       this.$nextTick(() => {
-
         if (this.returnToList) {
           this.routeToList()
         }
-
       })
     },
     handleSaveError(error) {
@@ -367,6 +346,10 @@ export default {
       })
     },
     async submitForm() {
+      if (!(this.editMode && this.canEdit)) {
+        return
+      }
+
       const errorMsg = this.extraValidation()
       if ((this.valid && errorMsg.length === 0) || this.noValidation) {
         this.submitEntity()
@@ -379,39 +362,35 @@ export default {
     },
     extraActionShouldRender(action) {
       if (typeof action.renderCondition === 'function') {
+
         return action.renderCondition(action)
       } else {
         return (
           this.entity.id &&
-
           // If no authority validation is given or the validation passes continue
           (!action.hasOwnProperty('authorityValidation') ||
             action.authorityValidation) &&
-
           // Handle renderCondition when it's a function or a static condition
           (!action.renderCondition ||
             (typeof action.renderCondition === 'function'
               ? action.renderCondition(this.entity)
               : (action.renderCondition.exists &&
-                  this.entity[action.renderCondition.key] > 0) ||
-                this.entity[action.renderCondition.key] ===
-                  action.renderCondition.value))
+                this.entity[action.renderCondition.key] > 0) ||
+              this.entity[action.renderCondition.key] ===
+              action.renderCondition.value))
         )
       }
     },
     routeToList() {
-      let routeName = this.config.returnRoute ? this.config.returnRoute : this.config.route
-      let routeParams = this.config.routeParam ? this.config.routeParam : null
+      let routeName = this.config.routeParams
+        ? `${this.config.route}-${Object.keys(this.config.routeParams)[0]}`
+        : this.config.route
+      let routeParams = this.$route.params ? this.$route.params : null
       let routeQuery = null
 
       if (this.$route.query.parentid && this.$route.query.parentroute) {
         routeName = `${this.$route.query.parentroute}-id`
         routeParams = { id: this.$route.query.parentid }
-        routeQuery = { view: 1 }
-      }
-      if (this.config.routeParam) {
-        routeName = `${this.config.route}-id`
-        routeParams = { id: this.config.routeParam }
         routeQuery = { view: 1 }
       }
 
@@ -435,21 +414,11 @@ export default {
       this.$emit('tabIndexUpdated', this.tabIndex + incVal)
     },
     async handleExtraActionClick(action) {
-      if (action.callback && typeof action.callback === 'function') {
-        action.callback()
-
-        return
-      }
-
-      if (action.callback) {
-        this[action.callback](action.callbackParams)
-      }
-
       if (action.endpoint) {
         this.disableActions = true
         try {
           const response = await axios.get(
-            `${this.config.endpoint}/${action.endpoint}/${this.entity.id}`,
+            `${action.endpoint}/${this.entity.id}`,
           )
 
           this.processEntitySave(
@@ -460,18 +429,19 @@ export default {
           if (action.callback) {
             action.callback()
           }
-        } catch (e) {
-          this.errorMsg = e.response?.data?.message || e.message
+        } catch (error) {
+          this.handleSaveError(error)
         }
-
         this.disableActions = false
-        if (action.callback) {
-          this[action.callback]()
-        }
+      } else if (action.callback) {
+        action.callback(this.entity)
       }
     },
     setEditMode(mode) {
-      if (!mode && (this.$route.params.id == 0 || this.$route.query.duplicate ) ) {
+      if (
+        !mode &&
+        (this.$route.params.id == 0 || this.$route.query.duplicate)
+      ) {
         this.routeToList()
       }
       this.$emit('editModeSet', mode)

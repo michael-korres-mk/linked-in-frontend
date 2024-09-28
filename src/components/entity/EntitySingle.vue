@@ -221,8 +221,7 @@ export default {
   emits: ['entityFetched', 'entitySaved', 'editModeSet', 'detailsBtnClicked', 'entitySubmitted', 'entitySavedError'],
   computed: {
     canEdit() {
-      return true
-      // TODO: Check the rights
+      return this.entity?.creator?.id == this.user.id
       //  return !this.authority.length || this.$store.userRights.includes(`${this.authority}_edit`)
     },
   },

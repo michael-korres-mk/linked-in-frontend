@@ -41,7 +41,8 @@
         :config="config"
         :sections="sections"
         :entity="entity"
-        :secondary-tables="(currentJobIsMine)?secondaryTables:null"
+        :secondary-tables="(currentJobIsMine)?secondaryTables:[]"
+        :extra-actions="extraActions"
         authority="jobs"
         hide-title
         :hide-edit-button="!currentJobIsMine"
@@ -49,28 +50,7 @@
         @entityUpdated="setEntity"
         @editModeSet="editModeSet"
         @entitySaved="entitySaved"
-      >
-        <div class="d-flex flex-row align-items-right ga-5">
-          <BigActionBtn
-            v-if="viewMode && !currentJobIsMine && !newJob"
-            size="x-large"
-            :icon="(applied)? 'fa-check' : 'fa-paper-plane'"
-            :disabled="applied"
-            :label="(applied)? 'Applied' : 'Apply'"
-            :color="'info'"
-            @click="apply"
-          />
-
-<!--          <BigActionBtn-->
-<!--            v-if="viewMode"-->
-<!--            size="x-large"-->
-<!--            :icon="'fa-circle-chevron-left'"-->
-<!--            :label="'Back'"-->
-<!--            :color="(applied)? 'secondary' : 'secondary'"-->
-<!--            @click="() => this.$router.push({name: 'jobs'})"-->
-<!--          />-->
-        </div>
-      </EntitySingle>
+      />
     </div>
   </div>
 </template>
@@ -223,6 +203,7 @@ export default {
           ],
           title: this.$t('JobApplications'),
           property: 'jobApplications',
+          hideAddButton: true
         }
       ]
     },
@@ -231,7 +212,28 @@ export default {
     },
     newJob(){
       return this.$route.params.id == '0'
-    }
+    },
+    extraActions() {
+      return [
+        {
+          title: (this.applied)? this.$t('Applied') : this.$t('Apply'),
+          icon: (this.applied)? 'fa-check' : 'fa-paper-plane',
+          color: 'secondary',
+          callback: this.apply,
+          disabled: this.viewMode && !this.currentJobIsMine && !this.newJob,
+          renderCondition: () => !this.currentJobIsMine && !this.newJob
+        },
+        // {
+        //   title: 'Υποβολή Ένστασης',
+        //   icon: 'gavel',
+        //   class: 'on-primary',
+        //   sectionTitle: 'Ένσταση',
+        //   callback: this.submitAppeal,
+        //   authorityValidation: this.canSubmitAppeal,
+        //   tabIndex: this.getSectionIndex('Ένσταση') - 1,
+        // },
+      ]
+    },
   },
   mounted() {
     this.setJobs()
