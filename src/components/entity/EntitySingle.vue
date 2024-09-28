@@ -110,6 +110,7 @@
                     :formatted-columns="table.formattedColumns"
                     :hidden-columns="table.hiddenColumns"
                     :default-item="table.defaultItem"
+                    :hide-edit-button="table.hideEditButton"
                     :hide-delete-button="table.hideDeleteButton"
                     :hide-add-button="table.hideAddButton"
                     :allow-edit="editMode"

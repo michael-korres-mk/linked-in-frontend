@@ -12,7 +12,7 @@
     <ul class="sidebar-menu">
       <li><RouterLink :to="`/in/${this.user.id}?view=1`" >{{ $t('My Profile') }}</RouterLink></li>
       <v-divider color="#ccc" />
-      <li><RouterLink :to="'/network'" >{{ $t('My Network') }}</RouterLink></li>
+      <li><RouterLink :to="`/network/0`" >{{ $t('My Network') }}</RouterLink></li>
     </ul>
 
 <!--    <ul class="sidebar-submenu">-->
@@ -48,7 +48,7 @@ export default {
   padding: 20px;
   margin-top: 45px;
   margin-right: 20px;
-  height: 320px;
+  height: fit-content;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
 
   .profile-section {

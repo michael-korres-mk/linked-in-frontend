@@ -212,8 +212,9 @@ export default {
               label: this.$t('Applicant'),
             },
           ],
-          title: this.$t('JobApplications'),
-          property: 'jobApplications',
+          title: this.$t('Job Applications'),
+          property: 'applications',
+          hideEditButton: true,
           hideAddButton: true
         }
       ]
