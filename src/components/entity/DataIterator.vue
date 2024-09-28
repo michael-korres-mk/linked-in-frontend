@@ -324,6 +324,7 @@ export default {
     'entityDeleted',
     'editModeSet',
     'extraItemFetched',
+    'filterUpdated'
   ],
   setup(props) {
     const entityStore = defineStore(

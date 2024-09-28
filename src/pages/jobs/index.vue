@@ -28,10 +28,10 @@ definePage({
           <h2 class="text-center text-info">{{ $t('My Jobs')}}</h2>
           <DataIterator
             :config="config"
-            :filters="filters"
+            :filters="myJobs"
             :results-per-page="9"
             auto-update-filters
-            hide-filter-legend
+            hide-filters
             hide-view
             :extra-styling="extraStyling"
           >
@@ -84,20 +84,33 @@ export default {
         },
       }
     },
+    myJobs(){
+      return [
+        {
+          id: 'creator',
+          type: 'number',
+          storeVal: this.user.id
+        },
+      ]
+    },
     filters() {
       return [
-        // {
-        //   id: 'id',
-        //   type: 'number',
-        //   label: this.$t('User Code'),
-        //   colSize: 4,
-        // },
-        // {
-        //   id: 'searchTerm',
-        //   type: 'text',
-        //   label: this.$t('Search'),
-        //   colSize: 4,
-        // },
+        {
+          id: 'exceptLoggedUser',
+          type: 'checkbox',
+          initVal: true,
+          hidden: true,
+          colSize: 4,
+        },
+        {
+          id: 'q',
+          type: 'text',
+          label: this.$t('Jobs Search'),
+          placeholder: this.$t('Search') + '...',
+          icon: 'tabler-search',
+          clearable: true,
+          colSize: 12,
+        },
       ]
     },
     extraStyling() {

@@ -166,7 +166,7 @@ export default {
           id: 'exceptLoggedUser',
           type: 'checkbox',
           initVal: true,
-          hidden:true,
+          hidden: true,
           colSize: 4,
         }
       ]
