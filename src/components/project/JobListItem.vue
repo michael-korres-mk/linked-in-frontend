@@ -9,12 +9,12 @@
               <FontAwesomeIcon v-else :icon="'fas fa-sack-dollar'" color="white" size="7x"/>
             </v-avatar>
           </VCol>
-          <VCol>
+          <VCol class="d-flex flex-column justify-content-between align-items-center">
             <h2 class="text-info">{{ item.title }}</h2>
-            <h4 class="text-primary">{{ item.company }}</h4>
-            <h4 class="text-primary"><FontAwesomeIcon :icon="'fas fa-location-dot'" color="#d04a02"/>  {{ item.location }}</h4>
-            <h4 class="text-primary"><FontAwesomeIcon :icon="'fas fa-building'" color="#d04a02"/>  {{ item.workplaceType }}</h4>
-            <h4 class="text-primary"><FontAwesomeIcon :icon="'fas fa-clock'" color="#d04a02"/>  {{ item.employmentType }}</h4>
+            <h4 v-if="item.company" class="d-flex gap-2 align-center text-primary">{{ item.company }}</h4>
+            <h4 v-if="item.location" class="d-flex gap-2 align-center text-primary"><FontAwesomeIcon :icon="'fas fa-location-dot'" color="#d04a02"/>  {{ item.location }}</h4>
+            <h4 v-if="item.workplaceType" class="d-flex gap-2 align-center text-primary"><FontAwesomeIcon :icon="'fas fa-building'" color="#d04a02"/>  {{ $t(item.workplaceType) }}</h4>
+            <h4 v-if="item.employmentType" class="d-flex gap-2 align-center text-primary"><FontAwesomeIcon :icon="'fas fa-clock'" color="#d04a02"/>  {{ $t(item.employmentType) }}</h4>
           </VCol>
         </VRow>
       </VCard>
@@ -65,7 +65,7 @@ export default {
       this.unfreeze()
     },
     async setProfileImage(){
-      this.profileImage = await this.imgShow(this.entity.profilePhoto) ?? null
+      this.profileImage = await this.imgShow(this.entity?.profilePhoto) ?? null
     },
   }
 }

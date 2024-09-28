@@ -133,9 +133,6 @@ const getCacheKey = (endpoint, params) => {
     rights(subsystem) {
     return this.fetchCachedList('roles/rights', { subsystem })
     },
-    // fetchRecentChats() {
-    //   return this.fetchCachedList('chats/recent')
-    // },
     fetchChatMessages(id) {
     return this.axiosGet({ url: `chats/messages/${id}` })
     },
@@ -151,7 +148,14 @@ const getCacheKey = (endpoint, params) => {
     fetchJobApplications(queryParams) {
         return this.fetchList('job-applications',queryParams)
     },
-}
+    fetchWorkplaceTypes() {
+        return this.fetchCachedList('jobs/workplace-types')
+    },
+    fetchEmploymentTypes() {
+        return this.fetchCachedList('jobs/employment-types')
+    },
+
+    }
 
 export const useSessionStore = defineStore('session', {
   state: () => {

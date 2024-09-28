@@ -452,5 +452,12 @@
   "Uploaded Files" : "Uploaded Files",
   "Comments" : "Comments",
   "Add a comment": "Add a comment",
-  "My Jobs" : "My Jobs"
+  "My Jobs" : "My Jobs",
+  "REMOTE": "Remote",
+  "ON_SITE" : "On-site",
+  "HYBRID" : "Hybrid",
+  "FULL_TIME" : "Full Time",
+  "PART_TIME" : "Part Time",
+  "CONTRACT" : "Contract",
+  "INTERNSHIP" : "Internship"
 }

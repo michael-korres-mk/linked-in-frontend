@@ -386,7 +386,7 @@ export default {
       this.componentKey++
     },
     async setProfileImage(){
-      this.profileImage = await this.imgShow(this.entity.profilePhoto) ?? null
+      this.profileImage = await this.imgShow(this.entity?.profilePhoto) ?? null
     },
   }
 }

@@ -78,6 +78,8 @@ export default {
       maxWidth: '800px',
       formTitle: 'Υποβολή αίτησης',
       modalLegendTitle: 'Στοιχεία Επικοινωνίας',
+      workplaceTypeOptions: [],
+      employmentTypeOptions: [],
     }
   },
   computed: {
@@ -165,28 +167,37 @@ export default {
           id: 'title',
           type: 'text',
           label: this.$t('Title'),
-          disabled: true,
+          disabled: !this.editMode,
           colSize: 12,
         },
         {
           id: 'description',
           type: 'tiptap',
           label: this.$t('Description'),
-          disabled: true,
+          disabled: !this.editMode,
           colSize: 12,
         },
         {
           id: 'workplaceType',
           type: 'select',
           label: this.$t('Workplace Type'),
-          disabled: true,
+          disabled: !this.editMode,
+          options: this.workplaceTypeOptions,
           colSize: 6,
         },
         {
           id: 'employmentType',
           type: 'select',
           label: this.$t('Employment Type'),
-          disabled: true,
+          disabled: !this.editMode,
+          options: this.employmentTypeOptions,
+          colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Location'),
+          disabled: !this.editMode,
           colSize: 6,
         },
       ]
@@ -220,7 +231,7 @@ export default {
           icon: (this.applied)? 'fa-check' : 'fa-paper-plane',
           color: 'secondary',
           callback: this.apply,
-          disabled: this.viewMode && !this.currentJobIsMine && !this.newJob,
+          disabled: this.applied,
           renderCondition: () => !this.currentJobIsMine && !this.newJob
         },
         // {
@@ -237,6 +248,8 @@ export default {
   },
   mounted() {
     this.setJobs()
+    this.setWorkplaceTypes()
+    this.setEmploymentTypes()
   },
   methods: {
     updateApplicationEntity(fieldObj) {
@@ -262,6 +275,12 @@ export default {
       if (myJobApplications.length > 0) {
         this.applied = myJobApplications.filter(ja => ja.job.id == this.$route.params.id).length > 0
       }
+    },
+    async setWorkplaceTypes(){
+      this.workplaceTypeOptions = await this.$store.fetchWorkplaceTypes()
+    },
+    async setEmploymentTypes(){
+      this.employmentTypeOptions = await this.$store.fetchEmploymentTypes()
     }
   },
 
