@@ -25,8 +25,7 @@ definePage({
               :secondary-tables="secondaryTables"
               :entity="entity"
               hide-title
-              :hide-edit-button="!myProfile"
-              :return-to-list="false"
+              :can-edit="myProfile"
               hide-return-button
               authority="users"
               @entityUpdated="setEntity"

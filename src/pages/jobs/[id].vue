@@ -45,8 +45,8 @@
         :extra-actions="extraActions"
         authority="jobs"
         hide-title
-        :hide-edit-button="!currentJobIsMine"
         editButtonColor="secondary"
+        :can-edit="currentJobIsMine || newJob"
         @entityUpdated="setEntity"
         @editModeSet="editModeSet"
         @entitySaved="entitySaved"
@@ -141,24 +141,24 @@ export default {
           required: true,
           colSize: 12,
         },
-        {
-          id: 'workExperience',
-          type: 'tiptap',
-          label: this.$t('Work Experience'),
-          colSize: 12,
-        },
-        {
-          id: 'education',
-          type: 'tiptap',
-          label: this.$t('Education'),
-          colSize: 12,
-        },
-        {
-          id: 'skills',
-          type: 'tiptap',
-          label: this.$t('Skills'),
-          colSize: 12,
-        },
+        // {
+        //   id: 'workExperience',
+        //   type: 'tiptap',
+        //   label: this.$t('Work Experience'),
+        //   colSize: 12,
+        // },
+        // {
+        //   id: 'education',
+        //   type: 'tiptap',
+        //   label: this.$t('Education'),
+        //   colSize: 12,
+        // },
+        // {
+        //   id: 'skills',
+        //   type: 'tiptap',
+        //   label: this.$t('Skills'),
+        //   colSize: 12,
+        // },
       ]
     },
     formFields() {

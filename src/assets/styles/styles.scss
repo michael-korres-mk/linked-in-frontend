@@ -867,11 +867,14 @@ body .layout-wrapper.layout-nav-type-vertical.layout-navbar-sticky .layout-page-
   }
 }
 
+.responsive-text {
+  font-size: clamp(0.7em, 0.9vw, 4em) !important;
+}
+
 .entity-edit-buttons {
   display: flex;
   justify-content: center;
-  margin-top: 2px;
-  margin-bottom: 5px;
+  margin-top: 10px;
   width: 100%;
   gap:5px;
   margin-inline-start: 0 !important;

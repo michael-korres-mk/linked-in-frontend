@@ -1,14 +1,3 @@
-<script setup>
-import EntitySingle from '../../components/entity/EntitySingle.vue'
-import editMixins from '../../mixins/entityedit'
-
-definePage({
-  meta: {
-    authority: 'users',
-  },
-})
-</script>
-
 <template>
   <h1 class="text-center text-info mb-0">
     {{ title}}
@@ -22,12 +11,12 @@ definePage({
               :key="componentKey"
               :config="config"
               :sections="sections"
-              :secondary-tables="secondaryTables"
               :entity="entity"
               hide-title
               :return-to-list="false"
-              hide-return-button
+              :hide-cancel-button="!editMode"
               authority="users"
+              @entityFetched="setEntity"
               @entityUpdated="setEntity"
               @editModeSet="editModeSet"
               @entitySaved="entitySaved"
@@ -40,29 +29,33 @@ definePage({
 </template>
 
 <script>
+import editMixins from '@/mixins/entityedit'
+import EntitySingle from "@/components/entity/EntitySingle.vue";
+
 export default {
+  components: {EntitySingle},
+
   mixins: [editMixins],
-  async mounted() {
-    this.entity = await this.$store.axiosGet({ url: 'users/profile/' + this.user.id })
-  },
+
   data() {
     return {
       entity: {
-        authorities: [],
-        roles: [],
+        workExperiences:[],
+        educations:[],
+        skills:[],
       },
       editMode: !this.singleEdit,
       componentKey: 0,
     }
   },
-  computed: {
+  computed:{
     title(){
       return this.$t("Personal Info")
     },
     config() {
       return {
         endpoint: 'users/profile',
-        route: 'users',
+        route: 'personal-info',
         title: {
           geniki: 'Χρήστη',
         },
@@ -72,7 +65,7 @@ export default {
       return [
         {
           fields: this.formFields,
-          title: 'Στοιχεία Χρήστη',
+          title: this.$t('Information'),
         },
         {
           fields: this.aboutMe,
@@ -80,7 +73,8 @@ export default {
         },
         {
           fields: this.settings,
-          title: this.$t('Public / Private Info'),},
+          title: this.$t('Public / Private Info'),
+        },
       ]
     },
     secondaryTables(){
@@ -90,59 +84,41 @@ export default {
           title: this.$t('Experience'),
           // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
           hiddenColumns: ['description'],
-          property: 'workExperiences',},
+          property: 'workExperiences',
+          hidden: !this.entity.workExperiencesEnabled && !this.editMode && !this.myProfile && !this.connected
+        },
         {
           fields: this.educationFields,
           title: this.$t('Education'),
           // formattedColumns: [{ key: 'file', callback: 'renderFileUrl', handleClick: this.downloadFile }],
           hiddenColumns: ['description'],
-          property: 'educations',},
+          property: 'educations',
+          hidden: !this.entity.educationsEnabled && !this.editMode && !this.myProfile && !this.connected
+        },
         {
           fields: this.skillFields,
           title: this.$t('Skills'),
           hiddenColumns: ['description'],
-          property: 'skills',},
+          property: 'skills',
+          hidden: !this.entity.skillsEnabled && !this.editMode && !this.myProfile && !this.connected
+        },
       ]
     },
     formFields() {
       return [
         {
-          id: 'id',
-          type: 'text',
-          label: this.$t('User Code'),
-          readonly: true,
-          colSize: 3,
-        },
-        {
-          id: 'profilePhoto',
-          type: 'file',
-          filetype: ['image/*'],
-          label: this.$t('File'),
-          required: true,
-          colSize: 9
-        },
-        {
           id: 'firstName',
           type: 'text',
           label: this.$t('User FirstName'),
           required: true,
-          colSize: 3,
+          colSize: 4,
         },
         {
           id: 'lastName',
           type: 'text',
           label: this.$t('User LastName'),
           required: true,
-          colSize: 3,
-        },
-        {
-          id: 'email',
-          type: 'text',
-          label: this.$t('Email'),
-          rules: ['email'],
-          readonly: true,
-          required: true,
-          colSize: 3,
+          colSize: 4,
         },
         {
           id: 'mobile',
@@ -150,7 +126,7 @@ export default {
           label: this.$t('Telephone'),
           rules: ['phone'],
           required: true,
-          colSize: 3,
+          colSize: 4,
         },
       ]
     },
@@ -315,18 +291,14 @@ export default {
         }
       ]
     },
-    profileId(){
-      return this.$route.params.id
-    },
-    myProfile(){
-      return this.$route.params.id == this.user.id
-    },
-    isSender(){
-      return this.profileId == this.connectionRequest?.creator.id
-    }
   },
-
+  mounted(){
+    this.fetchUser()
+  },
   methods: {
+    async fetchUser(){
+      this.entity = await this.$store.axiosGet({ url: 'users/profile/' + this.user.id })
+    },
     entitySaved(entity) {
       this.entity = entity
       localStorage.setItem('userData', JSON.stringify(entity));

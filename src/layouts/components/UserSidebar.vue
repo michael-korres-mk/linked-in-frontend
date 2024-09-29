@@ -13,12 +13,9 @@
       <li><RouterLink :to="`/in/${this.user.id}?view=1`" >{{ $t('My Profile') }}</RouterLink></li>
       <v-divider color="#ccc" />
       <li><RouterLink :to="`/network/0`" >{{ $t('My Network') }}</RouterLink></li>
+      <v-divider color="#ccc" />
+      <li><RouterLink :to="`/profile-settings?view=1`">{{ $t('Settings') }}</RouterLink></li>
     </ul>
-
-<!--    <ul class="sidebar-submenu">-->
-<!--      <li><a href="#">{{ $t('Settings') }}</a></li>-->
-<!--      <li><a href="#">{{ $t('Sign Out') }}</a></li>-->
-<!--    </ul>-->
   </aside>
 </template>
 

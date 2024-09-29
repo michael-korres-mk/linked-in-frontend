@@ -65,7 +65,7 @@ export default {
       this.unfreeze()
     },
     async setProfileImage(){
-      this.profileImage = await this.imgShow(this.entity?.profilePhoto) ?? null
+      this.profileImage = (this.entity?.profilePhoto)? await this.imgShow(this.entity?.profilePhoto) : null
     },
   }
 }

@@ -4,6 +4,7 @@
     v-model="valid"
     autocomplete="off"
     @submit.prevent="submitForm"
+    class="d-flex flex-column"
   >
     <slot />
     <div class="entity-edit-buttons">
@@ -285,9 +286,9 @@ export default {
       )
 
       if (data.id) {
-        this.saveEntity(true, data)
+        await this.saveEntity(true, data)
       } else {
-        this.saveEntity(false, data)
+        await this.saveEntity(false, data)
       }
     },
     async saveEntity(update, data, suffix = '') {

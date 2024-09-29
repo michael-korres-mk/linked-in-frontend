@@ -216,9 +216,9 @@ export default {
     return {
       valid: false,
       dialog: false,
-      items: [],
       editedIndex: -1,
       editedItem: {},
+      items: [],
     }
   },
   computed: {
@@ -250,11 +250,14 @@ export default {
       val || this.close()
     },
   },
-  created() {
-    this.items = this.initItems
+  mounted() {
+    this.setItems()
     this.setDefaultItem()
   },
   methods: {
+    setItems(){
+      this.items = this.initItems
+    },
     setDefaultItem() {
       this.editedItem = this.editTransformation(
         JSON.parse(JSON.stringify(this.defaultItem ?? {})),

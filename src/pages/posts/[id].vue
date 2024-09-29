@@ -15,7 +15,7 @@ import EntitySingle from '../../components/entity/EntitySingle.vue'
     :secondary-tables="secondaryTables"
     :entity="entity"
     authority="posts"
-    @entityUpdated="entityHasBeenUpdated"
+    @entityUpdated="setEntity"
     @editModeSet="editModeSet"
     @propUpdated="afterPropUpdate"
   />
@@ -120,9 +120,6 @@ export default {
     this.setParentField()
   },
   methods: {
-    entityHasBeenUpdated(entity) {
-      this.setEntity(entity)
-    },
     afterPropUpdate(fieldObj) {
       if (fieldObj.id === 'photo') {
         // ... await this.$store.???()

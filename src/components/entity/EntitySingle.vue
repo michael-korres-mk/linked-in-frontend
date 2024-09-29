@@ -16,10 +16,7 @@
       :data-transformation="dataTransformation"
       :edit-transformation="editTransformation"
       :edit-mode="editMode"
-      :hide-return-button="hideReturnButton"
-      :hide-edit-button="hideEditButton"
       :hide-cancel-button="hideCancelButton"
-      :hide-submit-button="hideSubmitButton"
       :single-edit="singleEdit"
       :return-to-list="returnToList"
       :authority="authority"
@@ -84,7 +81,7 @@
                   :hide-delete-button="table.hideDeleteButton"
                   :hide-add-button="table.hideAddButton"
                   :allow-edit="editMode"
-                  @fieldUpdated="updateEntityProp"
+                  @itemFieldUpdated="updateEntityProp"
                 />
               </VExpansionPanelText>
             </VExpansionPanel>
@@ -96,8 +93,8 @@
               :key="table.title"
             >
               <div
-                v-if="!table.hidden"
                 :class="'card-wrapper'"
+                v-if="!table.hidden"
               >
 
                 <legend class="legend-title text-center">
@@ -116,7 +113,7 @@
                     :hide-delete-button="table.hideDeleteButton"
                     :hide-add-button="table.hideAddButton"
                     :allow-edit="editMode"
-                    @fieldUpdated="updateEntityProp"
+                    @itemFieldUpdated="updateEntityProp"
                   />
                 </div>
               </div>
@@ -187,19 +184,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    hideReturnButton: {
-      type: Boolean,
-      default: false,
-    },
-    hideEditButton: {
-      type: Boolean,
-      default: false,
-    },
     hideCancelButton: {
-      type: Boolean,
-      default: false,
-    },
-    hideSubmitButton: {
       type: Boolean,
       default: false,
     },
@@ -219,14 +204,18 @@ export default {
       type: String,
       default: '',
     },
+    canEdit: {
+      type: Boolean,
+      default: true // generally should be all closed
+    }
   },
   emits: ['entityFetched', 'entitySaved', 'editModeSet', 'detailsBtnClicked', 'entitySubmitted', 'entitySavedError'],
-  computed: {
-    canEdit() {
-      return (this.entity?.creator?.id == this.user.id) || (this.id == '0')
-      //  return !this.authority.length || this.$store.userRights.includes(`${this.authority}_edit`)
-    },
-  },
+  // computed: {
+  //   canEdit() {
+  //     return (this.entity?.creator?.id == this.user.id) || (this.id == '0')
+  //     //  return !this.authority.length || this.$store.userRights.includes(`${this.authority}_edit`)
+  //   },
+  // },
   mounted() {
     this.editModeSet(this.editMode)
   },
