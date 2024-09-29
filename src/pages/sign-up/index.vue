@@ -81,15 +81,9 @@ export default {
           this.signupError(err.response.data.message)
         })
 
-      console.log(response)
-      debugger
-
       await this.$store.jwtLogin(null, this.form.email, this.form.password)
         .then(res => {
           let userData = res.data;
-
-          console.log(res.data)
-          debugger
           this.$store.userData = res.data;
           localStorage.setItem('userData', JSON.stringify(userData));
           useJwt.setToken(userData.token)
