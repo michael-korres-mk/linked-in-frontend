@@ -41,7 +41,7 @@
         :config="config"
         :sections="sections"
         :entity="entity"
-        :secondary-tables="(currentJobIsMine)?secondaryTables:[]"
+        :secondary-tables="secondaryTables"
         :extra-actions="extraActions"
         authority="jobs"
         hide-title
@@ -205,6 +205,12 @@ export default {
     secondaryTables(){
       return [
         {
+          fields: this.skillFields,
+          title: this.$t('Skills'),
+          hiddenColumns: ['description'],
+          property: 'skills',
+        },
+        {
           fields: [
             {
               id: 'creator.title',
@@ -215,7 +221,19 @@ export default {
           title: this.$t('Job Applications'),
           property: 'applications',
           hideEditButton: true,
-          hideAddButton: true
+          hideAddButton: true,
+          hidden: !this.currentJobIsMine
+        }
+      ]
+    },
+    skillFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Skill Title'),
+          required: true,
+          colSize: 12,
         }
       ]
     },
@@ -235,15 +253,6 @@ export default {
           disabled: this.applied,
           renderCondition: () => !this.currentJobIsMine && !this.newJob
         },
-        // {
-        //   title: 'Υποβολή Ένστασης',
-        //   icon: 'gavel',
-        //   class: 'on-primary',
-        //   sectionTitle: 'Ένσταση',
-        //   callback: this.submitAppeal,
-        //   authorityValidation: this.canSubmitAppeal,
-        //   tabIndex: this.getSectionIndex('Ένσταση') - 1,
-        // },
       ]
     },
   },

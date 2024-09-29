@@ -72,7 +72,7 @@
               :key="table.title"
               :title="table.title"
             >
-              <VExpansionPanelText>
+              <VExpansionPanelText v-if="!table.hidden">
                 <SecondaryTable
                   v-if="loaded"
                   :init-items="entity[table.property]"
@@ -94,9 +94,11 @@
             <div
               v-for="table in secondaryTables"
               :key="table.title"
-              :class="(table.hidden ? 'd-none' : 'card-wrapper')"
             >
-              <div>
+              <div
+                v-if="!table.hidden"
+                :class="'card-wrapper'"
+              >
 
                 <legend class="legend-title text-center">
                   {{ table.title }}
@@ -118,7 +120,6 @@
                   />
                 </div>
               </div>
-
             </div>
           </div>
         </div>
