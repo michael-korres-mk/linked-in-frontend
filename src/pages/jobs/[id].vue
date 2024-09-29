@@ -66,7 +66,9 @@ export default {
   mixins: [editMixins],
   data() {
     return {
-      entity: {},
+      entity: {
+        skills:[]
+      },
       applicationEntity: {...this.$store.userData,id:null},
       valid: false,
       dialog: false,
