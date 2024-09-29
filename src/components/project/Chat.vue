@@ -52,10 +52,10 @@ export default {
   },
   methods:{
     chatPicked() {
-      this.$emit('chatPicked', this.chat.id)
+      this.$emit('chatPicked', this.chat)
     },
     async setProfileImage(){
-      this.profileImage = (this.chatUserData.profilePhoto)? await this.imgShow(this.chatUserData.profilePhoto) : null
+      this.profileImage = (this.chatUserData.profilePhoto == null)? null : await this.imgShow(this.chatUserData.profilePhoto)
     },
   }
 }

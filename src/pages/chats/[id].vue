@@ -8,10 +8,10 @@
       <VCardText>
         <VContainer v-if="chats.length" fluid class="d-flex">
           <VCol :cols="4">
-            <Chats :chats="chats" @chatPicked="chatPicked" :clicked="clicked"/>
+            <Chats :key="componentKey" :chats="chats" @chatPicked="chatPicked" :active-chat="activeChat"/>
           </VCol>
           <VCol :cols="8">
-            <ChatMessages v-if="clicked !== -1" :chat="activeChat" @messageSent="messageSent"/>
+            <ChatMessages v-if="activeChat.id" :chat="activeChat" @messageSent="messageSent"/>
             <h1 class="text-info" v-else > {{ $t('No chat picked') }}  </h1>
           </VCol>
         </VContainer>
@@ -28,6 +28,7 @@ import Chats from "@/components/project/Chats.vue";
 import ChatMessages from "@/components/project/ChatMessages.vue";
 import useGenericEntityStore from "@/stores/entity.js";
 import {defineStore} from "pinia";
+import entityedit from "@/mixins/entityedit.js";
 
 export default {
   components: {
@@ -35,13 +36,9 @@ export default {
     Chats,
     FormField,
   },
+  mixins: [entityedit],
   mounted(){
     this.fetchChats()
-
-    if(this.$route.params.id != '0'){
-     this.setPickedChat(this.$route.params.id)
-    }
-
     this.isLoading = false
   },
   data() {
@@ -51,29 +48,29 @@ export default {
       isLoading: true,
       chats:[],
       connections:[],
+      componentKey: 0,
       entityStore: defineStore('chats', useGenericEntityStore('chats'))(),
     }
   },
   methods: {
     async fetchChats(){
-      this.chats = await this.$store.fetchChats({ creator:this.user.id })
+      const fetchedChats = await this.$store.fetchChats({ creator:this.user.id })
+      this.chats.push(...fetchedChats)
+
+      if(this.id != '0'){
+        this.setPickedChat(this.id)
+      }
     },
-    async chatPicked(chatId){
-      this.activeChat = this.chats.find(c => c.id == chatId);
-      this.clicked = chatId
+    async chatPicked(chat){
+      this.activeChat = chat
     },
     async messageSent(newMessage){
       this.activeChat.lastMessage = newMessage
     },
     async setPickedChat(recipient) {
-
       this.activeChat = await this.$store.axiosGet({url: 'chats', params: {recipient: recipient}})
-
-      if(!this.chats.find(c => c.id == this.activeChat.id)){
-        this.chats.unshift(this.activeChat)
-      }
-
-      this.clicked = this.activeChat.id
+      const index = this.chats.map(c => c.id).indexOf(this.activeChat.id)
+      if(index === -1) this.chats.unshift(this.activeChat);
     }
   },
 }

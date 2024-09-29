@@ -15,7 +15,7 @@ import EntitySingle from '../../components/entity/EntitySingle.vue'
     :secondary-tables="secondaryTables"
     :entity="entity"
     authority="posts"
-    @entityUpdated="entityHasBeenUpdated"
+    @entityUpdated="setEntity"
     @editModeSet="editModeSet"
     @propUpdated="afterPropUpdate"
   />
@@ -40,8 +40,7 @@ export default {
     config() {
       return {
         endpoint: 'posts',
-        route: 'posts',
-        returnRoute: 'home',
+        route: 'home',
         title: {
           single: 'Post',
           plural: 'Posts',
@@ -84,12 +83,6 @@ export default {
       return [
         {
           fields: [
-            // {
-            //   id: 'title',
-            //   type: 'text',
-            //   label: this.$t('Designation'),
-            //   required: true,
-            // },
             {
               id: 'file',
               type: 'file',
@@ -114,6 +107,51 @@ export default {
           title: this.$t('Uploaded Files'),
           property: 'photos',
         },
+        {
+          fields: [
+            {
+              id: 'creator.title',
+              type: 'text',
+              label: this.$t('User'),
+            },
+            {
+              id: 'creationDate',
+              type: 'date',
+              label: this.$t('Date'),
+
+            },
+          ],
+          formattedColumns: [{ key: 'creationDate', callback: 'mediumDate' }],
+          title: this.$t('Likes'),
+          hideAddButton: true,
+          hideEditButton: true,
+          property: 'likes',
+        },
+        {
+          fields: [
+            {
+              id: 'creator.title',
+              type: 'text',
+              label: this.$t('User'),
+            },
+            {
+              id: 'description',
+              type: 'text',
+              label: this.$t('Title'),
+            },
+            {
+              id: 'creationDate',
+              type: 'date',
+              label: this.$t('Date'),
+
+            },
+          ],
+          formattedColumns: [{ key: 'creationDate', callback: 'mediumDate' }],
+          title: this.$t('Comments'),
+          hideAddButton: true,
+          hideEditButton: true,
+          property: 'comments',
+        },
       ]
     },
   },
@@ -121,9 +159,6 @@ export default {
     this.setParentField()
   },
   methods: {
-    entityHasBeenUpdated(entity) {
-      this.setEntity(entity)
-    },
     afterPropUpdate(fieldObj) {
       if (fieldObj.id === 'photo') {
         // ... await this.$store.???()

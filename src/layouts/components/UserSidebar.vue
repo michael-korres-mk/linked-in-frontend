@@ -6,19 +6,16 @@
         <FontAwesomeIcon v-else :icon="'fas fa-circle-user'" color="white" size="10x"/>
       </v-avatar>
       <h3 class="text-white">{{ user.username }}</h3>
-      <h4 class="text-info">{{ 'ola ola' }}</h4>
+      <h4 class="text-info">{{ user.title }}</h4>
     </div>
 
     <ul class="sidebar-menu">
       <li><RouterLink :to="`/in/${this.user.id}?view=1`" >{{ $t('My Profile') }}</RouterLink></li>
       <v-divider color="#ccc" />
-      <li><RouterLink :to="'/network'" >{{ $t('My Network') }}</RouterLink></li>
+      <li><RouterLink :to="`/network/0`" >{{ $t('My Network') }}</RouterLink></li>
+      <v-divider color="#ccc" />
+      <li><RouterLink :to="`/profile-settings?view=1`">{{ $t('Settings') }}</RouterLink></li>
     </ul>
-
-<!--    <ul class="sidebar-submenu">-->
-<!--      <li><a href="#">{{ $t('Settings') }}</a></li>-->
-<!--      <li><a href="#">{{ $t('Sign Out') }}</a></li>-->
-<!--    </ul>-->
   </aside>
 </template>
 
@@ -35,7 +32,7 @@ export default {
   },
   methods:{
     async setProfileImage(){
-      this.profileImage = await this.imgShow(this.user.profilePhoto) ?? null
+      this.profileImage = (this.user.profilePhoto)? await this.imgShow(this.user.profilePhoto) : null
     },
   }
 };
@@ -48,7 +45,7 @@ export default {
   padding: 20px;
   margin-top: 45px;
   margin-right: 20px;
-  height: 320px;
+  height: fit-content;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
 
   .profile-section {

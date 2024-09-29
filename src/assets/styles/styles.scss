@@ -866,3 +866,24 @@ body .layout-wrapper.layout-nav-type-vertical.layout-navbar-sticky .layout-page-
     top: 0px
   }
 }
+
+.responsive-text {
+  font-size: clamp(0.7em, 0.9vw, 4em) !important;
+}
+
+.entity-edit-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  width: 100%;
+  gap:5px;
+  margin-inline-start: 0 !important;
+}
+
+@media (max-width: 960px){
+  .entity-edit-buttons {
+    flex-direction: column;
+    margin-inline-start: 0 !important;
+
+  }
+}

@@ -17,7 +17,7 @@ import FormField from './FormField.vue'
             : formField.id
         "
         :md="formField.colSize ? formField.colSize : 12"
-        :class="(formField.hidden ? 'd-none' : '') + ' pb-0'"
+        :class="(formField.hidden ? 'd-none' : '') + ''"
         cols="12"
       >
         <CustomField

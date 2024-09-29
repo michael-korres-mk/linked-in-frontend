@@ -25,8 +25,7 @@ definePage({
               :secondary-tables="secondaryTables"
               :entity="entity"
               hide-title
-              :hide-edit-button="!myProfile"
-              :return-to-list="false"
+              :can-edit="myProfile"
               hide-return-button
               authority="users"
               @entityUpdated="setEntity"
@@ -122,14 +121,12 @@ export default {
           id: 'firstName',
           type: 'text',
           label: this.$t('User FirstName'),
-          required: true,
           colSize: 3,
         },
         {
           id: 'lastName',
           type: 'text',
           label: this.$t('User LastName'),
-          required: true,
           colSize: 3,
         },
         {
@@ -137,7 +134,6 @@ export default {
           type: 'text',
           label: this.$t('Email'),
           rules: ['email'],
-          required: true,
           colSize: 3,
         },
         {
@@ -145,7 +141,6 @@ export default {
           type: 'text',
           label: this.$t('Telephone'),
           rules: ['phone'],
-          required: true,
           colSize: 3,
         },
         {
@@ -197,7 +192,6 @@ export default {
           id: 'title',
           type: 'text',
           label: this.$t('Job Title'),
-          required: true,
           colSize: 12,
         },
         {
@@ -254,7 +248,6 @@ export default {
           id: 'title',
           type: 'text',
           label: this.$t('Education Title'),
-          required: true,
           colSize: 12,
         },
         {
@@ -313,7 +306,6 @@ export default {
           id: 'title',
           type: 'text',
           label: this.$t('Skill Title'),
-          required: true,
           colSize: 12,
         }
       ]

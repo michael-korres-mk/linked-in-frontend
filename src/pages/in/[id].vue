@@ -75,15 +75,14 @@
       :secondary-tables="secondaryTables"
       :entity="entity"
       hide-title
-      :return-to-list="false"
-      hide-return-button
-      :hide-edit-button="!myProfile"
+      :hide-cancel-button="!(myProfile)"
+      :can-edit="myProfile"
       authority="users"
       @entityUpdated="setEntity"
       @editModeSet="editModeSet"
       @entitySaved="entitySaved"
       @entity-fetched="setProfileImage"
-    />
+  />
 
 </template>
 
@@ -119,12 +118,27 @@ export default {
     this.setConnectionRequest()
   },
   computed:{
+    jobFields(){
+      return [
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 6,
+        },
+        {
+          id: 'jobTitle',
+          type: 'text',
+          label: this.$t('Job Title'),
+          colSize: 6,
+        },
+      ]
+    },
     config() {
       return {
         endpoint: 'users/profile',
         route: 'in',
-        returnRoute: '/in-id',
-        routeParam: this.profileId,
+        routeParams: {id: this.profileId},
         title: {
           geniki: 'Χρήστη',
         },
@@ -135,6 +149,10 @@ export default {
         {
           fields: this.aboutMe,
           title: this.$t('About Me'),
+        },
+        {
+          fields: this.jobFields,
+          title: this.$t('Job Info'),
         },
         {
           fields: this.settings,
@@ -335,7 +353,7 @@ export default {
       return this.$route.params.id
     },
     myProfile(){
-      return this.$route.params.id == this.user.id
+      return String(this.id) == String(this.user.id)
     },
     isSender(){
       return this.profileId == this.connectionRequest?.creator.id
@@ -386,7 +404,7 @@ export default {
       this.componentKey++
     },
     async setProfileImage(){
-      this.profileImage = await this.imgShow(this.entity.profilePhoto) ?? null
+      this.profileImage = (this.entity?.profilePhoto)? await this.imgShow(this.entity?.profilePhoto) : null
     },
   }
 }

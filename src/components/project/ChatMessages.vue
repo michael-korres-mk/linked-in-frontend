@@ -64,6 +64,7 @@
 <script>
 import { Client } from '@stomp/stompjs'
 import ChatMessage from "@/components/project/ChatMessage.vue";
+import useJwt from "@/plugins/jwt/useJwt.js";
 
 export default {
   name: "ChatMessages",
@@ -87,9 +88,6 @@ export default {
   computed: {
     recipientId() {
       return (this.chat.creator.id == this.user.id)? this.chat.recipient.id : this.chat.creator.id
-    },
-    token() {
-      return this.$store.userData.token
     },
     groupedMessages() {
 
@@ -174,8 +172,7 @@ export default {
         sender: this.user,
         recipient : { id: this.recipientId },
         chat: { id: this.chat.id },
-        token: this.token
-        // token: useJwt.getToken()
+        token: useJwt.getToken()
 
       }
     }

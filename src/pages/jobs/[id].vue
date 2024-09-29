@@ -1,6 +1,6 @@
 <template>
   <h1 class="text-center text-info">
-    {{ entity.title }}
+    {{ $t('Jobs') }}
   </h1>
   <div class="card-wrapper bg-global-primary">
     <div class="card-body text-primary d-flex align-items-center">
@@ -29,7 +29,7 @@
               <EntityEditSection
                 :entity="applicationEntity"
                 :form-fields="applicationFormFields"
-                @fieldUpdated="updateEntity"
+                @fieldUpdated="updateApplicationEntity"
               />
             </VForm>
           </div>
@@ -41,32 +41,15 @@
         :config="config"
         :sections="sections"
         :entity="entity"
+        :secondary-tables="secondaryTables"
+        :extra-actions="extraActions"
         authority="jobs"
         hide-title
-        hide-return-button
-        hide-edit-button
-        hide-cancel-button
-        hide-submit-button
+        editButtonColor="secondary"
+        :can-edit="currentJobIsMine || newJob"
+        @entityUpdated="setEntity"
         @editModeSet="editModeSet"
       />
-      <div class="d-flex flex-row align-items-center ga-5">
-        <BigActionBtn
-          size="x-large"
-          :icon="'fa-circle-chevron-left'"
-          :label="'Back'"
-          :color="(applied)? 'secondary' : 'secondary'"
-          @click="() => this.$router.push({name: 'jobs'})"
-        />
-        <BigActionBtn
-          size="x-large"
-          :icon="(applied)? 'fa-check' : 'fa-paper-plane'"
-          :disabled="applied"
-          :label="(applied)? 'Applied' : 'Apply'"
-          :color="'secondary'"
-          @click="apply"
-        />
-      </div>
-
     </div>
   </div>
 </template>
@@ -90,11 +73,12 @@ export default {
       applied: false,
       entityStore: defineStore('jobs', useGenericEntityStore('jobs'))(),
       applicationsStore: defineStore('job-applications', useGenericEntityStore('job-applications'))(),
-      editMode: !this.singleEdit,
       componentKey: 0,
       maxWidth: '800px',
       formTitle: 'Υποβολή αίτησης',
-      modalLegendTitle: 'Στοιχεία Επικοινωνίας'
+      modalLegendTitle: 'Στοιχεία Επικοινωνίας',
+      workplaceTypeOptions: [],
+      employmentTypeOptions: [],
     }
   },
   computed: {
@@ -156,24 +140,24 @@ export default {
           required: true,
           colSize: 12,
         },
-        {
-          id: 'workExperience',
-          type: 'tiptap',
-          label: this.$t('Work Experience'),
-          colSize: 12,
-        },
-        {
-          id: 'education',
-          type: 'tiptap',
-          label: this.$t('Education'),
-          colSize: 12,
-        },
-        {
-          id: 'skills',
-          type: 'tiptap',
-          label: this.$t('Skills'),
-          colSize: 12,
-        },
+        // {
+        //   id: 'workExperience',
+        //   type: 'tiptap',
+        //   label: this.$t('Work Experience'),
+        //   colSize: 12,
+        // },
+        // {
+        //   id: 'education',
+        //   type: 'tiptap',
+        //   label: this.$t('Education'),
+        //   colSize: 12,
+        // },
+        // {
+        //   id: 'skills',
+        //   type: 'tiptap',
+        //   label: this.$t('Skills'),
+        //   colSize: 12,
+        // },
       ]
     },
     formFields() {
@@ -182,45 +166,106 @@ export default {
           id: 'title',
           type: 'text',
           label: this.$t('Title'),
-          readonly: true,
+          disabled: !this.editMode,
           colSize: 12,
         },
         {
           id: 'description',
           type: 'tiptap',
           label: this.$t('Description'),
-          readonly: true,
+          disabled: !this.editMode,
           colSize: 12,
         },
         {
           id: 'workplaceType',
           type: 'select',
           label: this.$t('Workplace Type'),
-          readonly: true,
+          disabled: !this.editMode,
+          options: this.workplaceTypeOptions,
           colSize: 6,
         },
         {
           id: 'employmentType',
           type: 'select',
           label: this.$t('Employment Type'),
-          readonly: true,
+          disabled: !this.editMode,
+          options: this.employmentTypeOptions,
           colSize: 6,
+        },
+        {
+          id: 'location',
+          type: 'text',
+          label: this.$t('Location'),
+          disabled: !this.editMode,
+          colSize: 6,
+        },
+      ]
+    },
+    secondaryTables(){
+      return [
+        {
+          fields: this.skillFields,
+          title: this.$t('Skills'),
+          hiddenColumns: ['description'],
+          property: 'skills',
+        },
+        {
+          fields: [
+            {
+              id: 'creator.title',
+              type: 'text',
+              label: this.$t('Applicant'),
+            },
+          ],
+          title: this.$t('Job Applications'),
+          property: 'applications',
+          hideEditButton: true,
+          hideAddButton: true,
+          hidden: !this.currentJobIsMine
+        }
+      ]
+    },
+    skillFields(){
+      return [
+        {
+          id: 'title',
+          type: 'text',
+          label: this.$t('Skill Title'),
+          required: true,
+          colSize: 12,
+        }
+      ]
+    },
+    currentJobIsMine(){
+      return this.entity?.creator?.id == this.user.id
+    },
+    newJob(){
+      return this.$route.params.id == '0'
+    },
+    extraActions() {
+      return [
+        {
+          title: (this.applied)? this.$t('Applied') : this.$t('Apply'),
+          icon: (this.applied)? 'fa-check' : 'fa-paper-plane',
+          color: 'secondary',
+          callback: this.apply,
+          disabled: this.applied,
+          renderCondition: () => !this.currentJobIsMine && !this.newJob
         },
       ]
     },
   },
   mounted() {
-    this.fetchJob()
+    this.setJobs()
+    this.setWorkplaceTypes()
+    this.setEmploymentTypes()
   },
   methods: {
-    async fetchJob(){
-      this.entity = await this.entityStore.getEntity(this.$route.params.id)
-    },
-    updateEntity(fieldObj) {
+    updateApplicationEntity(fieldObj) {
       this.applicationEntity[fieldObj.id] = fieldObj.value
     },
     async submitEntity(){
-      const response = await this.applicationsStore.saveEntity({...this.applicationEntity, jobId: this.$route.params.id},false)
+      const response = await this.applicationsStore.saveEntity({...this.applicationEntity, job: {id: this.$route.params.id}},false)
       if(response.id){
         this.valid = false
         this.applied = true
@@ -229,12 +274,25 @@ export default {
     },
     apply () {
       this.dialog = true
-
     },
     close() {
       this.dialog = false
     },
+    async setJobs() {
+      const myJobApplications = await this.$store.fetchJobApplications({creator: this.user.id})
+
+      if (myJobApplications.length > 0) {
+        this.applied = myJobApplications.filter(ja => ja.job.id == this.$route.params.id).length > 0
+      }
+    },
+    async setWorkplaceTypes(){
+      this.workplaceTypeOptions = await this.$store.fetchWorkplaceTypes()
+    },
+    async setEmploymentTypes(){
+      this.employmentTypeOptions = await this.$store.fetchEmploymentTypes()
+    }
   },
+
 }
 </script>
 

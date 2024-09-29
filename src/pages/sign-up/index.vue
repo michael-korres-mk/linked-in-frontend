@@ -1,6 +1,7 @@
 <script setup>
 import { themeConfig } from '@themeConfig';
 import { defineStore } from 'pinia'
+import entityedit from "@/mixins/entityedit.js";
 
 definePage({ meta: { layout: 'blank' } })
 
@@ -17,26 +18,18 @@ definePage({ meta: { layout: 'blank' } })
     </VCardText>
     <VCardText>
       <VRow>
-        <VCol cols="12">
-          <AppTextField v-model="form.firstName" label="Firstname"/>
-          <AppTextField v-model="form.lastName" label="Lastname"/>
-          <AppTextField v-model="form.mobile" type="phone" label="Phone Number"/>
-          <AppTextField v-model="form.email" type="email" label="Email"/>
-          <AppTextField v-model="form.username" label="Username"/>
-          <AppTextField v-model="form.password" type="password" label="Password"/>
-          <AppTextField v-model="form.confirmPassword" type="password" label="Confirm Password"/>
-
-          <VFileInput label="Photo"/>
-
-          <div class="d-flex justify-end flex-wrap gap-3 padding-top-2">
-            <VBtn color="secondary" variant="tonal" @click="returnToLoginWall"> Cancel </VBtn>
-
-            <VBtn @click="signUpUser">
-              Sign Up
-              <VIcon end icon="tabler-arrow-right" class="flip-in-rtl"/>
-            </VBtn>
-          </div>
-        </VCol>
+        <EntitySingle
+          :key="componentKey"
+          :config="config"
+          :sections="sections"
+          :entity="entity"
+          hide-title
+          hide-cancel-btn
+          authority="users"
+          @entityUpdated="setEntity"
+          @editModeSet="editModeSet"
+          @entitySaved="entitySaved"
+        />
       </VRow>
     </VCardText>
   </VCard>
@@ -44,27 +37,36 @@ definePage({ meta: { layout: 'blank' } })
 </template>
 
 <script>
-
+import logo from '@images/logo_white.png';
 import {defineStore} from "pinia";
 import useGenericEntityStore from "@/stores/entity.js";
 import {themeConfig} from "@themeConfig";
+import useJwt from "@/plugins/jwt/useJwt.js";
 
 export default {
+  mixins: [entityedit],
   name: 'SignUp',
   data() {
     return {
-      entityStore: defineStore('users', useGenericEntityStore('users'),)(),
-      form: {
-        email: '',
-        firstName: '',
-        lastName: '',
-        username: '',
-        mobile: '',
-        password: '',
-        confirmPassword: '',
-        userRole:'PROFESSIONAL',
-        photo:{}
+      entity: {
+        workExperiences:[],
+        educations:[],
+        skills:[],
       },
+      profileImage: null,
+      componentKey : 0,
+      entityStore: defineStore('users', useGenericEntityStore('users'),)(),
+      // form: {
+      //   email: '',
+      //   firstName: '',
+      //   lastName: '',
+      //   username: '',
+      //   mobile: '',
+      //   password: '',
+      //   confirmPassword: '',
+      //   userRole:'PROFESSIONAL',
+      //   photo:{}
+      // },
       logoImage: logo,
     };
   },
@@ -73,13 +75,29 @@ export default {
       this.$router.push('/login-wall');
     },
     async signUpUser() {
-      await this.entityStore.saveEntity(this.form,false)
+      const response = await this.entityStore.saveEntity(this.form, false)
+        .then(res => res)
+        .catch(err => {
+          this.signupError(err.response.data.message)
+        })
+
+      console.log(response)
+      debugger
+
+      await this.$store.jwtLogin(null, this.form.email, this.form.password)
         .then(res => {
-          this.$store.userData = res;
-          localStorage.setItem('userData', JSON.stringify(res));
+          let userData = res.data;
+
+          console.log(res.data)
+          debugger
+          this.$store.userData = res.data;
+          localStorage.setItem('userData', JSON.stringify(userData));
+          useJwt.setToken(userData.token)
           this.$router.push('/home');
         })
-        .catch(err => {this.signupError(err.response.data.message)})
+        .catch(err => {
+          this.loginError(err.response.data.message)
+        })
     },
     signupError(errorMessage) {
       this.errorToast({
@@ -88,10 +106,72 @@ export default {
       })
     },
   },
-  mounted() {
-    if (this.hasToken) {
-      this.authenticateUser(this.$route.query?.token);
-    }
+  computed:{
+    config() {
+      return {
+        endpoint: 'users',
+        route: 'home',
+        title: {
+          geniki: 'Χρήστη',
+        },
+      }
+    },
+    sections() {
+      return [
+        {
+          fields: this.formFields,
+          title: this.$t('Information'),
+        },
+
+      ]
+    },
+    formFields() {
+      return [
+        {
+          id: 'firstName',
+          type: 'text',
+          label: this.$t('User FirstName'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'lastName',
+          type: 'text',
+          label: this.$t('User LastName'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'mobile',
+          type: 'text',
+          label: this.$t('Telephone'),
+          rules: ['phone'],
+          colSize: 12,
+        },
+        {
+          id: 'email',
+          type: 'text',
+          label: this.$t('Email'),
+          rules: ['email'],
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'password',
+          type: 'text',
+          label: this.$t('Password'),
+          required: true,
+          colSize: 12,
+        },
+        {
+          id: 'confirmPassword',
+          type: 'text',
+          label: this.$t('Confirm Password'),
+          required: true,
+          colSize: 12,
+        },
+      ]
+    },
   },
 };
 </script>

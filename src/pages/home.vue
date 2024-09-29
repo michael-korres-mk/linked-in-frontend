@@ -23,7 +23,7 @@ import DataIterator from "@/components/entity/DataIterator.vue";
       >
         <template #default="{ items,itemUpdated,refetchData,setEntityData,updateDeleteModalId }" >
           <Post v-for="item in items.map(i => i.value)" :post="item" @itemUpdated="itemUpdated">
-            <template #actions>
+            <template v-if="item.creator.id == user.id" #actions>
               <Actions
                 :item="item"
                 :config="config"
@@ -47,6 +47,7 @@ export default {
       return {
         endpoint: 'posts',
         route: 'posts',
+        returnRoute: 'home',
         title: {
           single: 'Post',
           plural: 'Posts',

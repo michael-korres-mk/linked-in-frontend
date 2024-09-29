@@ -13,23 +13,52 @@ definePage({
     {{ $t('Jobs')}}
   </h1>
   <div class="card-wrapper bg-global-primary">
+    <v-card>
+      <v-tabs v-model="tab" grow>
+        <v-tab value="tab-1">
+          {{ $t('My Jobs') }}
+        </v-tab>
+        <v-tab value="tab-2">
+          {{ $t('Search') }}
+        </v-tab>
+      </v-tabs>
 
-<!--      <JobsList :config="config" :filters="filters" :filters-legend-title="''" :results-per-page="9" hide-view />-->
-    <DataIterator
-      :config="config"
-      :filters="filters"
-      :results-per-page="9"
-      auto-update-filters
-      hide-filter-legend
-      hide-view
-      hide-insert-btn
-      :extra-styling="extraStyling"
-    >
-      <template #default="{ items }" >
-        <JobListItem v-for="item in items.map(i => i.value)" :item="item"/>
-      </template>
-    </DataIterator>
-
+      <v-tabs-window v-model="tab">
+        <v-tabs-window-item class="card-body" value="tab-1">
+          <h2 class="text-center text-info">{{ $t('My Jobs')}}</h2>
+          <DataIterator
+            :config="config"
+            :filters="myJobs"
+            :results-per-page="9"
+            auto-update-filters
+            hide-filters
+            hide-view
+            :extra-styling="extraStyling"
+          >
+            <template #default="{ items }" >
+              <JobListItem v-for="item in items.map(i => i.value)" :item="item"/>
+            </template>
+          </DataIterator>
+        </v-tabs-window-item>
+        <v-tabs-window-item class="card-body" value="tab-2">
+          <h2 class="text-center text-info">{{ $t('Search') }}</h2>
+          <DataIterator
+            :config="config"
+            :filters="filters"
+            :results-per-page="9"
+            auto-update-filters
+            hide-filter-legend
+            hide-view
+            hide-insert-btn
+            :extra-styling="extraStyling"
+          >
+            <template #default="{ items }" >
+              <JobListItem v-for="item in items.map(i => i.value)" :item="item"/>
+            </template>
+          </DataIterator>
+        </v-tabs-window-item>
+      </v-tabs-window>
+    </v-card>
 
   </div>
 
@@ -37,6 +66,12 @@ definePage({
 
 <script>
 export default {
+
+  data(){
+    return {
+      tab: 'tab-1',
+    }
+  },
   computed: {
     config() {
       return {
@@ -49,20 +84,33 @@ export default {
         },
       }
     },
+    myJobs(){
+      return [
+        {
+          id: 'creator',
+          type: 'number',
+          storeVal: this.user.id
+        },
+      ]
+    },
     filters() {
       return [
-        // {
-        //   id: 'id',
-        //   type: 'number',
-        //   label: this.$t('User Code'),
-        //   colSize: 4,
-        // },
-        // {
-        //   id: 'searchTerm',
-        //   type: 'text',
-        //   label: this.$t('Search'),
-        //   colSize: 4,
-        // },
+        {
+          id: 'exceptLoggedUser',
+          type: 'checkbox',
+          initVal: true,
+          hidden: true,
+          colSize: 4,
+        },
+        {
+          id: 'q',
+          type: 'text',
+          label: this.$t('Jobs Search'),
+          placeholder: this.$t('Search') + '...',
+          icon: 'tabler-search',
+          clearable: true,
+          colSize: 12,
+        },
       ]
     },
     extraStyling() {

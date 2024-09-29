@@ -411,20 +411,36 @@ export default {
               console.error('Error:', error);
           })
       },
-      getElementType(file){
-          switch (file.fileType) {
-              case 'MP4':
-                  return 'video'
-              case 'MP3':
-              case 'WAV':
-                  return 'audio'
-              case 'PNG':
-                  return 'img'
-              default:
-                  return 'div'
+      getElementType(file) {
+          const typeMapping = {
+              'MP4': 'video',
+              'AVI': 'video',
+              'MOV': 'video',
+              'WMV': 'video',
+              'FLV': 'video',
 
-          }
+              'MP3': 'audio',
+              'WAV': 'audio',
+              'FLAC': 'audio',
+              'AAC': 'audio',
 
+              'PNG': 'img',
+              'JPG': 'img',
+              'JPEG': 'img',
+              'GIF': 'img',
+              'SVG': 'img',
+
+              'PDF': 'embed',
+              'DOC': 'embed',
+              'DOCX': 'embed',
+              'XLS': 'embed',
+              'XLSX': 'embed',
+              'PPT': 'embed',
+              'PPTX': 'embed'
+          };
+
+          return typeMapping[file.fileType] || 'div';
       }
+
   },
 }

@@ -24,12 +24,13 @@ definePage({
               :form-fields="formFields"
               :entity="entity"
               hide-title
+              :hide-cancel-button="!editMode"
               :return-to-list="false"
-              hide-return-button
               authority="users"
               @entityUpdated="setEntity"
               @editModeSet="editModeSet"
               @entitySaved="entitySaved"
+              @entityFetched="setEntity"
             />
           </div>
         </div>
@@ -49,7 +50,6 @@ export default {
         authorities: [],
         roles: [],
       },
-      editMode: !this.singleEdit,
       componentKey: 0,
     }
   },
@@ -63,7 +63,7 @@ export default {
     config() {
       return {
         endpoint: 'users/settings',
-        returnRoute: (this.$store.isAdmin)? 'users' : 'home',
+        route: (this.$store.isAdmin)? 'users' : 'home',
         title: {
           geniki: 'Χρήστη',
         },

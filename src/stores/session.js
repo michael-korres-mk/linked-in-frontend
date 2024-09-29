@@ -2,45 +2,45 @@ import axios from '@axios'
 import { defineStore } from 'pinia'
 
 const getCacheKey = (endpoint, params) => {
-  let hash = endpoint
+    let hash = endpoint
 
-  if (typeof params === 'object') {
+    if (typeof params === 'object') {
     Object.keys(params).forEach(prop => {
       hash += `__${prop}_${params[prop]}`
     })
-  }
+    }
 
-  return hash
-}
+    return hash
+    }
 
-const getters = {
-  isAuthenticated: state => (state.userData.token !== '') || (state.userData.token !== undefined),
-  isAdmin: state => state.userData.userRole === 'ADMIN',
+    const getters = {
+    isAuthenticated: state => (state.userData.token !== '') || (state.userData.token !== undefined),
+    isAdmin: state => state.userData.userRole === 'ADMIN',
     // userRights: state => {
-  //   return state.userData?.authorities
-  //     ? state.userData.authorities.map(right => right.authority)
-  //     : []
-  // },
-}
+    //   return state.userData?.authorities
+    //     ? state.userData.authorities.map(right => right.authority)
+    //     : []
+    // },
+    }
 
-const actions = {
-  cached(key) {
+    const actions = {
+    cached(key) {
     if (this.isCacheValid(key)) {
       return this.cache.items[key].data
     }
 
     return undefined
-  },
-  isCacheValid(key) {
+    },
+    isCacheValid(key) {
     const item = this.cache.items[key]
     const timestamp = Date.now()
 
     return item && this.cache.validFor > timestamp - item.timestamp
-  },
-  clearCache() {
+    },
+    clearCache() {
     this.cache.items = {}
-  },
-  jwtLogin(token,email,password) {
+    },
+    jwtLogin(token,email,password) {
     return new Promise((resolve, reject) => {
       const url = (token)? `jwt/login?token=${token}` : `jwt/login?email=${email}&password=${password}`
       axios
@@ -48,8 +48,8 @@ const actions = {
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
-  },
-  uploadFile(file, name) {
+    },
+    uploadFile(file, name) {
     const lastDot = name.lastIndexOf('.')
     const formData = new FormData()
 
@@ -67,8 +67,8 @@ const actions = {
         .then(response => resolve(response.data))
         .catch(error => reject(error))
     })
-  },
-  axiosGet(payload) {
+    },
+    axiosGet(payload) {
     const queryParams = payload.params
     const endpoint = payload.url
     const cacheLocally = payload.cache
@@ -97,28 +97,28 @@ const actions = {
         })
         .catch(error => reject(error))
     })
-  },
-  fetchList(endpoint, queryParams) {
+    },
+    fetchList(endpoint, queryParams) {
     return this.axiosGet({
       params: queryParams,
       url: `${endpoint}/list`,
       cache: false,
     })
-  },
-  fetchCachedList(endpoint, queryParams) {
+    },
+    fetchCachedList(endpoint, queryParams) {
     return this.axiosGet({
       params: queryParams,
       url: `${endpoint}/list`,
       cache: true,
     })
-  },
-  async fetchFile(fileId) {
+    },
+    async fetchFile(fileId) {
     return axios.get(`files/${fileId}`, { responseType: 'blob' })
-  },
-  async fetchUsersFile(users,xml) {
+    },
+    async fetchUsersFile(users,xml) {
       return axios.post(`files/users-download?xml=${xml}`, users,{ responseType: 'blob' })
-  },
-  getSearchItems(endpoint, parameter, val, prependPath) {
+    },
+    getSearchItems(endpoint, parameter, val, prependPath) {
     return this.axiosGet(
       {
         url: `${endpoint}?${parameter}=${val}`,
@@ -126,28 +126,36 @@ const actions = {
       },
       prependPath,
     )
-  },
-  roles() {
+    },
+    roles() {
     return this.fetchCachedList('users/roles')
-  },
-  rights(subsystem) {
+    },
+    rights(subsystem) {
     return this.fetchCachedList('roles/rights', { subsystem })
-  },
-  // fetchRecentChats() {
-  //   return this.fetchCachedList('chats/recent')
-  // },
-  fetchChatMessages(id) {
-   return this.axiosGet({ url: `chats/messages/${id}` })
-  },
-  fetchChats(queryParams) {
+    },
+    fetchChatMessages(id) {
+    return this.axiosGet({ url: `chats/messages/${id}` })
+    },
+    fetchChats(queryParams) {
       return this.fetchList('chats',queryParams)
-  },
-  fetchConnectionRequests(queryParams) {
+    },
+    fetchConnectionRequests(queryParams) {
     return this.fetchList('connection-requests',queryParams)
-  },
+    },
+    fetchJobs(queryParams) {
+        return this.fetchList('jobs',queryParams)
+    },
+    fetchJobApplications(queryParams) {
+        return this.fetchList('job-applications',queryParams)
+    },
+    fetchWorkplaceTypes() {
+        return this.fetchCachedList('jobs/workplace-types')
+    },
+    fetchEmploymentTypes() {
+        return this.fetchCachedList('jobs/employment-types')
+    },
 
-
-}
+    }
 
 export const useSessionStore = defineStore('session', {
   state: () => {
