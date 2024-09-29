@@ -118,6 +118,22 @@ export default {
     this.setConnectionRequest()
   },
   computed:{
+    jobFields(){
+      return [
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 6,
+        },
+        {
+          id: 'jobTitle',
+          type: 'text',
+          label: this.$t('Job Title'),
+          colSize: 6,
+        },
+      ]
+    },
     config() {
       return {
         endpoint: 'users/profile',
@@ -133,6 +149,10 @@ export default {
         {
           fields: this.aboutMe,
           title: this.$t('About Me'),
+        },
+        {
+          fields: this.jobFields,
+          title: this.$t('Job Info'),
         },
         {
           fields: this.settings,

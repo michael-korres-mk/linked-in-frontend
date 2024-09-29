@@ -81,7 +81,7 @@
                   :hide-delete-button="table.hideDeleteButton"
                   :hide-add-button="table.hideAddButton"
                   :allow-edit="editMode"
-                  @itemFieldUpdated="updateEntityProp"
+                  @fieldUpdated="updateEntityProp"
                 />
               </VExpansionPanelText>
             </VExpansionPanel>
@@ -113,7 +113,7 @@
                     :hide-delete-button="table.hideDeleteButton"
                     :hide-add-button="table.hideAddButton"
                     :allow-edit="editMode"
-                    @itemFieldUpdated="updateEntityProp"
+                    @fieldUpdated="updateEntityProp"
                   />
                 </div>
               </div>

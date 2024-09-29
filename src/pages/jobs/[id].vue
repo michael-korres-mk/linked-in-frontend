@@ -49,7 +49,6 @@
         :can-edit="currentJobIsMine || newJob"
         @entityUpdated="setEntity"
         @editModeSet="editModeSet"
-        @entitySaved="entitySaved"
       />
     </div>
   </div>

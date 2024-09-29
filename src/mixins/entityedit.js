@@ -98,6 +98,9 @@ export default {
       return entity
     },
     updateEntityProp(fieldObj) {
+
+      console.log(fieldObj)
+
       const entity = this.entity
       if (fieldObj.parent) {
         entity[fieldObj.parent][fieldObj.id] = fieldObj.value

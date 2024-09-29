@@ -125,8 +125,28 @@ export default {
           type: 'text',
           label: this.$t('Telephone'),
           rules: ['phone'],
-          required: true,
           colSize: 4,
+        },
+        {
+          id: 'company',
+          type: 'text',
+          label: this.$t('Company'),
+          colSize: 6,
+        },
+        {
+          id: 'jobTitle',
+          type: 'text',
+          label: this.$t('Job Title'),
+          colSize: 6,
+        },
+        {
+          id: 'profilePhoto',
+          type: 'file',
+          filetype: ['image/*'],
+          label: this.$t('Photo'),
+          rules: ['filesize'],
+          filesize: 30,
+          colSize: 12
         },
       ]
     },
@@ -170,7 +190,6 @@ export default {
           id: 'title',
           type: 'text',
           label: this.$t('Job Title'),
-          required: true,
           colSize: 12,
         },
         {

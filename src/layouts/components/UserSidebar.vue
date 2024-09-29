@@ -6,7 +6,7 @@
         <FontAwesomeIcon v-else :icon="'fas fa-circle-user'" color="white" size="10x"/>
       </v-avatar>
       <h3 class="text-white">{{ user.username }}</h3>
-      <h4 class="text-info">{{ 'ola ola' }}</h4>
+      <h4 class="text-info">{{ user.title }}</h4>
     </div>
 
     <ul class="sidebar-menu">
@@ -32,7 +32,7 @@ export default {
   },
   methods:{
     async setProfileImage(){
-      this.profileImage = await this.imgShow(this.user.profilePhoto) ?? null
+      this.profileImage = (this.user.profilePhoto)? await this.imgShow(this.user.profilePhoto) : null
     },
   }
 };
