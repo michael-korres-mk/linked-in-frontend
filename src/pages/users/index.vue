@@ -20,6 +20,7 @@ import editmixins from "@/mixins/entityedit.js"
       hide-edit
       details-view
       hide-insert-btn
+      hide-table-actions
       @itemSelected="handleSelectedChange"
     >
       <template #extra-button>
@@ -157,25 +158,21 @@ export default {
       return [
         {
           key: 'id',
-          title: 'Code User',
+          title: this.$t('User Code'),
         },
         {
-          key: 'firstName',
-          title: 'User FirstName',
-        },
-        {
-          key: 'lastName',
-          title: 'User LastName',
+          key: 'title',
+          title: this.$t('User'),
         },
         {
           key: 'enabled',
-          title: 'Status',
+          title: this.$t('Status'),
         },
       ]
     },
     formattedColumns() {
       return [
-        { key: 'enabled', callback: 'booleanTitle' },
+        { key: 'title', callback: 'renderTitleUrl',handleClick: this.redirectToUserPage },
       ]
     },
     filters() {
@@ -251,7 +248,10 @@ export default {
         link.click()
         // this.downloadingFile = false
       },
+    redirectToUserPage(item, itemKey) {
+        console.log('bla')
+        this.$router.push(`/users/${item.id}?view=1`)
     },
-
+  },
 }
 </script>

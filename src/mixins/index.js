@@ -440,7 +440,9 @@ export default {
           };
 
           return typeMapping[file.fileType] || 'div';
-      }
-
+      },
+      renderTitleUrl(title){
+          return `<div class="text-primary font-weight-bold cursor-pointer" style="white-space: nowrap; overflow:hidden;max-width: 600px; text-overflow: ellipsis;">${title}</div>`
+      },
   },
 }

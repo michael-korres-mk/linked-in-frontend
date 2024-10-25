@@ -57,7 +57,6 @@
       <div class="card-body">
         <VCol
           cols="12"
-          class="text-end"
         >
           <slot name="extra-button" />
           <!-- Table Container Card -->
@@ -136,7 +135,10 @@
                 :key="field.key"
                 #[`item.${field.key}`]="{ item }"
               >
-                <div v-html="callFunc(field.callback, item[field.key])" />
+                <div
+                  @click="field.handleClick(item)"
+                  v-html="callFunc(field.callback, item[field.key])"
+                />
               </template>
               <template #item.actions="{ item }">
                 <div class="w-160px">
