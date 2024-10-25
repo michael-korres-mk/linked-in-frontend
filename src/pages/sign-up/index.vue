@@ -104,7 +104,7 @@ export default {
     config() {
       return {
         endpoint: 'users',
-        route: 'home',
+        route: 'login',
         title: {
           geniki: 'Χρήστη',
         },
